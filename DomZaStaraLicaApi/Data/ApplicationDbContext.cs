@@ -5,7 +5,7 @@ namespace DomZaStaraLicaApi.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<Osoba> Osoba { get; set; }
+        public DbSet<KorisnikDoma> KorisnikDoma { get; set; }
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {
