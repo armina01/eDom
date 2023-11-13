@@ -4,6 +4,7 @@ using DomZaStaraLicaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231112184546_addZaposlenik")]
+    partial class addZaposlenik
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,10 +150,6 @@ namespace DomZaStaraLicaApi.Migrations
                     b.Property<DateTime>("DatumZaposlenja")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ImePrezime")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -172,20 +171,6 @@ namespace DomZaStaraLicaApi.Migrations
                     b.HasIndex("PoslovnaPozicijaId");
 
                     b.ToTable("Zaposlenik");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Zaposlenik");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Njegovatelj", b =>
-                {
-                    b.HasBaseType("DomZaStaraLicaApi.Data.Models.Zaposlenik");
-
-                    b.Property<int>("brojPacijenata")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("Njegovatelj");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.KorisnikDoma", b =>
