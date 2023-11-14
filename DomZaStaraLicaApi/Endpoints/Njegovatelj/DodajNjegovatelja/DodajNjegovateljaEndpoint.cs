@@ -24,7 +24,8 @@ namespace DomZaStaraLicaApi.Endpoints.Njegovatelj.DodajNjegovatelja
                 JMBG = request.JMBG,
                 DatumRodjenja = request.DatumRodjenja,
                 DatumZaposlenja = request.DatumZaposlenja,
-                brojPacijenata = request.brojPacijenata
+                brojPacijenata = request.brojPacijenata,
+                NalogId=request.NalogId,
             };
             _applicationDbContext.Njegovatelj.Add(newObj);
 

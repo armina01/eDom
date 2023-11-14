@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace DomZaStaraLicaApi.Data.Models
+﻿namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.UpdateKorisnickiNalog
 {
-    public class KorisnickiNalog
+    public class UpdateKorisnickiNalogRequest
     {
-        [Key]
         public int KorisnikId { get; set; }
         public string KorisnickoIme { get; set; }
         public string Lozinka { get; set; }

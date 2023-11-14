@@ -4,6 +4,7 @@ using DomZaStaraLicaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231113143005_eddKorisnickiNalog")]
+    partial class eddKorisnickiNalog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,12 +185,6 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.Property<int>("brojPacijenata")
                         .HasColumnType("int");
-
-                    b.Property<bool>("isMedicinskiTehnicar")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("isNjegovatelj")
-                        .HasColumnType("bit");
 
                     b.HasDiscriminator().HasValue("Njegovatelj");
                 });

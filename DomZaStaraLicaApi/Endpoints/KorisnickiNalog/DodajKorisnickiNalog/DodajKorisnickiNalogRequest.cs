@@ -1,11 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace DomZaStaraLicaApi.Data.Models
+﻿namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.DodajKorisnickiNalog
 {
-    public class KorisnickiNalog
+    public class DodajKorisnickiNalogRequest
     {
-        [Key]
-        public int KorisnikId { get; set; }
         public string KorisnickoIme { get; set; }
         public string Lozinka { get; set; }
         public bool JeAdmin { get; set; }
