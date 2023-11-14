@@ -4,6 +4,7 @@ using DomZaStaraLicaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231113143005_eddKorisnickiNalog")]
+    partial class eddKorisnickiNalog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,11 +27,11 @@ namespace DomZaStaraLicaApi.Migrations
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.KorisnickiNalog", b =>
                 {
-                    b.Property<int>("NalogId")
+                    b.Property<int>("KorisnikId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NalogId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KorisnikId"));
 
                     b.Property<bool>("JeAdmin")
                         .HasColumnType("bit");
@@ -53,7 +56,7 @@ namespace DomZaStaraLicaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("NalogId");
+                    b.HasKey("KorisnikId");
 
                     b.ToTable("KorisnickiNalog");
                 });
@@ -108,11 +111,11 @@ namespace DomZaStaraLicaApi.Migrations
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.PoslovnaPozicija", b =>
                 {
-                    b.Property<int>("PoslovnaPozicijaId")
+                    b.Property<int>("PozicijaId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PoslovnaPozicijaId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PozicijaId"));
 
                     b.Property<int>("BrojSati")
                         .HasColumnType("int");
@@ -125,7 +128,7 @@ namespace DomZaStaraLicaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PoslovnaPozicijaId");
+                    b.HasKey("PozicijaId");
 
                     b.ToTable("PoslovnaPozicija");
                 });
@@ -159,7 +162,8 @@ namespace DomZaStaraLicaApi.Migrations
                     b.Property<int?>("NalogId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PoslovnaPozicijaId")
+                    b.Property<int?>("PoslovnaPozicijaId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("ZaposlenikId");
@@ -181,12 +185,6 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.Property<int>("brojPacijenata")
                         .HasColumnType("int");
-
-                    b.Property<bool>("isMedicinskiTehnicar")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("isNjegovatelj")
-                        .HasColumnType("bit");
 
                     b.HasDiscriminator().HasValue("Njegovatelj");
                 });
