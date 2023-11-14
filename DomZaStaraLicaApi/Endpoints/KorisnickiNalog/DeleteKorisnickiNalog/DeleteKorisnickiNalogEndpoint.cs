@@ -18,7 +18,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.DeleteKorisnickiNalog
         public override async Task<DeleteKorisnickiNalogResponse> Obradi(DeleteKorisnickiNalogRequest request)
         {
             var nalog = _applicationDbContext.KorisnickiNalog.FirstOrDefault(
-               x => x.KorisnikId == request.KorisnikId);
+               x => x.NalogId == request.KorisnikId);
             if (nalog == null)
             { throw new Exception("nije pronadjen korisnicki nalog za id = " + request.KorisnikId); }
             _applicationDbContext.Remove(nalog);

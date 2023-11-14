@@ -13,7 +13,7 @@ namespace DomZaStaraLicaApi.Data.Models
         public int? NalogId { get; set; }
         [ForeignKey(nameof(NalogId))]
         public KorisnickiNalog KorisnickiNalog { get; set; }
-        public int? PoslovnaPozicijaId { get; set; }
+        public int PoslovnaPozicijaId { get; set; }
         [ForeignKey(nameof(PoslovnaPozicijaId))]
         public PoslovnaPozicija PoslovnaPozicija { get; set; }
     }

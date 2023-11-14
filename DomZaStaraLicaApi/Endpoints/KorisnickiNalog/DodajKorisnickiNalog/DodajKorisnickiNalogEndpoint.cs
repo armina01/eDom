@@ -31,7 +31,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.DodajKorisnickiNalog
             await _applicationDbContext.SaveChangesAsync();
             return new DodajKorisnickiNalogResponse
             {
-                KorisnikId = newObj.KorisnikId,
+                KorisnikId = newObj.NalogId,
             };
         }
     }

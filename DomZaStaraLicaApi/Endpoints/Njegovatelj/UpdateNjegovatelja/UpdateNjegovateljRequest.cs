@@ -1,7 +1,8 @@
-﻿namespace DomZaStaraLicaApi.Endpoints.Njegovatelj.DodajNjegovatelja
+﻿namespace DomZaStaraLicaApi.Endpoints.Njegovatelj.UpdateNjegovatelja
 {
-    public class DodajNjegovateljaRequest
+    public class UpdateNjegovateljRequest
     {
+        public int ZaposlenikId { get; set; }
         public string ImePrezime { get; set; }
         public string JMBG { get; set; }
         public DateTime DatumRodjenja { get; set; }

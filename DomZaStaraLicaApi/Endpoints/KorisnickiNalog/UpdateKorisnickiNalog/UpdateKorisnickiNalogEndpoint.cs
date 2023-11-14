@@ -16,7 +16,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.UpdateKorisnickiNalog
         public override async Task<UpdateKorisnickiNalogResponse> Obradi(UpdateKorisnickiNalogRequest request)
         {
             var nalog = _applicationDbContext.KorisnickiNalog.FirstOrDefault(
-                x => x.KorisnikId == request.KorisnikId);
+                x => x.NalogId == request.KorisnikId);
             if (nalog == null) { throw new Exception("nije pronadjen korisnicki nalog za id = " + request.KorisnikId); }
             nalog.KorisnickoIme = request.KorisnickoIme;
             nalog.Lozinka= EncryptPassword.encryptPassword(request.Lozinka);
@@ -27,7 +27,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.UpdateKorisnickiNalog
             nalog.JeFizioterapeut = request.JeFizioterapeut;
             await _applicationDbContext.SaveChangesAsync();
             return new UpdateKorisnickiNalogResponse
-            { KorisnikId = nalog.KorisnikId };
+            { KorisnikId = nalog.NalogId };
         }
     }
 }
