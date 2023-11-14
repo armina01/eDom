@@ -14,7 +14,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.DodajKorisnickiNalog
             _applicationDbContext = applicationDbContext;
         }
         [HttpPost("/dodajKorisnickiNalog")]
-        public override async Task<DodajKorisnickiNalogResponse> Obradi(DodajKorisnickiNalogRequest request)
+        public override async Task<DodajKorisnickiNalogResponse> Obradi([FromBody]DodajKorisnickiNalogRequest request)
         {
             var newObj= new Data.Models.KorisnickiNalog
             { 
