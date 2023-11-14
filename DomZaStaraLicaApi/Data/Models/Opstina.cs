@@ -3,7 +3,7 @@
     public class Opstina
     {
         public int OpstinaID { get; set; }
-        public string Naziv { get;}
+        public string NazivOpstine { get; set; }    
         public int PostanskiBroj { get; set; }  
 
     }
