@@ -5,6 +5,7 @@ namespace DomZaStaraLicaApi.Data.Models
 {
     public class Zaposlenik
     {
+        [Key]
         public int ZaposlenikId { get; set; }
         public string ImePrezime { get; set; }
         public string JMBG { get; set; }

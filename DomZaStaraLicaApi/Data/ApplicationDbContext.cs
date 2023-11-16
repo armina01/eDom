@@ -12,6 +12,7 @@ namespace DomZaStaraLicaApi.Data
         public DbSet<Zaposlenik> Zaposlenik { get; set; }
         public DbSet<Njegovatelj> Njegovatelj { get; set; }
         public DbSet<Doktor> Doktor { get; set; }
+        public DbSet<Nutricionista> Nutricionista { get; set; }
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {

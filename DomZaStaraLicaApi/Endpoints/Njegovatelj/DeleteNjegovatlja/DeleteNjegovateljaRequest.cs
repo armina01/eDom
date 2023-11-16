@@ -2,6 +2,6 @@
 {
     public class DeleteNjegovateljaRequest
     {
-        public int ZaposlenikId { get; set; }
+        public int NjegovateljId { get; set; }
     }
 }

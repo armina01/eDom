@@ -16,9 +16,9 @@ namespace DomZaStaraLicaApi.Endpoints.Njegovatelj.DeleteNjegovatlja
         public override async Task<DeleteNjegovateljaResponse> Obradi(DeleteNjegovateljaRequest request)
         {
             var Njegovatelj = _applicationDbContext.Njegovatelj.FirstOrDefault(
-                x => x.ZaposlenikId == request.ZaposlenikId);
+                x => x.ZaposlenikId == request.NjegovateljId);
             if (Njegovatelj == null)
-            { throw new Exception("nije pronadjen korisnicki nalog za id = " + request.ZaposlenikId); }
+            { throw new Exception("nije pronadjen korisnicki nalog za id = " + request.NjegovateljId); }
             _applicationDbContext.Remove(Njegovatelj);
             await _applicationDbContext.SaveChangesAsync();
             return new DeleteNjegovateljaResponse { };
