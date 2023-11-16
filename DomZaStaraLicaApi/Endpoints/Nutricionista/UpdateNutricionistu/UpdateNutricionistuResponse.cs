@@ -2,5 +2,6 @@
 {
     public class UpdateNutricionistuResponse
     {
+        public int ZaposlenikId { get; set; }
     }
 }
