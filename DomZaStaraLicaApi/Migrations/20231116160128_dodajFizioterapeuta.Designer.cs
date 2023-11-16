@@ -4,6 +4,7 @@ using DomZaStaraLicaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231116160128_dodajFizioterapeuta")]
+    partial class dodajFizioterapeuta
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,6 +198,12 @@ namespace DomZaStaraLicaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.ToTable("Zaposlenik", t =>
+                        {
+                            t.Property("Specijalizacija")
+                                .HasColumnName("Doktor_Specijalizacija");
+                        });
+
                     b.HasDiscriminator().HasValue("Doktor");
                 });
 
@@ -203,6 +212,10 @@ namespace DomZaStaraLicaApi.Migrations
                     b.HasBaseType("DomZaStaraLicaApi.Data.Models.Zaposlenik");
 
                     b.Property<string>("OblastFizijatrije")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Specijalizacija")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
