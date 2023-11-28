@@ -23,5 +23,20 @@ namespace DomZaStaraLicaApi.Helper
 
             return encryptedPassw;
         }
+        public static bool VerifyPassword(string enteredPassword, 
+            string storedHash, string storedSalt)
+        {
+            byte[] salt = Convert.FromBase64String(storedSalt);
+
+            string enteredPasswordHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: enteredPassword,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA1,
+                iterationCount: 10000,
+                numBytesRequested: 256 / 8
+            ));
+
+            return string.Equals(enteredPasswordHash, storedHash, StringComparison.Ordinal);
+        }
     }
 }

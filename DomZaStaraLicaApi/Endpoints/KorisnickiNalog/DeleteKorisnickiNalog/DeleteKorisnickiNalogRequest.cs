@@ -2,6 +2,6 @@
 {
     public class DeleteKorisnickiNalogRequest
     {
-        public int KorisnikId { get; set; }
+        public int NalogId { get; set; }
     }
 }

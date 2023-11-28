@@ -14,6 +14,7 @@ namespace DomZaStaraLicaApi.Data
         public DbSet<Doktor> Doktor { get; set; }
         public DbSet<Nutricionista> Nutricionista { get; set; }
         public DbSet<Fizioterapeut> Fizioterapeut { get; set; }
+        public DbSet<AuthToken> AuthToken { get; set; }
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {

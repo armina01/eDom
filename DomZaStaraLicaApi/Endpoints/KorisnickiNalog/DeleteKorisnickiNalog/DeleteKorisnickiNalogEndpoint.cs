@@ -14,16 +14,16 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.DeleteKorisnickiNalog
         {
             _applicationDbContext = applicationDbContext;
         }
-        [HttpDelete("/izbrisiKorisnickiNalog")]
+        [HttpDelete("/izbrisiKorisnickiNalog/{KorisnikId}")]
         public override async Task<DeleteKorisnickiNalogResponse> Obradi(DeleteKorisnickiNalogRequest request)
         {
             var nalog = _applicationDbContext.KorisnickiNalog.FirstOrDefault(
-               x => x.NalogId == request.KorisnikId);
+               x => x.NalogId == request.NalogId);
             if (nalog == null)
-            { throw new Exception("nije pronadjen korisnicki nalog za id = " + request.KorisnikId); }
+            { throw new Exception("nije pronadjen korisnicki nalog za id = " + request.NalogId); }
             _applicationDbContext.Remove(nalog);
             await _applicationDbContext.SaveChangesAsync();
-            return new DeleteKorisnickiNalogResponse { };
+            return new DeleteKorisnickiNalogResponse ();
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
+﻿using DomZaStaraLicaApi.Helper;
+
+namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
 {
     public class LogInResponse
     {
-        public int NalogId { get; set; }
+        public MyAuthService.LoginInformacije LogInInformacija { get; set; }
     }
 }

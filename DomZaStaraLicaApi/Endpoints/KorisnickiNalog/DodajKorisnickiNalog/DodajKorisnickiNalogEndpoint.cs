@@ -19,7 +19,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.DodajKorisnickiNalog
             var newObj= new Data.Models.KorisnickiNalog
             { 
                 KorisnickoIme = request.KorisnickoIme,
-                Lozinka= EncryptPassword.encryptPassword(request.Lozinka),
+                Lozinka= BCrypt.Net.BCrypt.EnhancedHashPassword(request.Lozinka, 13),
                 JeAdmin= request.JeAdmin,
                 JeFizioterapeut= request.JeFizioterapeut,
                 JeDoktor= request.JeDoktor,
