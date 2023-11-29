@@ -12,7 +12,7 @@ namespace DomZaStaraLicaApi.Endpoints.Nutricionista.DeleteNutricionistu
         {
             _applicationDbContext = applicationDbContext;
         }
-        [HttpDelete("/izbrisiKorisnickiNalog")]
+        [HttpDelete("/izbrisiNutricionistu")]
         public override async Task<DeleteNutricionistuResponse> Obradi(DeleteNutricionistuRequest request)
         {
             var nutricionista = _applicationDbContext.Nutricionista.FirstOrDefault(
