@@ -1,0 +1,26 @@
+<h1>Pregled svih korisnika doma</h1>
+<h5>Pretraga</h5><input [(ngModel)]="pretragaNaziv">
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>ImePrezime</th>
+    <th>JMBG</th>
+    <th>Datum rodjenja</th>
+    <th>Broj sobe</th>
+    <th>Naziv opštine</th>
+    <th>Poštanski broj</th>
+
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of getFiltriraniKorisnici()">
+    <td>{{ item.imePrezime }}</td>
+    <td>{{ item.jmbg}}</td>
+    <td>{{ item.datumRodjenja | date }}</td>
+    <td>{{ item.brojSobe }}</td>
+    <td>{{ item.opstinaNaziv}}</td>
+    <td>{{ item.opstinaBroj}}</td>
+
+  </tr>
+  </tbody>
+</table>

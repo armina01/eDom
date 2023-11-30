@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using DomZaStaraLicaApi.Data;
+using Microsoft.AspNetCore.Builder;
+using static System.Net.Mime.MediaTypeNames;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -27,7 +30,14 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
 app.MapControllers();
+
+app.UseCors(
+    options => options
+        .SetIsOriginAllowed(x => _ = true)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+); //This needs to set everything allowed
 
 app.Run();
