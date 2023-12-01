@@ -1,0 +1,32 @@
+
+<h2>Dodavanje opštine</h2>
+
+<form #opstinaForma="ngForm" (ngSubmit)="Dodaj(opstinaForma.value)">
+<div>
+  <label>Naziv</label>
+  <input type="text" name="nazivOpstine" ngModel>
+</div>
+  <div>
+    <label>Postanski broj</label>
+    <input type="number" name="postanskiBroj" ngModel>
+  </div>
+  <button type="submit">Dodaj opšinu</button>
+</form>
+<div>
+  <h1>Pregled svih opština</h1>
+  <button type="submit" (click)="GetAllOpstine()">Prikaži dodane opšine</button>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Naziv opštine</th>
+      <th>Poštanski broj</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of getAllOpstine()">
+      <td>{{item.nazivOpstine}}</td>
+      <td>{{ item.postanskiBroj}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
