@@ -1,0 +1,31 @@
+<label >Opis posla</label>
+<input class="form-control" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="poslovnaPozicijaRequest.opisPosla" >
+<label >Zvanje</label>
+<input class="form-control" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="poslovnaPozicijaRequest.zvanje">
+<div class="col">
+    <label >Broj sati</label>
+    <input type="number" class="form-control" placeholder= "Napisati u satima"
+           [ngModelOptions]="{standalone: true}" [(ngModel)]="poslovnaPozicijaRequest.brojSati">
+</div>
+<div>  <button type="submit" class="btn btn-primary mb-2" (click)="DodajPoslovnuPoziciju()">Dodaj poslovnu poziciju</button>
+    <button type="submit" class="btn btn-primary mb-2" (click)="GetAllPoslovnaPozicija()">Prikazi poslovne pozicije</button>
+</div>
+<div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Opis posla</th>
+            <th>zvanje</th>
+            <th>Broj sati</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of getAllPoslovnePozicije()">
+            <td>{{ item.opisPosla}}</td>
+            <td>{{ item.zvanje }}</td>
+            <td>{{ item.brojSati}}</td>
+            <td><button type="submit"  class="btn btn-primary" (click)="ObrisiPoslovnuPoziciju(item)">Izbrisi poslovna pozicija</button></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
