@@ -1,0 +1,19 @@
+
+<h2>Dodavanje korisnika doma</h2>
+<label >Ime i prezime </label>
+<input class="form-control" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.imePrezime" >
+<label>JMBG</label>
+<input class="form-control" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.jmbg">
+<label >Datum rodjenja</label>
+<input type="date" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.datumRodjenja">
+<label >Broj sobe</label>
+<input type="number" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.brojSobe">
+<label>Opština</label>
+<select [(ngModel)]="korisnikRequest.opstinaID">
+  <option *ngFor="let option of options" [value]="option.opstinaID">{{ option.nazivOpstine }}</option>
+</select>
+
+<div>  <button type="submit" class="btn btn-primary mb-2" (click)="Dodaj()">Dodaj</button>
+</div>
+
+
