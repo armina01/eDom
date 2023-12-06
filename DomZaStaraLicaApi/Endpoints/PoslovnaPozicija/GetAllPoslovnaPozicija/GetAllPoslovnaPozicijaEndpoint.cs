@@ -25,7 +25,7 @@ namespace DomZaStaraLicaApi.Endpoints.PoslovnaPozicija.GetAllPoslovnaPozicija
                 {
                     PoslovnaPozicijaId=x.PoslovnaPozicijaId,
                     OpisPosla=x.OpisPosla,
-                    Zvanje=x.Zvanje,
+                    Zvanje=x.NazivPozicije,
                     BrojSati=x.BrojSati
                 })
                 .ToListAsync();

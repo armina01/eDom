@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomZaStaraLicaApi.Data.Models
 {
-    public class Zaposlenik
+    public abstract class Zaposlenik
     {
         [Key]
         public int ZaposlenikId { get; set; }
@@ -13,7 +13,7 @@ namespace DomZaStaraLicaApi.Data.Models
         public DateTime DatumZaposlenja { get; set; }
         public int? NalogId { get; set; }
         [ForeignKey(nameof(NalogId))]
-        public KorisnickiNalog KorisnickiNalog { get; set; }
+        public KorisnickiNalog? KorisnickiNalog { get; set; }
         public int PoslovnaPozicijaId { get; set; }
         [ForeignKey(nameof(PoslovnaPozicijaId))]
         public PoslovnaPozicija PoslovnaPozicija { get; set; }
