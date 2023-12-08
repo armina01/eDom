@@ -8,6 +8,6 @@ namespace DomZaStaraLicaApi.Data.Models
         public int PoslovnaPozicijaId { get; set; }
         public string OpisPosla { get; set; }
         public int BrojSati { get; set; }
-        public string Zvanje { get; set; }
+        public string NazivPozicije { get; set; }
     }
 }

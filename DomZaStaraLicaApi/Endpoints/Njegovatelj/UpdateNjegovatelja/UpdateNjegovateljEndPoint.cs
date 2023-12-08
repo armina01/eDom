@@ -16,8 +16,8 @@ namespace DomZaStaraLicaApi.Endpoints.Njegovatelj.UpdateNjegovatelja
         public override async Task<UpdateNjegovateljResponse> Obradi(UpdateNjegovateljRequest request)
         {
             var Njegovatelj = _applicationDbContext.Njegovatelj.FirstOrDefault(
-                x => x.ZaposlenikId == request.NjegovateljId);
-            if (Njegovatelj == null) { throw new Exception("nije pronadjen korisnicki nalog za id = " + request.NjegovateljId); }
+                x => x.ZaposlenikId == request.ZaposlenikId);
+            if (Njegovatelj == null) { throw new Exception("nije pronadjen korisnicki nalog za id = " + request.ZaposlenikId); }
             Njegovatelj.ImePrezime = request.ImePrezime;
             Njegovatelj.DatumRodjenja=request.DatumRodjenja;
             Njegovatelj.JMBG=request.JMBG;

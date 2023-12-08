@@ -31,14 +31,14 @@ export class NjegovateljComponent {
 
   isValid: boolean = false;
 
-  validateInput() {
+  validateInput(data:string) {
     const regex = /^\d{13}$/;
-    this.isValid = regex.test(this.njegovatelj.jmbg);
+    this.isValid = regex.test(data);
   }
   showError: number=0;
   constructor(private httpClient: HttpClient,private dialog: MatDialog) {}
 
-  poslovnaPozicija: GetAllPoslovnaPozicijaResponsePoslovnaPozicija[] = [];
+  public poslovnaPozicija: GetAllPoslovnaPozicijaResponsePoslovnaPozicija[] = [];
   GetAllPoslovnaPozicija():Observable<GetAllPoslovnaPozicijaResponsePoslovnaPozicija[]> {
     let url: string = MyConfig.adresa_servera + `/getAllPoslovnaPozicija`;
     return this.httpClient.get<GetAllPoslovnaPozicijaResponse>(url).pipe(
@@ -142,11 +142,25 @@ export class NjegovateljComponent {
 
 
   UpdateNjegovatelj() {
-    let url: string = MyConfig.adresa_servera + `/updateNjegovatelja`;
-    console.log(this.updNjegovateljRequest)
-    this.httpClient.post(url, this.updNjegovateljRequest).subscribe(request => {
-      console.log("Korisnicki nalog dodan za ", request)
-    })
+    if(jePrazno(this.njegovatelj.imePrezime) && jePrazno(this.njegovatelj.jmbg)
+        && jePrazno(this.njegovatelj.poslovnaPozicijaId) ) {
+      this.updNjegovateljRequest.imePrezime = this.njegovatelj.imePrezime;
+      this.updNjegovateljRequest.jmbg = this.njegovatelj.jmbg;
+      this.updNjegovateljRequest.isNjegovatelj = this.njegovatelj.isNjegovatelj;
+      this.updNjegovateljRequest.isMedicinskiTehnicar = this.njegovatelj.isMedicinskiTehnicar;
+      this.updNjegovateljRequest.datumZaposlenja = this.njegovatelj.datumZaposlenja;
+      this.updNjegovateljRequest.datumRodjenja = this.njegovatelj.datumRodjenja;
+      this.updNjegovateljRequest.poslovnaPozicijaId = this.njegovatelj.poslovnaPozicijaId;
+      this.updNjegovateljRequest.poslovnaPozicijaId = this.njegovatelj.brojPacijenata;
+      let url: string = MyConfig.adresa_servera + `/updateNjegovatelja`;
+      console.log(this.updNjegovateljRequest)
+      this.httpClient.post(url, this.updNjegovateljRequest).subscribe(request => {
+        console.log("Korisnicki nalog dodan za ", request)
+      })
+    }
+    else {
+      this.showError=1;
+    }
   }
   SelectNjegovatelja(item: GetAllNjegovateljaResponseNjegovatelj) {
     this.njegovatelj.imePrezime=item.imePrezime;
@@ -156,13 +170,8 @@ export class NjegovateljComponent {
     this.njegovatelj.datumZaposlenja=item.datumZaposlenja;
     this.njegovatelj.datumRodjenja=item.datumRodjenja;
     this.njegovatelj.poslovnaPozicijaId=item.poslovnaPozicijaId;
+    this.njegovatelj.brojPacijenata=item.brojPacijenata;
     this.updNjegovateljRequest.zaposlenikId=item.zaposlenikId;
-    this.updNjegovateljRequest.imePrezime=item.imePrezime;
-    this.updNjegovateljRequest.jmbg=item.jmbg;
-    this.updNjegovateljRequest.isNjegovatelj=item.isNjegovatelj;
-    this.updNjegovateljRequest.isMedicinskiTehnicar=item.isMedicinskiTehnicar;
-    this.updNjegovateljRequest.datumZaposlenja=item.datumZaposlenja;
-    this.updNjegovateljRequest.datumRodjenja=item.datumRodjenja;
-    this.updNjegovateljRequest.poslovnaPozicijaId=item.poslovnaPozicijaId;
+
   }
 }

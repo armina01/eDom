@@ -1,0 +1,63 @@
+
+<label for="comboBox2">Izaberite poslovnu poziciju:</label>
+<select id="comboBox2"  [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.poslovnaPozicijaId" >
+    <option *ngFor="let option of poslovnaPozicija" [ngValue]="option.poslovnaPozicijaId">{{ option.poslovnaPozicijaId }}-{{ option.opisPosla }}</option>
+</select>
+<form>
+    <div class="row">
+        <div class="col">
+            <label>Ime i prezime</label>
+            <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.imePrezime" >
+        </div>
+        <div class="col">
+            <label>JMBG</label>
+            <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.jmbg"
+                   (input)="validateInput(dodajNutricionistu.jmbg)">
+            <p *ngIf="isValid" style="color: green;">Valid Input</p>
+            <p *ngIf="!isValid" style="color: red;">Invalid Input</p>
+        </div>
+    </div>
+</form>
+<label for="birthday">Datum rodjenja:</label>
+<input type="date" id="birthday" placeholder=value [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.datumRodjenja" >
+<label for="birthday">Datum zaposlenja:</label>
+<input type="date" id="hiredate" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.datumZaposlenja" >
+<div class="col">
+    <label>Oblast nutricionizma</label>
+    <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.oblastNutricionizma"  >
+</div>
+<div class="col">
+    <label>Nutricionisticki centar</label>
+    <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.nutricionistickiCentar"  >
+</div>
+<div><label style="color: red;" *ngIf="showError===1">Niste ispunili sva polja!</label></div>
+<button type="submit" class="btn btn-primary" (click)="DodajNutricionistu()">Dodaj</button>
+<button type="submit" class="btn btn-primary" (click)="GetAllNutricionisti()">Prikazi sve</button>
+<button type="submit" class="btn btn-primary" (click)="UpdateNutricionistu()">Update</button>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Korisnicko Ime</th>
+        <th>Doktor</th>
+        <th>Fizioterapeut</th>
+        <th>Njegovatelj</th>
+        <th>Nutricionista</th>
+        <th>Obrisi korisnika</th>
+        <th>Obrisi korisnika</th>
+        <th>Obrisi korisnika</th>
+        <th>Update korisnika</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of getAllNutricionisti()">
+        <td>{{ item.imePrezime }}</td>
+        <td>{{ item.datumRodjenja }}</td>
+        <td>{{ item.datumZaposlenja }}</td>
+        <td>{{ item.jmbg }}</td>
+        <td>{{ item.nutricionistickiCentar }}</td>
+        <td>{{ item.oblastNutricionizma }}</td>
+        <td><button type="submit"  class="btn btn-primary" style="background-color: red;" (click)="IzbrisiNutricionistu(item)" >Izbrisi nalog</button></td>
+        <td><button type="submit"  class="btn btn-primary" (click)="SelectNutricionistu(item)" >Update nalog</button></td>
+    </tr>
+    </tbody>
+</table>

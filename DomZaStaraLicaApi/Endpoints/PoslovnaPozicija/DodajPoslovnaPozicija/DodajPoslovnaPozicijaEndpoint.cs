@@ -20,7 +20,7 @@ namespace DomZaStaraLicaApi.Endpoints.PoslovnaPozicija.DodajPoslovnaPozicija
             {
                 OpisPosla=request.OpisPosla,
                 BrojSati=request.BrojSati,
-                Zvanje=request.Zvanje,
+                NazivPozicije=request.Zvanje,
             };
              _applicationDbContext.PoslovnaPozicija.AddAsync(newObj);
             await _applicationDbContext.SaveChangesAsync();

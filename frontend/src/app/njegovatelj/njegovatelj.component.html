@@ -12,7 +12,7 @@
         <div class="col">
             <label>JMBG</label>
             <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="njegovatelj.jmbg"
-                   (input)="validateInput()">
+                   (input)="validateInput(njegovatelj.jmbg)">
             <p *ngIf="isValid" style="color: green;">Valid Input</p>
             <p *ngIf="!isValid" style="color: red;">Invalid Input</p>
         </div>
