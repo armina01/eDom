@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DomZaStaraLicaApi.Endpoints.Nutricionista.UpdateNutricionistu
 {
+    [Route("/updateNutricionistu")]
     public class UpdateNutricionistuEndpoint:MyBaseEndpoint<UpdateNutricionistuRequest,UpdateNutricionistuResponse>
     {
         private readonly ApplicationDbContext _applicationDbContext;
@@ -11,7 +12,7 @@ namespace DomZaStaraLicaApi.Endpoints.Nutricionista.UpdateNutricionistu
         {
             _applicationDbContext = applicationDbContext;
         }
-        [HttpDelete("/updateNutricionistu")]
+        [HttpPost]
         public override async Task<UpdateNutricionistuResponse> Obradi(UpdateNutricionistuRequest request)
         {
             var Nutricionista=_applicationDbContext.Nutricionista.FirstOrDefault(
