@@ -1,9 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DomZaStaraLicaApi.Endpoints.Nutricionista.DodajNutricionistu
+﻿namespace DomZaStaraLicaApi.Endpoints.Nutricionista.GetAllNutricioniste
 {
-    public class DodajNutricionistuRequest
+    public class GetAllNutricionisteResponse
     {
+        public List<GetAllNutricionisteResponseNutricioniste> Nutricionisti { get; set; }
+    }
+    public class GetAllNutricionisteResponseNutricioniste
+    {
+        public int ZaposlenikId { get; set; }
         public string ImePrezime { get; set; }
         public string JMBG { get; set; }
         public DateTime DatumRodjenja { get; set; }

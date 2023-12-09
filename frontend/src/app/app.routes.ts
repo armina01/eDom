@@ -8,6 +8,7 @@ import {PoslovnaPozicijaComponent} from "./poslovna-pozicija/poslovna-pozicija.c
 import {NjegovateljComponent} from "./njegovatelj/njegovatelj.component";
 import {DoktorComponent} from "./doktor/doktor.component";
 
+
 export const routes: Routes = [
   {path: 'header', component: HeaderComponent},
   {path: 'pregledKorisnikaDoma', component: PregledKorisnikaDomaComponent},
@@ -16,7 +17,8 @@ export const routes: Routes = [
   {path: 'korisnickiNalog', component:KorisnickiNalogComponent},
   {path: 'poslovnaPozicija', component:PoslovnaPozicijaComponent},
   {path:'njegovatelj',component:NjegovateljComponent},
-  {path:'doktor',component:DoktorComponent}
-];
+  {path:'doktor',component:DoktorComponent},
+]
+
 
 
