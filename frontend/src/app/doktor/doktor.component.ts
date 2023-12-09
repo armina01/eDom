@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormsModule} from "@angular/forms";
 import {DoktorRequest} from "./doktorRequest";
-import {KorisnikRequest} from "../korisnik/korisnikRequest";
 import {map, Observable} from "rxjs";
 import {
   GetAllPoslovnaPozicijaResponse,
@@ -11,7 +10,6 @@ import {
 import {MyConfig} from "../my-config";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {GetAllNjegovateljiResponse} from "../njegovatelj/getAllNjegovateljiResponse";
 import {DoktorGetAllResponse, DoktorGetAllResponseDoktor} from "./doktorGetAllResponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {DoktorUpdateRequest} from "./doktorUpdateRequest";

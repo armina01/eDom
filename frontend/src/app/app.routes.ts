@@ -7,6 +7,7 @@ import {KorisnikComponent} from "./korisnik/korisnik.component";
 import {PoslovnaPozicijaComponent} from "./poslovna-pozicija/poslovna-pozicija.component";
 import {NjegovateljComponent} from "./njegovatelj/njegovatelj.component";
 import {DoktorComponent} from "./doktor/doktor.component";
+import {FizioterapeutComponent} from "./fizioterapeut/fizioterapeut.component";
 
 
 export const routes: Routes = [
@@ -18,6 +19,7 @@ export const routes: Routes = [
   {path: 'poslovnaPozicija', component:PoslovnaPozicijaComponent},
   {path:'njegovatelj',component:NjegovateljComponent},
   {path:'doktor',component:DoktorComponent},
+  {path:'fizioterapeut',component:FizioterapeutComponent}
 ]
 
 

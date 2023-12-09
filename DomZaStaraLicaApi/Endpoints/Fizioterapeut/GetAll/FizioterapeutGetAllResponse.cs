@@ -1,7 +1,13 @@
-﻿namespace DomZaStaraLicaApi.Endpoints.Fizioterapeut.Update
+﻿namespace DomZaStaraLicaApi.Endpoints.Fizioterapeut.GetAll
 {
-    public class FizioterapeutUpdateRequest
+    public class FizioterapeutGetAllResponse
     {
+        public List<FizioterapeutGetAllResponseFizioterapeut> Fizioterapeuti { get; set; }
+    }
+
+
+    public class FizioterapeutGetAllResponseFizioterapeut {
+
         public int ZaposlenikId { get; set; }
         public string ImePrezime { get; set; }
         public string JMBG { get; set; }
