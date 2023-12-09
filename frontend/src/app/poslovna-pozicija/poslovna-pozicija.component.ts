@@ -21,7 +21,7 @@ export class PoslovnaPozicijaComponent {
   public poslovnaPozicijaRequest: PoslovnaPozicijaRequest={
     opisPosla:"",
     brojSati:0,
-    zvanje:""
+    nazivPozicije:""
   }
   DodajPoslovnuPoziciju() {
     let url = MyConfig.adresa_servera + `/dodajPoslovnuPoziciju`;

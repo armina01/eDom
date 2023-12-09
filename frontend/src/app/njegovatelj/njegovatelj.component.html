@@ -1,5 +1,5 @@
 
-<label for="comboBox">Izaberite poslovnu poziciju:</label>
+<label for="comboBox2">Izaberite poslovnu poziciju:</label>
 <select id="comboBox2"  [ngModelOptions]="{standalone: true}" [(ngModel)]="njegovatelj.poslovnaPozicijaId" (change)="onChange()">
     <option *ngFor="let option of poslovnaPozicija" [ngValue]="option.poslovnaPozicijaId">{{ option.poslovnaPozicijaId }}-{{ option.opisPosla }}</option>
 </select>

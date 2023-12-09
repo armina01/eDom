@@ -1,19 +1,29 @@
 
 <h2>Dodavanje korisnika doma</h2>
-<label >Ime i prezime </label>
-<input class="form-control" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.imePrezime" >
-<label>JMBG</label>
-<input class="form-control" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.jmbg">
-<label >Datum rodjenja</label>
-<input type="date" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.datumRodjenja">
-<label >Broj sobe</label>
-<input type="number" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.brojSobe">
-<label>Opština</label>
-<select [(ngModel)]="korisnikRequest.opstinaID">
-  <option *ngFor="let option of options" [value]="option.opstinaID">{{ option.nazivOpstine }}</option>
-</select>
 
-<div>  <button type="submit" class="btn btn-primary mb-2" (click)="Dodaj()">Dodaj</button>
-</div>
-
+<form #KorisnikDomaForma="ngForm" >
+  <div>
+    <label>Ime i prezime</label>
+    <input type="text" name="imePrezime" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.imePrezime">
+  </div>
+  <div>
+    <label>JMBG</label>
+    <input type="text" name="jmbg" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.jmbg">
+  </div>
+  <div>
+    <label>Datum rodjenja</label>
+    <input type="date" name="datumRodjenja" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.datumRodjenja">
+  </div>
+  <div>
+    <label>Broj sobe</label>
+    <input type="number" name="brojSobe" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.brojSobe">
+  </div>
+  <div class="dropdown">
+    <label>Opština</label>
+    <select class="btn btn-secondary dropdown-toggle" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.opstinaID">
+      <option class="dropdown-item" *ngFor="let option of options" [value]="option.opstinaID">{{ option.nazivOpstine }}</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary mb-2" (click)="Dodaj()">Dodaj</button>
+</form>
 

@@ -6,5 +6,5 @@ export interface GetAllPoslovnaPozicijaResponsePoslovnaPozicija {
     poslovnaPozicijaId: number;
     opisPosla: string;
     brojSati: number;
-    zvanje: string;
+    nazivPozicije: string;
 }
