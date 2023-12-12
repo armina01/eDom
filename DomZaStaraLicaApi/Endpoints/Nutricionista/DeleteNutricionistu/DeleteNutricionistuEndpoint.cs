@@ -14,7 +14,7 @@ namespace DomZaStaraLicaApi.Endpoints.Nutricionista.DeleteNutricionistu
             _applicationDbContext = applicationDbContext;
         }
         [HttpDelete]
-        public override async Task<DeleteNutricionistuResponse> Obradi(DeleteNutricionistuRequest request)
+        public override async Task<DeleteNutricionistuResponse> Obradi([FromQuery]DeleteNutricionistuRequest request)
         {
             var nutricionista = _applicationDbContext.Nutricionista.FirstOrDefault(
                 x => x.ZaposlenikId == request.ZaposlenikId);

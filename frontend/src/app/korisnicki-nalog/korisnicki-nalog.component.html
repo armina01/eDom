@@ -1,0 +1,65 @@
+<form>
+    <div class="form-group">
+        <label for="exampleFormControlInput1">Korisnicko ime</label>
+        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com"
+               [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.korisnickoIme">
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlInput1">Lozinka</label>
+        <input  class="form-control" id="exampleFormControlInput2"
+        [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.lozinka">
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1"
+        [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.jeNjegovatelj">
+        <label class="form-check-label" for="defaultCheck1">
+            Njegovatelj
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2"
+        [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.jeDoktor">
+        <label class="form-check-label" for="defaultCheck2">
+            Doktor
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="defaultCheck3"
+        [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.jeFizioterapeut">
+        <label class="form-check-label" for="defaultCheck3">
+            Fizioterapeut
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="defaultCheck4"
+        [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.jeNutricionista">
+        <label class="form-check-label" for="defaultCheck4">
+            Nutricionista
+        </label>
+    </div>
+    <button type="submit" class="btn btn-primary" (click)="AddKorisnickiNalog()">Submit</button>
+    <br>
+    <button type="submit" class="btn btn-primary" (click)="GetAllKorisnickiNalog()">Prikazi sve korisnicke naloge</button>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Korisnicko Ime</th>
+            <th>Doktor</th>
+            <th>Fizioterapeut</th>
+            <th>Njegovatelj</th>
+            <th>Nutricionista</th>
+            <th>Obrisi korisnika</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of getFiltriraniKorisnickiNalog()">
+            <td>{{ item.korisnickoIme }}</td>
+            <td>{{ item.jeDoktor }}</td>
+            <td>{{ item.jeFizioterapeut }}</td>
+            <td>{{ item.jeNjegovatelj }}</td>
+            <td>{{ item.jeNutricionista }}</td>
+            <td><button type="submit"  class="btn btn-primary" (click)="ObrisiKorisnickiNalog(item)">Izbrisi nalog</button></td>
+        </tr>
+        </tbody>
+    </table>
+</form>

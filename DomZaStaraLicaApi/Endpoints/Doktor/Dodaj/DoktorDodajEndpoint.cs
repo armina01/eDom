@@ -19,6 +19,7 @@ namespace DomZaStaraLicaApi.Endpoints.Doktor.Dodaj
         {
             var newObj = new Data.Models.Doktor
             {
+               
                 ImePrezime = request.ImePrezime,
                 JMBG = request.JMBG,
                 DatumRodjenja = request.DatumRodjenja,

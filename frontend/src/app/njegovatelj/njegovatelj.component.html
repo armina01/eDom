@@ -1,0 +1,72 @@
+
+<label for="comboBox2">Izaberite poslovnu poziciju:</label>
+<select id="comboBox2"  [ngModelOptions]="{standalone: true}" [(ngModel)]="njegovatelj.poslovnaPozicijaId" (change)="onChange()">
+    <option *ngFor="let option of poslovnaPozicija" [ngValue]="option.poslovnaPozicijaId">{{ option.poslovnaPozicijaId }}-{{ option.opisPosla }}</option>
+</select>
+<form>
+    <div class="row">
+        <div class="col">
+            <label>Ime i prezime</label>
+            <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="njegovatelj.imePrezime" >
+        </div>
+        <div class="col">
+            <label>JMBG</label>
+            <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="njegovatelj.jmbg"
+                   (input)="validateInput(njegovatelj.jmbg)">
+            <p *ngIf="isValid" style="color: green;">Valid Input</p>
+            <p *ngIf="!isValid" style="color: red;">Invalid Input</p>
+        </div>
+    </div>
+</form>
+<label for="birthday">Datum rodjenja:</label>
+<input type="date" id="birthday" placeholder=value [ngModelOptions]="{standalone: true}" [(ngModel)]="njegovatelj.datumRodjenja" >
+<label for="birthday">Datum zaposlenja:</label>
+<input type="date" id="hiredate" [ngModelOptions]="{standalone: true}" [(ngModel)]="njegovatelj.datumZaposlenja" >
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" id="gridCheck" [ngModelOptions]="{standalone: true}" [(ngModel)]="njegovatelj.isMedicinskiTehnicar" >
+    <label class="form-check-label" for="gridCheck" >
+       Medicinski tehnicar
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" id="gridCheck2" [ngModelOptions]="{standalone: true}" [(ngModel)]="njegovatelj.isNjegovatelj" >
+    <label class="form-check-label" for="gridCheck">
+        Njegovatelj
+    </label>
+</div>
+<div class="col">
+    <label>broj pacijenata</label>
+    <input type="number" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="njegovatelj.brojPacijenata"  >
+</div>
+<div><label style="color: red;" *ngIf="showError===1">Niste ispunili sva polja!</label></div>
+<button type="submit" class="btn btn-primary" (click)="DodajNjegovatelja()">Dodaj</button>
+<button type="submit" class="btn btn-primary" (click)="GetAllNjegovatelji()">Pregledaj njegovatelje</button>
+<button type="submit" class="btn btn-primary" (click)="UpdateNjegovatelj()">Update</button>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Korisnicko Ime</th>
+        <th>Doktor</th>
+        <th>Fizioterapeut</th>
+        <th>Njegovatelj</th>
+        <th>Nutricionista</th>
+        <th>Obrisi korisnika</th>
+        <th>Obrisi korisnika</th>
+        <th>Obrisi korisnika</th>
+        <th>Update korisnika</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of getAllNjegovatelji()">
+        <td>{{ item.imePrezime }}</td>
+        <td>{{ item.datumRodjenja }}</td>
+        <td>{{ item.datumZaposlenja }}</td>
+        <td>{{ item.jmbg }}</td>
+        <td>{{ item.brojPacijenata }}</td>
+        <td>{{ item.isMedicinskiTehnicar }}</td>
+        <td>{{ item.isNjegovatelj }}</td>
+        <td><button type="submit"  class="btn btn-primary" style="background-color: red;" (click)="IzbrisiNjegovatelja(item)" >Izbrisi nalog</button></td>
+        <td><button type="submit"  class="btn btn-primary" (click)="SelectNjegovatelja(item)" >Update nalog</button></td>
+    </tr>
+    </tbody>
+</table>

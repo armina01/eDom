@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using DomZaStaraLicaApi.Data;
-using DomZaStaraLicaApi.Helper;
-
 var builder = WebApplication.CreateBuilder(args);
-
+using Microsoft.AspNetCore.Builder;
+using static System.Net.Mime.MediaTypeNames;
 // Add services to the container.
 var config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", false)
@@ -37,8 +36,13 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseAuthentication();
 
-app.MapControllers();
+app.UseCors(
+    options => options
+        .SetIsOriginAllowed(x => _ = true)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+); //This needs to set everything allowed
 
 app.Run();

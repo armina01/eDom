@@ -16,7 +16,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.DeleteKorisnickiNalog
             _applicationDbContext = applicationDbContext;
         }
         [HttpDelete]
-        public override async Task<DeleteKorisnickiNalogResponse> Obradi(DeleteKorisnickiNalogRequest request)
+        public override async Task<DeleteKorisnickiNalogResponse> Obradi([FromQuery]DeleteKorisnickiNalogRequest request)
         {
             var nalog = _applicationDbContext.KorisnickiNalog.FirstOrDefault(
                x => x.NalogId == request.NalogId);
