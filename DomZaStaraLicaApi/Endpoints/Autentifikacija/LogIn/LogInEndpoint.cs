@@ -42,7 +42,7 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
             };
             _applicationDbContext.Add(noviToken);
              await _applicationDbContext.SaveChangesAsync();
-            return new LogInResponse { LogInInformacija = new MyAuthService.LoginInformacije(noviToken) };
+            return new LogInResponse { LogInInformacija = new MyAuthInfo(noviToken) };
         }
         
     }
