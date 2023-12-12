@@ -1,0 +1,58 @@
+<h2>Dodavanje fizioterapeuta</h2>
+
+<form #FizioterapeutForma="ngForm" >
+  <div>
+    <label>Ime i prezime</label>
+    <input type="text" name="imePrezime" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.imePrezime">
+  </div>
+  <div>
+    <label>JMBG</label>
+    <input type="text" name="jmbg" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.jmbg">
+  </div>
+  <div>
+    <label>Datum rodjenja</label>
+    <input type="date" name="datumRodjenja" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.datumRodjenja">
+  </div>
+  <div>
+    <label>Datum zaposlenja</label>
+    <input type="date" name="datumZaposlenja" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.datumZaposlenja">
+  </div>
+  <div>
+    <label>Oblast fizijatrije</label>
+    <input type="text" name="oblastMedicine" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.oblastFizijatrije">
+  </div>
+  <div>
+    <label for="cmbPozicija">Izaberite poslovnu poziciju:</label>
+    <select id="cmbPozicija"  [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.poslovnaPozicijaId">
+      <option *ngFor="let option of poslovnePozicije" [ngValue]="option.poslovnaPozicijaId">{{ option.nazivPozicije }}</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary mb-2" (click)="Dodaj()">Dodaj</button>
+  <button type="submit" class="btn btn-primary mb-2" (click)="Prikazi()">Prikaži</button>
+  <button type="submit" class="btn btn-primary mb-2" (click)="Update()">Update</button>
+</form>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>ImePrezime</th>
+    <th>Datum rodjenja</th>
+    <th>Datum zaposlenja</th>
+    <th>JMBG</th>
+    <th>Naziv klinike</th>
+    <th>Oblast medicine</th>
+    <th>Specijalizacija</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of getAllFizioterapeuti()">
+    <td>{{ item.imePrezime }}</td>
+    <td>{{ item.datumRodjenja }}</td>
+    <td>{{ item.datumZaposlenja }}</td>
+    <td>{{ item.jmbg }}</td>
+    <td>{{ item.oblastFizijatrije}}</td>
+    <td><button type="submit"  class="btn btn-primary" style="background-color: red;" (click)="IzbrisiFizioterapeuta(item)" >Izbriši</button></td>
+    <td><button type="submit"  class="btn btn-primary" (click)="Odaberi(item)" >Update</button></td>
+  </tr>
+  </tbody>
+</table>

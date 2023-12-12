@@ -6,7 +6,9 @@ import {KorisnickiNalogComponent} from "./korisnicki-nalog/korisnicki-nalog.comp
 import {KorisnikComponent} from "./korisnik/korisnik.component";
 import {PoslovnaPozicijaComponent} from "./poslovna-pozicija/poslovna-pozicija.component";
 import {NjegovateljComponent} from "./njegovatelj/njegovatelj.component";
-import{NutricionistaComponent} from "./nutricionista/nutricionista.component";
+import {DoktorComponent} from "./doktor/doktor.component";
+import {FizioterapeutComponent} from "./fizioterapeut/fizioterapeut.component";
+
 
 export const routes: Routes = [
   {path: 'header', component: HeaderComponent},
@@ -16,7 +18,9 @@ export const routes: Routes = [
   {path: 'korisnickiNalog', component:KorisnickiNalogComponent},
   {path: 'poslovnaPozicija', component:PoslovnaPozicijaComponent},
   {path:'njegovatelj',component:NjegovateljComponent},
-  {path:'nutricionista',component:NutricionistaComponent}
-];
+  {path:'doktor',component:DoktorComponent},
+  {path:'fizioterapeut',component:FizioterapeutComponent}
+]
+
 
 

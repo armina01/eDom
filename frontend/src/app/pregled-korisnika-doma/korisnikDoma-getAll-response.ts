@@ -8,6 +8,7 @@ export interface KorisnikDomaGetAllResponseKorisnik{
   jmbg: string
   datumRodjenja: string
   brojSobe: number
+  opstinaID:number,
   opstinaNaziv: string
   opstinaBroj: number
 }

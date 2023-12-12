@@ -1,5 +1,34 @@
 <h1>Pregled svih korisnika doma</h1>
 <h5>Pretraga</h5><input [(ngModel)]="pretragaNaziv">
+
+<div *ngIf="odabraniKorisnik!=null">
+
+    <div>
+      <label>Ime i prezime</label>
+      <input type="text" name="imePrezime" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.imePrezime">
+    </div>
+    <div>
+      <label>JMBG</label>
+      <input type="text" name="jmbg" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.jmbg">
+    </div>
+    <div>
+      <label>Datum rodjenja</label>
+      <input type="date" name="datumRodjenja" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.datumRodjenja">
+    </div>
+    <div>
+      <label>Broj sobe</label>
+      <input type="number" name="brojSobe" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.brojSobe">
+    </div>
+    <div>
+      <label>Opština</label>
+      <select [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.opstinaID">
+        <option name="opstina" *ngFor="let option of options" [value]="option.opstinaID">{{ option.nazivOpstine }}</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary mb-2" (click)="UpdateKorisnika()">Update</button>
+
+</div>
+
 <table class="table table-striped">
   <thead>
   <tr>
@@ -9,7 +38,6 @@
     <th>Broj sobe</th>
     <th>Naziv opštine</th>
     <th>Poštanski broj</th>
-
   </tr>
   </thead>
   <tbody>
@@ -20,7 +48,8 @@
     <td>{{ item.brojSobe }}</td>
     <td>{{ item.opstinaNaziv}}</td>
     <td>{{ item.opstinaBroj}}</td>
-
+    <td><button type="submit"  class="btn btn-primary" (click)="ObrisiKorisnika(item)">Izbriši korisnika</button></td>
+    <td><button type="submit"  class="btn btn-primary" (click)="OdaberiKorisnika(item)">Update korisnika</button></td>
   </tr>
   </tbody>
 </table>

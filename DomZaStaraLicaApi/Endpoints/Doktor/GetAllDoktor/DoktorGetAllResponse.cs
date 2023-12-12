@@ -1,7 +1,15 @@
-﻿namespace DomZaStaraLicaApi.Endpoints.Doktor.Dodaj
+﻿using DomZaStaraLicaApi.Endpoints.Njegovatelj.GetAllNjegovatelji;
+
+namespace DomZaStaraLicaApi.Endpoints.Doktor.GetAllDoktor
 {
-    public class DoktorDodajRequest
+    public class DoktorGetAllResponse
     {
+        public List<DoktorGetAllResponseDoktor> Doktori { get; set; }
+    }
+
+    public class DoktorGetAllResponseDoktor
+    {
+        public int ZaposlenikId { get; set; }
         public string ImePrezime { get; set; }
         public string JMBG { get; set; }
         public DateTime DatumRodjenja { get; set; }

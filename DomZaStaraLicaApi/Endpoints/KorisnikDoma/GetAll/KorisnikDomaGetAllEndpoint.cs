@@ -27,6 +27,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnikDoma.GetAll
                     DatumRodjenja = x.DatumRodjenja,
                     JMBG = x.JMBG,
                     BrojSobe = x.BrojSobe,
+                    OpstinaID = x.OpstinaID,
                     OpstinaNaziv = x.Opstina.NazivOpstine,
                     OpstinaBroj = x.Opstina.PostanskiBroj
                 })

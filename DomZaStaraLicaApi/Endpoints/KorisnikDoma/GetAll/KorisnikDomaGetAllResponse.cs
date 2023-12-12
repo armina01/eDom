@@ -18,6 +18,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnikDoma.GetAll
         public string JMBG { get; set; }
         public DateTime DatumRodjenja { get; set; }
         public int BrojSobe { get; set; }
+        public int OpstinaID { get; set; }
         public string OpstinaNaziv { get; set; }
         public int OpstinaBroj { get; set; }
     }
