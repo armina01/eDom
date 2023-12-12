@@ -7,6 +7,7 @@ using System.Threading;
 
 namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.DeleteKorisnickiNalog
 {
+    [Route("/izbrisiKorisnickiNalog")]
     public class DeleteKorisnickiNalogEndpoint : MyBaseEndpoint<DeleteKorisnickiNalogRequest, DeleteKorisnickiNalogResponse>
     {
         private readonly ApplicationDbContext _applicationDbContext;
@@ -14,7 +15,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.DeleteKorisnickiNalog
         {
             _applicationDbContext = applicationDbContext;
         }
-        [HttpDelete("/izbrisiKorisnickiNalog/{KorisnikId}")]
+        [HttpDelete]
         public override async Task<DeleteKorisnickiNalogResponse> Obradi(DeleteKorisnickiNalogRequest request)
         {
             var nalog = _applicationDbContext.KorisnickiNalog.FirstOrDefault(
