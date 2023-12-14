@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Inject, Injector} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MyConfig} from "../my-config";
 import {
@@ -6,7 +6,7 @@ import {
   GetAllKorisnickiNalogResponseKorisnickiNalog
 } from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
 import {map, Observable} from "rxjs";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClient, HttpHandler, HttpClientModule, HttpParams} from "@angular/common/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {
   GetAllPoslovnaPozicijaResponse,
@@ -17,18 +17,23 @@ import {GetAllNjegovateljaResponseNjegovatelj, GetAllNjegovateljiResponse} from 
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import{jePrazno} from "../Helper/Provjera";
-import {GetAllZaposlenikResponse, GetAllZaposlenikResponseZaposlenik} from "./getAllZaposleniciResponse";
-import {UpdateNjegovateljRequest} from "./updateNjegovateljRequest";
+import {MY_AUTH_SERVICE_TOKEN, MyAuthService} from "../Services/MyAuthService";
+import {Router} from "@angular/router";
+import {MyAuthInterceptor} from "../Helper/MyAuthInterceptor";
 
 @Component({
   selector: 'app-njegovatelj',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, FormsModule, HttpClientModule],
+  providers: [MyAuthService,{ provide: MY_AUTH_SERVICE_TOKEN, useClass: MyAuthService }],
   templateUrl: './njegovatelj.component.html',
   styleUrl: './njegovatelj.component.css'
 })
 export class NjegovateljComponent {
+  constructor(private httpClient: HttpClient,private dialog: MatDialog
+    ,private router: Router,@Inject(MY_AUTH_SERVICE_TOKEN) private _myAuthService: MyAuthService) {
 
+  }
   isValid: boolean = false;
 
   validateInput(data:string) {
@@ -36,7 +41,7 @@ export class NjegovateljComponent {
     this.isValid = regex.test(data);
   }
   showError: number=0;
-  constructor(private httpClient: HttpClient,private dialog: MatDialog) {}
+
 
   public poslovnaPozicija: GetAllPoslovnaPozicijaResponsePoslovnaPozicija[] = [];
   GetAllPoslovnaPozicija():Observable<GetAllPoslovnaPozicijaResponsePoslovnaPozicija[]> {
@@ -70,12 +75,17 @@ export class NjegovateljComponent {
     brojPacijenata:0,
   }
   ngOnInit() {
-
+    if(this._myAuthService.jeAdmin())
+    {
+      console.log("Okay")
+    }else {
+      console.log(this._myAuthService.getAuthorizationToken())
+      this.router.navigate(["/login"])
+    }
 
     this.GetAllPoslovnaPozicija().subscribe((data)=>{
       this.poslovnaPozicija=data;
     })
-
   }
   onChange() {
       console.log('Selected Option:', this.njegovatelj.nalogId);
@@ -98,6 +108,8 @@ export class NjegovateljComponent {
   }
   public allNjegovatelji: GetAllNjegovateljaResponseNjegovatelj[]=[];
   GetAllNjegovatelji() {
+    const authToken = this._myAuthService.getAuthorizationToken();
+    console.log('Authentication Token:', authToken);
     let url: string = MyConfig.adresa_servera + `/getAllNjegovatelji`;
     this.httpClient.get<GetAllNjegovateljiResponse>(url).subscribe(x => {
       this.allNjegovatelji = x.njegovatelji;

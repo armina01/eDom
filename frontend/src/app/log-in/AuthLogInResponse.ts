@@ -1,4 +1,8 @@
-export interface AuthLogInResponse {
+
+export interface AuthLogInResponse{
+  logInInformacija: AuthLogIn
+}
+export interface AuthLogIn {
     autentifikacijaToken: AutentifikacijaToken
     isLogiran: boolean
 }

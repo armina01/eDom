@@ -8,7 +8,7 @@ import {
   GetAllPoslovnaPozicijaResponsePoslovnaPozicija
 } from "../poslovna-pozicija/getAllPoslovnaPozicija";
 import {MyConfig} from "../my-config";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpClientModule, HttpParams} from "@angular/common/http";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DoktorGetAllResponse, DoktorGetAllResponseDoktor} from "./doktorGetAllResponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
@@ -17,7 +17,7 @@ import {DoktorUpdateRequest} from "./doktorUpdateRequest";
 @Component({
   selector: 'app-doktor',
   standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule,HttpClientModule],
   templateUrl: './doktor.component.html',
   styleUrl: './doktor.component.css'
 })

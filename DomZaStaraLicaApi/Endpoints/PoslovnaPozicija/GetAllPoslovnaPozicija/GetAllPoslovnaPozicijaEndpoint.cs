@@ -11,15 +11,18 @@ namespace DomZaStaraLicaApi.Endpoints.PoslovnaPozicija.GetAllPoslovnaPozicija
         GetAllPoslovnaPozicijaResponse>
         {
             private readonly ApplicationDbContext _applicationDbContext;
-
-            public GetAllPoslovnaPozicijaEndpoint(ApplicationDbContext applicationDbContext)
+        private readonly MyAuthService _authService;
+        public GetAllPoslovnaPozicijaEndpoint(ApplicationDbContext applicationDbContext,
+                   MyAuthService authService)
             {
                 _applicationDbContext = applicationDbContext;
-            }
+                  _authService = authService;
+        }
             [HttpGet]
             public override async Task<GetAllPoslovnaPozicijaResponse> Obradi([FromQuery] GetAllPoslovnaPozicijaRequest request)
             {
-                var poslovnaPozicija = await _applicationDbContext.PoslovnaPozicija
+               
+            var poslovnaPozicija = await _applicationDbContext.PoslovnaPozicija
                 .OrderByDescending(x => x.PoslovnaPozicijaId)
                 .Select(x => new GetAllPoslovnaPozicijaResponsePoslovnaPozicija()
                 {

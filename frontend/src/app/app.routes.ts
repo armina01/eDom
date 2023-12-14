@@ -8,6 +8,13 @@ import {PoslovnaPozicijaComponent} from "./poslovna-pozicija/poslovna-pozicija.c
 import {NjegovateljComponent} from "./njegovatelj/njegovatelj.component";
 import {DoktorComponent} from "./doktor/doktor.component";
 import {FizioterapeutComponent} from "./fizioterapeut/fizioterapeut.component";
+import{LogInComponent} from "./log-in/log-in.component";
+import {HomepageComponent} from "./homepage/homepage.component";
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
+import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
+import {MyAuthService} from "./Services/MyAuthService";
+import {FormsModule} from "@angular/forms";
+
 
 
 export const routes: Routes = [
@@ -19,7 +26,9 @@ export const routes: Routes = [
   {path: 'poslovnaPozicija', component:PoslovnaPozicijaComponent},
   {path:'njegovatelj',component:NjegovateljComponent},
   {path:'doktor',component:DoktorComponent},
-  {path:'fizioterapeut',component:FizioterapeutComponent}
+  {path:'fizioterapeut',component:FizioterapeutComponent},
+  {path:'login',component:LogInComponent},
+  {path:'home',component:HomepageComponent}
 ]
 
 
