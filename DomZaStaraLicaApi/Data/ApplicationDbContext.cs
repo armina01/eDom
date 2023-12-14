@@ -6,6 +6,7 @@ namespace DomZaStaraLicaApi.Data
     public class ApplicationDbContext : DbContext
     {
         public DbSet<KorisnikDoma> KorisnikDoma { get; set; }
+
         public DbSet<Opstina> Opstina { get; set; }
         public DbSet<KorisnickiNalog> KorisnickiNalog { get; set; }
         public DbSet<PoslovnaPozicija> PoslovnaPozicija { get; set; }
@@ -15,6 +16,8 @@ namespace DomZaStaraLicaApi.Data
         public DbSet<Nutricionista> Nutricionista { get; set; }
         public DbSet<Fizioterapeut> Fizioterapeut { get; set; }
         public DbSet<AuthToken> AuthToken { get; set; }
+
+
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DomZaStaraLicaApi.Endpoints.Njegovatelj.DeleteNjegovatlja
 {
+    [Route("/izbrisiNjegovatelja")]
     public class DeleteNjegovateljaEndpoint:MyBaseEndpoint<DeleteNjegovateljaRequest,
         DeleteNjegovateljaResponse>
     {
@@ -12,8 +13,8 @@ namespace DomZaStaraLicaApi.Endpoints.Njegovatelj.DeleteNjegovatlja
         {
             _applicationDbContext = applicationDbContext;
         }
-        [HttpDelete("/izbrisiNjegovatelja")]
-        public override async Task<DeleteNjegovateljaResponse> Obradi(DeleteNjegovateljaRequest request)
+        [HttpDelete]
+        public override async Task<DeleteNjegovateljaResponse> Obradi([FromQuery]DeleteNjegovateljaRequest request)
         {
             var Njegovatelj = _applicationDbContext.Njegovatelj.FirstOrDefault(
                 x => x.ZaposlenikId == request.NjegovateljId);

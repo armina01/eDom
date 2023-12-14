@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomZaStaraLicaApi.Data.Models
 {
@@ -7,6 +8,7 @@ namespace DomZaStaraLicaApi.Data.Models
         public string NazivKlinike { get; set; }
         public string OblastMedicine { get; set; }
         public string Specijalizacija { get; set; }
+        
 
     }
 }

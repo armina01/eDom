@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DomZaStaraLicaApi.Endpoints.Nutricionista.DeleteNutricionistu
 {
+    [Route("/izbrisiNutricionistu")]
     public class DeleteNutricionistuEndpoint:MyBaseEndpoint<DeleteNutricionistuRequest,
         DeleteNutricionistuResponse>
     {
@@ -12,8 +13,8 @@ namespace DomZaStaraLicaApi.Endpoints.Nutricionista.DeleteNutricionistu
         {
             _applicationDbContext = applicationDbContext;
         }
-        [HttpDelete("/izbrisiNutricionistu")]
-        public override async Task<DeleteNutricionistuResponse> Obradi(DeleteNutricionistuRequest request)
+        [HttpDelete]
+        public override async Task<DeleteNutricionistuResponse> Obradi([FromQuery]DeleteNutricionistuRequest request)
         {
             var nutricionista = _applicationDbContext.Nutricionista.FirstOrDefault(
                 x => x.ZaposlenikId == request.ZaposlenikId);
