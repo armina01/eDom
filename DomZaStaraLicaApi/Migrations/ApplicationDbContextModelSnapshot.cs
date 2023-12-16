@@ -149,11 +149,11 @@ namespace DomZaStaraLicaApi.Migrations
                     b.Property<int>("BrojSati")
                         .HasColumnType("int");
 
-                    b.Property<string>("OpisPosla")
+                    b.Property<string>("NazivPozicije")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Zvanje")
+                    b.Property<string>("OpisPosla")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

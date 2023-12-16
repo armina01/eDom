@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
 {
+    [Route("/login")]
     public class LogInEndpoint : MyBaseEndpoint<LoginRequest, LogInResponse>
     {
         private readonly ApplicationDbContext _applicationDbContext;
@@ -13,11 +14,11 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
         {
             _applicationDbContext = applicationDbContext;
         }
-        [HttpPost("/login")]
-        public override async Task<LogInResponse> Obradi(LoginRequest request)
+        [HttpPost]
+        public override async Task<LogInResponse> Obradi([FromBody] LoginRequest request)
         {
 
-           var logiraniKorisnik=_applicationDbContext.KorisnickiNalog.FirstOrDefault(
+           var logiraniKorisnik= _applicationDbContext.KorisnickiNalog.FirstOrDefault(
                x=> x.KorisnickoIme==request.KorisnickoIme
                && x.JeAdmin==request.JeAdmin && x.JeFizioterapeut==request.JeFizioterapeut
                && x.JeDoktor==request.JeDoktor && x.JeNjegovatelj==request.JeNjegovatelj &&
@@ -27,10 +28,10 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
                 throw new Exception("nije pronadjen korisnicki nalog za korisnicko ime = " + request.KorisnickoIme);
 
             }
-            if (!BCrypt.Net.BCrypt.EnhancedVerify(request.Lozinka,logiraniKorisnik.Lozinka))
-            {
-                throw new Exception("Lozinka ne odgovara nalogu " + request.KorisnickoIme);
-            }
+            //if (!BCrypt.Net.BCrypt.EnhancedVerify(request.Lozinka,logiraniKorisnik.Lozinka))
+            //{
+            //    throw new Exception("Lozinka ne odgovara nalogu " + request.KorisnickoIme);
+            //}
             string randomString = TokenGenerator.Generate(10);
 
             var noviToken = new AuthToken()
@@ -42,7 +43,7 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
             };
             _applicationDbContext.Add(noviToken);
              await _applicationDbContext.SaveChangesAsync();
-            return new LogInResponse { LogInInformacija = new MyAuthService.LoginInformacije(noviToken) };
+            return new LogInResponse { LogInInformacija = new MyAuthInfo(noviToken) };
         }
         
     }

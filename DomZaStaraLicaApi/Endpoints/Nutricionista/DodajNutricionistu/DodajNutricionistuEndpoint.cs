@@ -29,7 +29,7 @@ namespace DomZaStaraLicaApi.Endpoints.Nutricionista.DodajNutricionistu
             };
             _applicationDbContext.Nutricionista.Add(newObj);
             await _applicationDbContext.SaveChangesAsync();
-            return new DodajNutricionistuResponse { ZaposlenikId = newObj.ZaposlenikId, };
+            return new DodajNutricionistuResponse { ZaposlenikId = newObj.ZaposlenikId };
         }
     }
 }

@@ -1,5 +1,21 @@
 import {RouterModule, Routes} from '@angular/router';
 import {HeaderComponent} from "./header/header.component";
+import {PregledKorisnikaDomaComponent} from "./pregled-korisnika-doma/pregled-korisnika-doma.component";
+import {OpstinaComponent} from "./opstina/opstina.component";
+import {KorisnickiNalogComponent} from "./korisnicki-nalog/korisnicki-nalog.component";
+import {KorisnikComponent} from "./korisnik/korisnik.component";
+import {PoslovnaPozicijaComponent} from "./poslovna-pozicija/poslovna-pozicija.component";
+import {NjegovateljComponent} from "./njegovatelj/njegovatelj.component";
+import {DoktorComponent} from "./doktor/doktor.component";
+import {FizioterapeutComponent} from "./fizioterapeut/fizioterapeut.component";
+import{LogInComponent} from "./log-in/log-in.component";
+import {HomepageComponent} from "./homepage/homepage.component";
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
+import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
+import {MyAuthService} from "./Services/MyAuthService";
+import {FormsModule} from "@angular/forms";
+
+
 
 
 
@@ -25,8 +41,11 @@ export const routes: Routes = [
   {path:'njegovatelj',component:NjegovateljComponent},
   {path:'doktor',component:DoktorComponent},
   {path:'fizioterapeut',component:FizioterapeutComponent},
-  {path:'dijagnoza',component:DijagnozaComponent}
+  {path:'dijagnoza',component:DijagnozaComponent},
+  {path:'login',component:LogInComponent},
+  {path:'home',component:HomepageComponent}
 ]
+
 
 
 
