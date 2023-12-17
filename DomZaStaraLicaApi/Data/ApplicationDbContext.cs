@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DomZaStaraLicaApi.Data.Models;
+using System.Reflection.Emit;
 
 namespace DomZaStaraLicaApi.Data
 {
@@ -16,11 +17,19 @@ namespace DomZaStaraLicaApi.Data
         public DbSet<Nutricionista> Nutricionista { get; set; }
         public DbSet<Fizioterapeut> Fizioterapeut { get; set; }
         public DbSet<AuthToken> AuthToken { get; set; }
-
-
+        public DbSet<VrstaZadatka> VrstaZadatka { get; set; }
+        public DbSet<IntervalZadatka> IntervalZadatka { get; set; }
+        public DbSet<Zadatak> Zadatak { get; set; }
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {
+            
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<KorisnickiNalog>()
+                .HasIndex(e => e.KorisnickoIme)
+                .IsUnique();
         }
     }
 }

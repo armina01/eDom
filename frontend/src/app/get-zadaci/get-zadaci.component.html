@@ -1,0 +1,33 @@
+
+<button class="btn btn-primary" type="submit" (click)="GetAllMedicinskiZadaci()">Pregledaj medicinske zadatke </button>
+<button class="btn btn-primary" type="submit" (click)="GetAllOpstiZadaci()">Pregledaj opste zadatke </button>
+<button class="btn btn-primary" type="submit" (click)="GetAllFizijatrijskiZadaci()">Pregledaj fizijatrijske zadatke </button>
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Opis</th>
+    <th>Status</th>
+  </tr>
+  </thead>
+  <tbody *ngIf="showMedicinski===true">
+  <tr *ngFor="let item of getAllMedicinskizadaci()">
+    <td>{{ item.opis }}</td>
+    <td>{{ item.status }}</td>
+    <td><button type="submit"  class="btn btn-primary" >Izbrisi zadatak</button></td>
+  </tr>
+  </tbody>
+  <tbody  *ngIf="showFizijatrijski===true">
+  <tr *ngFor="let item of getAllFizijatrijskizadaci()">
+    <td>{{ item.opis }}</td>
+    <td>{{ item.status }}</td>
+    <td><button type="submit"  class="btn btn-primary" >Izbrisi zadatak</button></td>
+  </tr>
+  </tbody>
+  <tbody *ngIf="showOpsti===true">
+  <tr *ngFor="let item of getAllOpstizadaci()">
+    <td>{{ item.opis }}</td>
+    <td>{{ item.status }}</td>
+    <td><button type="submit"  class="btn btn-primary" >Izbrisi zadatak</button></td>
+  </tr>
+  </tbody>
+</table>

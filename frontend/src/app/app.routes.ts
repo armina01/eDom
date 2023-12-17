@@ -10,6 +10,7 @@ import {DoktorComponent} from "./doktor/doktor.component";
 import {FizioterapeutComponent} from "./fizioterapeut/fizioterapeut.component";
 import{LogInComponent} from "./log-in/log-in.component";
 import {HomepageComponent} from "./homepage/homepage.component";
+import {GetZadaciComponent} from "./get-zadaci/get-zadaci.component";
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
 import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
 import {MyAuthService} from "./Services/MyAuthService";
@@ -28,7 +29,8 @@ export const routes: Routes = [
   {path:'doktor',component:DoktorComponent},
   {path:'fizioterapeut',component:FizioterapeutComponent},
   {path:'login',component:LogInComponent},
-  {path:'home',component:HomepageComponent}
+  {path:'home',component:HomepageComponent},
+  {path:'pregledzadataka',component:GetZadaciComponent}
 ]
 
 

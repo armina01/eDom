@@ -24,10 +24,10 @@ export class LogInComponent {
   public logInRequest:AuthLogInRequest={
     korisnickoIme:"",
     lozinka:"",
-    jeAdmin: true,
+    jeAdmin: false,
     jeDoktor:false,
     jeFizioterapeut:false,
-    jeNjegovatelj:false,
+    jeNjegovatelj:true,
     jeNutricionista:false
   }
   signIn() {

@@ -29,12 +29,6 @@ export class HomepageComponent {
   constructor(public httpClient:HttpClient, private router: Router,private myAuthService:MyAuthService) { }
 
   ngOnInit() {
-      if(this.myAuthService.jeAdmin())
-      {
-        console.log("Okay")
-      }else {
-        console.log(this.myAuthService.getAuthorizationToken())
-          this.router.navigate(["/login"])
-      }
+
   }
 }
