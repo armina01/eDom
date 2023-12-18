@@ -28,10 +28,10 @@ namespace DomZaStaraLicaApi.Endpoints.Njegovatelj.GetAllNjegovatelji
             }
 
             Data.Models.KorisnickiNalog  korisnickiNalog = _authService.GetAuthInfo().korisnickiNalog!;
-            if (!korisnickiNalog.JeAdmin)
-            {
-                throw new Exception("nema pravo pristupa");
-            }
+            //if (!korisnickiNalog.JeAdmin)
+            //{
+            //    throw new Exception("nema pravo pristupa");
+            //}
             var njegovatelj = await _applicationDbContext.Njegovatelj.Where
                 (x=>x.isMedicinskiTehnicar!=null)
                 .OrderByDescending(x => x.ZaposlenikId)

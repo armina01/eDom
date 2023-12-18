@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DomZaStaraLicaApi.Endpoints.GeneratorPodataka
 {
+    [Route("[controller]/[action]")]
     public class GeneratorPodatakaEndpoint:ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
@@ -18,10 +19,10 @@ namespace DomZaStaraLicaApi.Endpoints.GeneratorPodataka
         {
             Dictionary<string, int> data = new Dictionary<string, int>();
             data.Add("KorisnickiNalog", _dbContext.KorisnickiNalog.Count());
-            data.Add("VrstaZadatka",_dbContext.VrstaZadatka.Count());
+            data.Add("VrstaZadatka", _dbContext.VrstaZadatka.Count());
             return Ok(data);
         }
-        [HttpPost("/generisi")]
+        [HttpPost]
         public ActionResult Generisi()
         {
             var nalog = new List<Data.Models.KorisnickiNalog>();
