@@ -51,18 +51,19 @@
     </thead>
   <tbody>
   <tr *ngFor="let item of getAllOpstizadaci()">
-    <td>{{ item.opis }}</td>
-    <input class="form-check-input" type="checkbox" id="gridCheck8" [(ngModel)]="item.status">
-    <td><button type="submit"  class="btn btn-primary" >Izbrisi zadatak</button></td>
+    <td>{{ item.opis }}
+
+    </td>
+    <input class="form-check-input" type="checkbox" id="gridCheck8" (change)="UpdateOpstiZadatak(item)" [(ngModel)]="item.status">
+    <td><button type="submit"  class="btn btn-primary" (click)="IzbrisiZadatak(item)">Izbrisi zadatak</button></td>
   </tr>
   </tbody>
     <tbody *ngIf="showDodajOpstiZadatak===true">
     <tr>
-      <td><input [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.opis" /></td>
+      <td><input [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.opis" />
+        <label *ngIf="showEmpty">Niste ispunili polje!</label></td>
       <input class="form-check-input" type="checkbox" id="gridCheck2" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.status" >
-      <label class="form-check-label" >
-        Status
-      </label>
+
       <td><button type="submit"  class="btn btn-primary"(click)="DodajOpstiZadatak()" >Dodaj zadatak</button></td>
     </tr>
     </tbody>

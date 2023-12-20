@@ -1,8 +1,8 @@
-import {Component, Inject} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MyConfig} from "../my-config";
 import {GetAllKorisnickiNalogResponse} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {GetAllZadatakResponse, GetAllZadatakResponseZadatak} from "./getAllZadaciResponse";
 import {DodajZadatakRequest} from "./dodajZadatakRequest";
 import {MY_AUTH_SERVICE_TOKEN, MyAuthService} from "../Services/MyAuthService";
@@ -12,6 +12,10 @@ import {AutentifikacijaToken} from "../Helper/autentifikacijToken";
 import {GetAllZaposlenikResponseZaposlenik} from "../Services/getAllZaposleniciResponse";
 import {GetAllNjegovateljaResponseNjegovatelj} from "../njegovatelj/getAllNjegovateljiResponse";
 import {FormsModule} from "@angular/forms";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
+import {DodajZadatakResponse} from "./DodajZadatakResponse";
+import {finalize} from "rxjs";
 
 @Component({
   selector: 'app-get-zadaci',
@@ -22,7 +26,8 @@ import {FormsModule} from "@angular/forms";
 })
 export class GetZadaciComponent {
 
-  constructor(public httpClient: HttpClient,@Inject(MY_AUTH_SERVICE_TOKEN) private _myAuthService: MyAuthService) {
+  constructor(public httpClient: HttpClient,@Inject(MY_AUTH_SERVICE_TOKEN) private _myAuthService: MyAuthService
+  ,private dialog: MatDialog,private cdr: ChangeDetectorRef) {
   }
   showOpsti:boolean=false;
   showFizijatrijski=false;
@@ -41,6 +46,16 @@ export class GetZadaciComponent {
       zaposlenikEditovaoId:null,
       intervalZadatkaId:1,
       vrstaZadatkaId:6
+  }
+  public updateOpstiZadatak:GetAllZadatakResponseZadatak={
+    zadatakId:0,
+    opis:"",
+    status:false,
+    datumPostavke:new Date(),
+    zaposlenikPostavioId: 0,
+    zaposlenikEditovaoId:null,
+    intervalZadatkaId:1,
+    vrstaZadatkaId:6
   }
   GetAllMedicinskiZadaci() {
     this.medicinskiZadatak= this.zadaci.filter(x=>x.vrstaZadatkaId===4)
@@ -74,7 +89,7 @@ export class GetZadaciComponent {
             return null;
         }
     }
-  GetAllZadaci() {
+   GetAllZadaci() {
     let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
     this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
       this.zadaci = x.zadaci.filter(x=>x.intervalZadatkaId===1)
@@ -95,12 +110,77 @@ export class GetZadaciComponent {
   }
   DodajOpstiZadatak()
   {
+    console.log()
     this.dodajOpstiZadatak.zaposlenikPostavioId=this.njegovatelj?.zaposlenikId??null;
     this.DodajZadatak(this.dodajOpstiZadatak);
+
+
   }
+  public showEmpty=false;
   DodajZadatak(data:DodajZadatakRequest){
+    if(data.opis!=="") {
+      console.log("Data",data);
       let url: string = MyConfig.adresa_servera + `/dodajZadatak`;
-      this.httpClient.post(url, data).subscribe(request => {})
+      this.httpClient.post<DodajZadatakResponse>(url, data).subscribe((response:DodajZadatakResponse) => {
+        this.RefreshOpstiZadaci();
+        this.dodajOpstiZadatak.opis="";
+        this.dodajOpstiZadatak.status=false;
+      })
+    }
+    else {
+      this.showEmpty=true;
+    }
   }
 
+  UpdateOpstiZadatak(item: GetAllZadatakResponseZadatak) {
+    this.updateOpstiZadatak.zadatakId=item.zadatakId;
+    this.updateOpstiZadatak.opis=item.opis;
+    this.updateOpstiZadatak.status=item.status;
+    this.updateOpstiZadatak.intervalZadatkaId=item.intervalZadatkaId;
+    this.updateOpstiZadatak.zaposlenikPostavioId=item.zaposlenikPostavioId;
+    this.updateOpstiZadatak.vrstaZadatkaId=item.vrstaZadatkaId;
+    this.updateOpstiZadatak.datumPostavke=item.datumPostavke;
+    this.updateOpstiZadatak.zaposlenikEditovaoId=this.getZaposlenik()?.zaposlenikId??null;
+
+    let url: string = MyConfig.adresa_servera + `/updateZadatak`;
+    this.httpClient.post(url,  this.updateOpstiZadatak).subscribe(
+        () => {
+          console.log("Uspjesan update");
+        });
+  }
+
+  RefreshOpstiZadaci() {
+    let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
+    this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
+      this.zadaci = x.zadaci.filter(x => x.intervalZadatkaId === 1);
+
+      this.GetAllOpstiZadaci();
+    });
+  }
+   IzbrisiZadatak(item: GetAllZadatakResponseZadatak) {
+      const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          let url: string = MyConfig.adresa_servera + `/obrisiZadatak`;
+          const params = new HttpParams().set('ZadatakId', item.zadatakId);
+          this.httpClient.delete(url, {params}).pipe(
+              finalize(() => {
+                this.RefreshOpstiZadaci();
+              })
+          ).subscribe(
+              request => () => {
+                console.log('Delete successful:', request);
+              },
+              (error: any) => {
+                console.error('Error:', error);
+              })
+
+        }
+      });
+  }
+  openWarningDialog = (message: string): MatDialogRef<WarningDialogComponent> => {
+    return this.dialog.open(WarningDialogComponent, {
+      data: {message},
+    });
+  };
 }

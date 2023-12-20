@@ -14,7 +14,10 @@ export class ZaposlenikEndpoint{
 
   GetAllzaposlenici(): Observable<GetAllZaposlenikResponseZaposlenik[]> {
     let url: string = MyConfig.adresa_servera + `/getAllZaposlenici`;
+
+    // Return the observable from the HttpClient
     return this.httpClient.get<GetAllZaposlenikResponse>(url).pipe(
-        map(response => response.zaposlenici));
+        map(response => response.zaposlenici || []) // Extract and return zaposlenici array
+    );
   }
 }

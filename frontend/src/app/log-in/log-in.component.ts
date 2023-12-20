@@ -23,13 +23,21 @@ import {GetAllZaposlenikResponse, GetAllZaposlenikResponseZaposlenik} from "../S
 export class LogInComponent {
 
   constructor(public httpClient:HttpClient, private router: Router, private myAuthService:MyAuthService,
-              ) { }
+             ) { }
 
   ngOnInit(){
     this.GetAllzaposlenici().subscribe(
         response => {
           this.korisnik = response;
         });
+  }
+  GetAllzaposlenici(): Observable<GetAllZaposlenikResponseZaposlenik[]> {
+    let url: string = MyConfig.adresa_servera + `/getAllZaposlenici`;
+
+    // Return the observable from the HttpClient
+    return this.httpClient.get<GetAllZaposlenikResponse>(url).pipe(
+        map(response => response.zaposlenici || []) // Extract and return zaposlenici array
+    );
   }
   public korisnik:GetAllZaposlenikResponseZaposlenik[]=[];
   public logInRequest:AuthLogInRequest={
@@ -60,12 +68,5 @@ export class LogInComponent {
       }
     });
   }
-  GetAllzaposlenici(): Observable<GetAllZaposlenikResponseZaposlenik[]> {
-    let url: string = MyConfig.adresa_servera + `/getAllZaposlenici`;
 
-    // Return the observable from the HttpClient
-    return this.httpClient.get<GetAllZaposlenikResponse>(url).pipe(
-        map(response => response.zaposlenici || []) // Extract and return zaposlenici array
-    );
-  }
 }

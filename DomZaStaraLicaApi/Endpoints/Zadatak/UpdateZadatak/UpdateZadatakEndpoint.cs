@@ -9,7 +9,7 @@ namespace DomZaStaraLicaApi.Endpoints.Zadatak.UpdateZaposlenik
         , UpdateZadatakResponse>
     {
         ApplicationDbContext _applicationDbContext;
-        UpdateZadatakEndpoint(ApplicationDbContext applicationDbContext)
+        public UpdateZadatakEndpoint(ApplicationDbContext applicationDbContext)
         {
             this._applicationDbContext = applicationDbContext;
         }
