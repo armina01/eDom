@@ -26,7 +26,9 @@ namespace DomZaStaraLicaApi.Endpoints.Zadatak.DodajZaposlenika
                 ZaposlenikPostavioId = request.ZaposlenikPostavioId,
                 ZaposlenikEditovaoId = request.ZaposlenikEditovaoId,
                 IntervalZadatkaId = request.IntervalZadatkaId,
-                VrstaZadatkaId = request.VrstaZadatkaId
+                VrstaZadatkaId = request.VrstaZadatkaId,
+                KorisnikDomaId=request.KorisnikDomaId
+                
             };
             _applicationDbContext.Zadatak.Add(newZadatak);
 

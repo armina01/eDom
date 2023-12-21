@@ -27,6 +27,7 @@ namespace DomZaStaraLicaApi.Endpoints.Zadatak.UpdateZaposlenik
                 zadatak.ZaposlenikEditovaoId = request.ZaposlenikEditovaoId;
                 zadatak.VrstaZadatkaId = request.VrstaZadatkaId;
                 zadatak.IntervalZadatkaId = request.IntervalZadatkaId;
+                zadatak.KorisnikDomaId = request.KorisnikDomaId;
                 await _applicationDbContext.SaveChangesAsync();
                 return new UpdateZadatakResponse
                 {

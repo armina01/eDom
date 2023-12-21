@@ -6,4 +6,5 @@ export interface DodajZadatakRequest {
   zaposlenikEditovaoId: number|null;
   intervalZadatkaId: number;
   vrstaZadatkaId: number;
+  korisnikDomaId: number;
 }

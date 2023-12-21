@@ -11,4 +11,5 @@ export interface GetAllZadatakResponseZadatak  {
   zaposlenikEditovaoId: number|null;
   intervalZadatkaId: number;
   vrstaZadatkaId: number;
+  korisnikDomaId:number;
 }

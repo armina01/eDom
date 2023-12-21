@@ -16,6 +16,7 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {DodajZadatakResponse} from "./DodajZadatakResponse";
 import {finalize} from "rxjs";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-get-zadaci',
@@ -27,7 +28,7 @@ import {finalize} from "rxjs";
 export class GetZadaciComponent {
 
   constructor(public httpClient: HttpClient,@Inject(MY_AUTH_SERVICE_TOKEN) private _myAuthService: MyAuthService
-  ,private dialog: MatDialog,private cdr: ChangeDetectorRef) {
+  ,private dialog: MatDialog,private route: ActivatedRoute) {
   }
   showOpsti:boolean=false;
   showFizijatrijski=false;
@@ -37,7 +38,8 @@ export class GetZadaciComponent {
   public opstiZadatak: GetAllZadatakResponseZadatak[]=[];
   public fizijatrijskiZadatak: GetAllZadatakResponseZadatak[]=[];
   public zadaci:GetAllZadatakResponseZadatak[]=[];
-  public korisnickiNalog=this._myAuthService.getAuthorizationToken()?.korisnickiNalog
+  public korisnickiNalog=this._myAuthService.getAuthorizationToken()?.korisnickiNalog;
+  public _korisnikDomaId:number=0;
   public dodajOpstiZadatak:DodajZadatakRequest={
     opis:"",
     status:false,
@@ -45,7 +47,8 @@ export class GetZadaciComponent {
     zaposlenikPostavioId: 0,
       zaposlenikEditovaoId:null,
       intervalZadatkaId:1,
-      vrstaZadatkaId:6
+      vrstaZadatkaId:6,
+    korisnikDomaId:0
   }
   public updateOpstiZadatak:GetAllZadatakResponseZadatak={
     zadatakId:0,
@@ -55,7 +58,8 @@ export class GetZadaciComponent {
     zaposlenikPostavioId: 0,
     zaposlenikEditovaoId:null,
     intervalZadatkaId:1,
-    vrstaZadatkaId:6
+    vrstaZadatkaId:6,
+    korisnikDomaId:0
   }
   GetAllMedicinskiZadaci() {
     this.medicinskiZadatak= this.zadaci.filter(x=>x.vrstaZadatkaId===4)
@@ -78,7 +82,9 @@ export class GetZadaciComponent {
   ngOnInit(){
     this.GetAllZadaci();
     this.njegovatelj=this.getZaposlenik();
-
+    this.route.params.subscribe(params => {
+      this._korisnikDomaId = +params['id'] || 0;
+    });
   }
     getZaposlenik():GetAllNjegovateljaResponseNjegovatelj | null {
         let korisnik = window.localStorage.getItem("korisnik")??"";
@@ -112,6 +118,7 @@ export class GetZadaciComponent {
   {
     console.log()
     this.dodajOpstiZadatak.zaposlenikPostavioId=this.njegovatelj?.zaposlenikId??null;
+    this.dodajOpstiZadatak.korisnikDomaId=this._korisnikDomaId;
     this.DodajZadatak(this.dodajOpstiZadatak);
 
 
@@ -141,7 +148,7 @@ export class GetZadaciComponent {
     this.updateOpstiZadatak.vrstaZadatkaId=item.vrstaZadatkaId;
     this.updateOpstiZadatak.datumPostavke=item.datumPostavke;
     this.updateOpstiZadatak.zaposlenikEditovaoId=this.getZaposlenik()?.zaposlenikId??null;
-
+    this.updateOpstiZadatak.korisnikDomaId=this._korisnikDomaId;
     let url: string = MyConfig.adresa_servera + `/updateZadatak`;
     this.httpClient.post(url,  this.updateOpstiZadatak).subscribe(
         () => {

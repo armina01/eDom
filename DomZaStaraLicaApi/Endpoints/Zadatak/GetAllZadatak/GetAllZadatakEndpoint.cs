@@ -28,8 +28,8 @@ namespace DomZaStaraLicaApi.Endpoints.Zadatak.GetAllZadatak
                    Status = x.Status,
                    VrstaZadatkaId = x.VrstaZadatkaId,
                    ZaposlenikEditovaoId = x.ZaposlenikEditovaoId,
-                   ZaposlenikPostavioId = x.ZaposlenikPostavioId
-
+                   ZaposlenikPostavioId = x.ZaposlenikPostavioId,
+                   KorisnikDomaId=x.KorisnikDomaId
                }).ToListAsync();
             return new GetAllZadatakResponse
             {

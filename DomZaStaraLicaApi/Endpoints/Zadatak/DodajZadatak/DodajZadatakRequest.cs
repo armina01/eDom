@@ -12,6 +12,7 @@ namespace DomZaStaraLicaApi.Endpoints.Zadatak.DodajZaposlenika
         public int ZaposlenikPostavioId { get; set; }
         public int? ZaposlenikEditovaoId { get; set; }
         public int IntervalZadatkaId { get; set; }
+        public int KorisnikDomaId { get; set; }
         public int VrstaZadatkaId { get; set; }
     }
 }

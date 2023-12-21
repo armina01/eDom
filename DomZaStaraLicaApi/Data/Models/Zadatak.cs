@@ -22,5 +22,8 @@ namespace DomZaStaraLicaApi.Data.Models
         public int VrstaZadatkaId { get; set; }
         [ForeignKey(nameof(VrstaZadatkaId))]
         public VrstaZadatka VrstaZadatka { get; set; }
+        public int KorisnikDomaId { get; set; }
+        [ForeignKey(nameof(KorisnikDomaId))]
+        public KorisnikDoma KorisnikDoma { get; set; }
     }
 }

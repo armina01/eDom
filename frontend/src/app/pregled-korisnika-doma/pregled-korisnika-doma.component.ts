@@ -10,6 +10,7 @@ import {KorisnikDomaUpdateRequest} from "./korisnikDomaUpdateRequest";
 import {OpsinaGetAllResponseOpstina, OpstinaGetAllResponse} from "../opstina/opstina-getAll";
 import {map, Observable} from "rxjs";
 import {KorisnikComponent} from "../korisnik/korisnik.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-pregled-korisnika-doma',
@@ -19,9 +20,7 @@ import {KorisnikComponent} from "../korisnik/korisnik.component";
   styleUrl: './pregled-korisnika-doma.component.css'
 })
 export class PregledKorisnikaDomaComponent implements  OnInit{
-
-
-  constructor(public httpClient:HttpClient, private dialog: MatDialog) {
+  constructor(public httpClient:HttpClient, private dialog: MatDialog,public router: Router) {
   }
 
   public korisnikUpdateRequest: KorisnikDomaUpdateRequest ={
@@ -110,5 +109,9 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     return this.httpClient.get<OpstinaGetAllResponse>(url).pipe(
       map((response:OpstinaGetAllResponse)=>response.opstine)
     );
+  }
+
+  PregledZadataka(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/pregledzadataka', item.korisnikDomaID]);
   }
 }
