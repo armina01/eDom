@@ -1,34 +1,29 @@
-import {ChangeDetectorRef, Component, Inject} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MyConfig} from "../my-config";
-import {GetAllKorisnickiNalogResponse} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
-import {HttpClient, HttpParams} from "@angular/common/http";
-import {GetAllZadatakResponse, GetAllZadatakResponseZadatak} from "./getAllZadaciResponse";
-import {DodajZadatakRequest} from "./dodajZadatakRequest";
-import {MY_AUTH_SERVICE_TOKEN, MyAuthService} from "../Services/MyAuthService";
-import {KorisnickiNalogFetch} from "../Services/GetAllKorisnickiNalog";
-import {NjegovateljiFetch} from "../Services/NjegovateljFetch";
-import {AutentifikacijaToken} from "../Helper/autentifikacijToken";
-import {GetAllZaposlenikResponseZaposlenik} from "../Services/getAllZaposleniciResponse";
-import {GetAllNjegovateljaResponseNjegovatelj} from "../njegovatelj/getAllNjegovateljiResponse";
 import {FormsModule} from "@angular/forms";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {MY_AUTH_SERVICE_TOKEN, MyAuthService} from "../Services/MyAuthService";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
-import {DodajZadatakResponse} from "./DodajZadatakResponse";
-import {finalize} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
+import {GetAllNjegovateljaResponseNjegovatelj} from "../njegovatelj/getAllNjegovateljiResponse";
+import {GetAllZadatakResponse, GetAllZadatakResponseZadatak} from "../get-zadaci/getAllZadaciResponse";
+import {DodajZadatakRequest} from "../get-zadaci/dodajZadatakRequest";
+import {MyConfig} from "../my-config";
+import {DodajZadatakResponse} from "../get-zadaci/DodajZadatakResponse";
+import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
+import {finalize} from "rxjs";
 
 @Component({
-  selector: 'app-get-zadaci',
+  selector: 'app-pregled-sedmicnih-zadataka',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './get-zadaci.component.html',
-  styleUrl: './get-zadaci.component.css'
+    imports: [CommonModule, FormsModule],
+  templateUrl: './pregled-sedmicnih-zadataka.component.html',
+  styleUrl: './pregled-sedmicnih-zadataka.component.css'
 })
-export class GetZadaciComponent {
+export class PregledSedmicnihZadatakaComponent {
 
   constructor(public httpClient: HttpClient,@Inject(MY_AUTH_SERVICE_TOKEN) private _myAuthService: MyAuthService
-  ,private dialog: MatDialog,private route: ActivatedRoute) {
+      ,private dialog: MatDialog,private route: ActivatedRoute) {
   }
   showOpsti:boolean=false;
   showFizijatrijski=false;
@@ -45,9 +40,9 @@ export class GetZadaciComponent {
     status:false,
     datumPostavke:new Date(),
     zaposlenikPostavioId: 0,
-      zaposlenikEditovaoId:null,
-      intervalZadatkaId:1,
-      vrstaZadatkaId:6,
+    zaposlenikEditovaoId:null,
+    intervalZadatkaId:2,
+    vrstaZadatkaId:6,
     korisnikDomaId:0
   }
   public updateOpstiZadatak:GetAllZadatakResponseZadatak={
@@ -57,7 +52,7 @@ export class GetZadaciComponent {
     datumPostavke:new Date(),
     zaposlenikPostavioId: 0,
     zaposlenikEditovaoId:null,
-    intervalZadatkaId:1,
+    intervalZadatkaId:2,
     vrstaZadatkaId:6,
     korisnikDomaId:0
   }
@@ -86,34 +81,35 @@ export class GetZadaciComponent {
       this._korisnikDomaId = +params['id'] || 0;
     });
   }
-    getZaposlenik():GetAllNjegovateljaResponseNjegovatelj | null {
-        let korisnik = window.localStorage.getItem("korisnik")??"";
-        try {
-            return JSON.parse(korisnik);
-        }
-        catch (e){
-            return null;
-        }
+  getZaposlenik():GetAllNjegovateljaResponseNjegovatelj | null {
+    let korisnik = window.localStorage.getItem("korisnik")??"";
+    try {
+      return JSON.parse(korisnik);
     }
-   GetAllZadaci() {
-    let todayDate=new Date();
-
+    catch (e){
+      return null;
+    }
+  }
+  GetAllZadaci() {
     let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
     this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
-
-      x.zadaci.forEach(y=> {
-        console.log("Danasnji datum", todayDate, "Datum zadatka",y.datumPostavke)
-      })
       this.zadaci = x.zadaci.filter(zadatak => {
+        const todayDate = new Date();
         const datumPostavke = new Date(zadatak.datumPostavke);
 
         // Check if datumPostavke is a valid Date object
         if (Object.prototype.toString.call(datumPostavke) === "[object Date]" && !isNaN(datumPostavke.getTime())) {
+          // Adjust the startOfWeek and endOfWeek for Monday to Sunday week
+          const startOfWeek = new Date(todayDate);
+          startOfWeek.setDate(todayDate.getDate() - (todayDate.getDay() + 6) % 7 + 1); // Set to the first day of the week (Monday)
+
+          const endOfWeek = new Date(todayDate);
+          endOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 7); // Set to the last day of the week (Sunday)
+
           return (
-              zadatak.intervalZadatkaId === 1 &&
-              todayDate.getFullYear() === datumPostavke.getFullYear() &&
-              todayDate.getMonth() === datumPostavke.getMonth() &&
-              todayDate.getDate() === datumPostavke.getDate()
+              zadatak.intervalZadatkaId === 2 &&
+              datumPostavke >= startOfWeek &&
+              datumPostavke <= endOfWeek
           );
         } else {
           // Handle the case where datumPostavke is not a valid Date object
@@ -121,7 +117,7 @@ export class GetZadaciComponent {
           return false;
         }
       });
-    })
+    });
   }
   getAllMedicinskizadaci(){
     return this.medicinskiZadatak
@@ -181,31 +177,31 @@ export class GetZadaciComponent {
   RefreshOpstiZadaci() {
     let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
     this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
-      this.zadaci = x.zadaci.filter(x => x.intervalZadatkaId === 1);
+      this.zadaci = x.zadaci.filter(x => x.intervalZadatkaId === 2);
 
       this.GetAllOpstiZadaci();
     });
   }
-   IzbrisiZadatak(item: GetAllZadatakResponseZadatak) {
-      const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
-      dialogRef.afterClosed().subscribe(res => {
-        if (res) {
-          let url: string = MyConfig.adresa_servera + `/obrisiZadatak`;
-          const params = new HttpParams().set('ZadatakId', item.zadatakId);
-          this.httpClient.delete(url, {params}).pipe(
-              finalize(() => {
-                this.RefreshOpstiZadaci();
-              })
-          ).subscribe(
-              request => () => {
-                console.log('Delete successful:', request);
-              },
-              (error: any) => {
-                console.error('Error:', error);
-              })
+  IzbrisiZadatak(item: GetAllZadatakResponseZadatak) {
+    const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        let url: string = MyConfig.adresa_servera + `/obrisiZadatak`;
+        const params = new HttpParams().set('ZadatakId', item.zadatakId);
+        this.httpClient.delete(url, {params}).pipe(
+            finalize(() => {
+              this.RefreshOpstiZadaci();
+            })
+        ).subscribe(
+            request => () => {
+              console.log('Delete successful:', request);
+            },
+            (error: any) => {
+              console.error('Error:', error);
+            })
 
-        }
-      });
+      }
+    });
   }
   openWarningDialog = (message: string): MatDialogRef<WarningDialogComponent> => {
     return this.dialog.open(WarningDialogComponent, {

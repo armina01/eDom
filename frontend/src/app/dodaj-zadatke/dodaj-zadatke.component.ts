@@ -7,12 +7,9 @@ import {
   KorisnikDomaGetAllResponseKorisnik
 } from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
 import {HttpClient} from "@angular/common/http";
-import {MatDialog} from "@angular/material/dialog";
 import {DodajZadatakRequest} from "../get-zadaci/dodajZadatakRequest";
-import {jePrazno} from "../Helper/Provjera";
 import {GetAllNjegovateljaResponseNjegovatelj} from "../njegovatelj/getAllNjegovateljiResponse";
 import {DodajZadatakResponse} from "../get-zadaci/DodajZadatakResponse";
-import {KorisnikDomaUpdateRequest} from "../pregled-korisnika-doma/korisnikDomaUpdateRequest";
 import {SelectKorisnikeDoma} from "./SelectKorisnikeDoma";
 
 @Component({
@@ -24,17 +21,9 @@ import {SelectKorisnikeDoma} from "./SelectKorisnikeDoma";
 })
 export class DodajZadatkeComponent {
 
-  constructor(public httpClient:HttpClient, private dialog: MatDialog) {
+  constructor(public httpClient:HttpClient) {
   }
-  public selectedKorisnikDoma: SelectKorisnikeDoma ={
-    selected:false,
-    korisnikDomaID:0,
-    imePrezime:"",
-    jmbg: "",
-    datumRodjenja: "",
-    brojSobe: 0,
 
-  }
   public _showKorisnici:SelectKorisnikeDoma[]=[];
   korisnici:KorisnikDomaGetAllResponseKorisnik[]=[];
   public dodajOpstiZadatak:DodajZadatakRequest={

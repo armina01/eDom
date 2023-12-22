@@ -11,10 +11,7 @@ import {FizioterapeutComponent} from "./fizioterapeut/fizioterapeut.component";
 import{LogInComponent} from "./log-in/log-in.component";
 import {HomepageComponent} from "./homepage/homepage.component";
 import {GetZadaciComponent} from "./get-zadaci/get-zadaci.component";
-import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
-import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
-import {MyAuthService} from "./Services/MyAuthService";
-import {FormsModule} from "@angular/forms";
+import {PregledSedmicnihZadatakaComponent} from "./pregled-sedmicnih-zadataka/pregled-sedmicnih-zadataka.component";
 import {DijagnozaComponent} from "./dijagnoza/dijagnoza.component";
 import {DodajZadatkeComponent} from "./dodaj-zadatke/dodaj-zadatke.component";
 
@@ -31,8 +28,9 @@ export const routes: Routes = [
   {path:'dijagnoza',component:DijagnozaComponent},
   {path:'login',component:LogInComponent},
   {path:'home',component:HomepageComponent},
-  {path:'pregledzadataka/:id',component:GetZadaciComponent},
-  {path:'dodajZadatke',component:DodajZadatkeComponent}
+  {path:'pregleddnevnihzadataka/:id',component:GetZadaciComponent},
+  {path:'dodajZadatke',component:DodajZadatkeComponent},
+  {path:'pregledsedmicnihzadataka/:id',component:PregledSedmicnihZadatakaComponent},
 ]
 
 
