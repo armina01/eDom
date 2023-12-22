@@ -106,8 +106,6 @@ export class GetZadaciComponent {
       })
       this.zadaci = x.zadaci.filter(zadatak => {
         const datumPostavke = new Date(zadatak.datumPostavke);
-
-        // Check if datumPostavke is a valid Date object
         if (Object.prototype.toString.call(datumPostavke) === "[object Date]" && !isNaN(datumPostavke.getTime())) {
           return (
               zadatak.intervalZadatkaId === 1 &&
@@ -116,7 +114,6 @@ export class GetZadaciComponent {
               todayDate.getDate() === datumPostavke.getDate()
           );
         } else {
-          // Handle the case where datumPostavke is not a valid Date object
           console.error("Invalid datumPostavke:", zadatak.datumPostavke);
           return false;
         }
@@ -179,10 +176,23 @@ export class GetZadaciComponent {
   }
 
   RefreshOpstiZadaci() {
+    let todayDate=new Date();
     let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
     this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
-      this.zadaci = x.zadaci.filter(x => x.intervalZadatkaId === 1);
-
+      this.zadaci = x.zadaci.filter(zadatak => {
+        const datumPostavke = new Date(zadatak.datumPostavke);
+        if (Object.prototype.toString.call(datumPostavke) === "[object Date]" && !isNaN(datumPostavke.getTime())) {
+          return (
+              zadatak.intervalZadatkaId === 1 &&
+              todayDate.getFullYear() === datumPostavke.getFullYear() &&
+              todayDate.getMonth() === datumPostavke.getMonth() &&
+              todayDate.getDate() === datumPostavke.getDate()
+          );
+        } else {
+          console.error("Invalid datumPostavke:", zadatak.datumPostavke);
+          return false;
+        }
+      });
       this.GetAllOpstiZadaci();
     });
   }

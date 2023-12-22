@@ -175,9 +175,23 @@ export class PregledSedmicnihZadatakaComponent {
   }
 
   RefreshOpstiZadaci() {
+    let todayDate=new Date();
     let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
     this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
-      this.zadaci = x.zadaci.filter(x => x.intervalZadatkaId === 2);
+      this.zadaci = x.zadaci.filter(zadatak => {
+        const datumPostavke = new Date(zadatak.datumPostavke);
+        if (Object.prototype.toString.call(datumPostavke) === "[object Date]" && !isNaN(datumPostavke.getTime())) {
+          return (
+              zadatak.intervalZadatkaId === 2 &&
+              todayDate.getFullYear() === datumPostavke.getFullYear() &&
+              todayDate.getMonth() === datumPostavke.getMonth() &&
+              todayDate.getDate() === datumPostavke.getDate()
+          );
+        } else {
+          console.error("Invalid datumPostavke:", zadatak.datumPostavke);
+          return false;
+        }
+      });
 
       this.GetAllOpstiZadaci();
     });

@@ -14,6 +14,7 @@ import {GetZadaciComponent} from "./get-zadaci/get-zadaci.component";
 import {PregledSedmicnihZadatakaComponent} from "./pregled-sedmicnih-zadataka/pregled-sedmicnih-zadataka.component";
 import {DijagnozaComponent} from "./dijagnoza/dijagnoza.component";
 import {DodajZadatkeComponent} from "./dodaj-zadatke/dodaj-zadatke.component";
+import {PregledArhiveZadatakaComponent} from "./pregled-arhive-zadataka/pregled-arhive-zadataka.component";
 
 export const routes: Routes = [
   {path: 'header', component: HeaderComponent},
@@ -31,6 +32,7 @@ export const routes: Routes = [
   {path:'pregleddnevnihzadataka/:id',component:GetZadaciComponent},
   {path:'dodajZadatke',component:DodajZadatkeComponent},
   {path:'pregledsedmicnihzadataka/:id',component:PregledSedmicnihZadatakaComponent},
+  {path:'pregledarhivezadataka/:id',component:PregledArhiveZadatakaComponent},
 ]
 
 

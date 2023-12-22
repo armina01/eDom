@@ -118,4 +118,8 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   PregledSedmicnihZadataka(item: KorisnikDomaGetAllResponseKorisnik) {
     this.router.navigate(['/pregledsedmicnihzadataka', item.korisnikDomaID]);
   }
+
+  PregledArhiveZadataka(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/pregledarhivezadataka', item.korisnikDomaID]);
+  }
 }
