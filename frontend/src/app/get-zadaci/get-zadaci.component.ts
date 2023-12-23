@@ -33,6 +33,7 @@ export class GetZadaciComponent {
   showOpsti:boolean=false;
   showFizijatrijski=false;
   showMedicinski=false;
+  public odabraniDatum:Date=new Date();
   public njegovatelj:GetAllNjegovateljaResponseNjegovatelj|null=null;
   public medicinskiZadatak: GetAllZadatakResponseZadatak[]=[];
   public opstiZadatak: GetAllZadatakResponseZadatak[]=[];
@@ -96,7 +97,7 @@ export class GetZadaciComponent {
         }
     }
    GetAllZadaci() {
-    let todayDate=new Date();
+    let todayDate=new Date(this.odabraniDatum);
 
     let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
     this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
@@ -176,7 +177,7 @@ export class GetZadaciComponent {
   }
 
   RefreshOpstiZadaci() {
-    let todayDate=new Date();
+    let todayDate=new Date(this.odabraniDatum);
     let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
     this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
       this.zadaci = x.zadaci.filter(zadatak => {

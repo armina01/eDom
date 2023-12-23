@@ -1,4 +1,9 @@
 
+<div class="form-group">
+  <label for="datumZadatka">Datum zadatka</label>
+  <input type="date" class="form-control" id="datumZadatka"
+         [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDatum" (change)="RefreshOpstiZadaci()">
+</div>
 <button class="btn btn-primary" type="submit" (click)="GetAllMedicinskiZadaci()">Pregledaj medicinske zadatke </button>
 <button class="btn btn-primary" type="submit" (click)="GetAllOpstiZadaci()">Pregledaj opste zadatke </button>
 <button class="btn btn-primary" type="submit" (click)="GetAllFizijatrijskiZadaci()">Pregledaj fizijatrijske zadatke </button>

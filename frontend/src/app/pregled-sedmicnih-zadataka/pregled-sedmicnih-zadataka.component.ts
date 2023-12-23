@@ -35,6 +35,7 @@ export class PregledSedmicnihZadatakaComponent {
   public zadaci:GetAllZadatakResponseZadatak[]=[];
   public korisnickiNalog=this._myAuthService.getAuthorizationToken()?.korisnickiNalog;
   public _korisnikDomaId:number=0;
+  public odabraniDatum:Date=new Date();
   public dodajOpstiZadatak:DodajZadatakRequest={
     opis:"",
     status:false,
@@ -69,6 +70,7 @@ export class PregledSedmicnihZadatakaComponent {
     this.showMedicinski=false;
   }
   GetAllOpstiZadaci() {
+    this.GetAllZadaci();
     this.opstiZadatak= this.zadaci.filter(x=>x.vrstaZadatkaId===6)
     this.showOpsti=true;
     this.showFizijatrijski=false;
@@ -94,18 +96,16 @@ export class PregledSedmicnihZadatakaComponent {
     let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
     this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
       this.zadaci = x.zadaci.filter(zadatak => {
-        const todayDate = new Date();
+        const todayDate = new Date(this.odabraniDatum);
         const datumPostavke = new Date(zadatak.datumPostavke);
 
-        // Check if datumPostavke is a valid Date object
         if (Object.prototype.toString.call(datumPostavke) === "[object Date]" && !isNaN(datumPostavke.getTime())) {
-          // Adjust the startOfWeek and endOfWeek for Monday to Sunday week
+
           const startOfWeek = new Date(todayDate);
-          startOfWeek.setDate(todayDate.getDate() - (todayDate.getDay() + 6) % 7 + 1); // Set to the first day of the week (Monday)
+          startOfWeek.setDate(todayDate.getDate() - (todayDate.getDay() + 6) % 7 );
 
           const endOfWeek = new Date(todayDate);
-          endOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 7); // Set to the last day of the week (Sunday)
-
+          endOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 7);
           return (
               zadatak.intervalZadatkaId === 2 &&
               datumPostavke >= startOfWeek &&
@@ -175,22 +175,33 @@ export class PregledSedmicnihZadatakaComponent {
   }
 
   RefreshOpstiZadaci() {
-    let todayDate=new Date();
     let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
     this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
-      this.zadaci = x.zadaci.filter(zadatak => {
-        const datumPostavke = new Date(zadatak.datumPostavke);
-        if (Object.prototype.toString.call(datumPostavke) === "[object Date]" && !isNaN(datumPostavke.getTime())) {
-          return (
-              zadatak.intervalZadatkaId === 2 &&
-              todayDate.getFullYear() === datumPostavke.getFullYear() &&
-              todayDate.getMonth() === datumPostavke.getMonth() &&
-              todayDate.getDate() === datumPostavke.getDate()
-          );
-        } else {
-          console.error("Invalid datumPostavke:", zadatak.datumPostavke);
-          return false;
-        }
+      this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
+        this.zadaci = x.zadaci.filter(zadatak => {
+          const todayDate = new Date(this.odabraniDatum);
+          const datumPostavke = new Date(zadatak.datumPostavke);
+
+          // Check if datumPostavke is a valid Date object
+          if (Object.prototype.toString.call(datumPostavke) === "[object Date]" && !isNaN(datumPostavke.getTime())) {
+            // Adjust the startOfWeek and endOfWeek for Monday to Sunday week
+            const startOfWeek = new Date(todayDate);
+            startOfWeek.setDate(todayDate.getDate() - (todayDate.getDay() + 6) % 7 + 1); // Set to the first day of the week (Monday)
+
+            const endOfWeek = new Date(todayDate);
+            endOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 7); // Set to the last day of the week (Sunday)
+
+            return (
+                zadatak.intervalZadatkaId === 2 &&
+                datumPostavke >= startOfWeek &&
+                datumPostavke <= endOfWeek
+            );
+          } else {
+            // Handle the case where datumPostavke is not a valid Date object
+            console.error("Invalid datumPostavke:", zadatak.datumPostavke);
+            return false;
+          }
+        });
       });
 
       this.GetAllOpstiZadaci();
