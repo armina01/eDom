@@ -15,6 +15,7 @@ import {PregledSedmicnihZadatakaComponent} from "./pregled-sedmicnih-zadataka/pr
 import {DijagnozaComponent} from "./dijagnoza/dijagnoza.component";
 import {DodajZadatkeComponent} from "./dodaj-zadatke/dodaj-zadatke.component";
 import {PregledArhiveZadatakaComponent} from "./pregled-arhive-zadataka/pregled-arhive-zadataka.component";
+import {PregledPodatakaNjegovateljComponent} from "./pregled-podataka-njegovatelj/pregled-podataka-njegovatelj.component";
 
 export const routes: Routes = [
   {path: 'header', component: HeaderComponent},
@@ -33,6 +34,7 @@ export const routes: Routes = [
   {path:'dodajZadatke',component:DodajZadatkeComponent},
   {path:'pregledsedmicnihzadataka/:id',component:PregledSedmicnihZadatakaComponent},
   {path:'pregledarhivezadataka/:id',component:PregledArhiveZadatakaComponent},
+  {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent}
 ]
 
 
