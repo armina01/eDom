@@ -18,6 +18,7 @@ import {FormsModule} from "@angular/forms";
 import {DijagnozaComponent} from "./dijagnoza/dijagnoza.component";
 import {TerapijaComponent} from "./terapija/terapija.component";
 import {LijekComponent} from "./lijek/lijek.component";
+import {NapomenaComponent} from "./napomena/napomena.component";
 
 
 export const routes: Routes = [
@@ -34,7 +35,8 @@ export const routes: Routes = [
   {path:'login',component:LogInComponent},
   {path:'home',component:HomepageComponent},
   {path:'terapija',component:TerapijaComponent},
-  {path:'lijek',component:LijekComponent}
+  {path:'lijek',component:LijekComponent},
+  {path:'napomena',component:NapomenaComponent}
 ]
 
 

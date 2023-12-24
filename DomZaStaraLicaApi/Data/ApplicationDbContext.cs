@@ -20,6 +20,8 @@ namespace DomZaStaraLicaApi.Data
         public DbSet<CLijek> Lijek { get; set; }
         public DbSet<Terapija> Terapija { get; set; }
         public DbSet<TerapijaLijek> TerapijaLijek { get; set; }
+        public DbSet<Napomena> Napomena { get; set; }
+        public DbSet<VrstaNapomene> VrstaNapomene { get; set; }
 
 
         public ApplicationDbContext(
