@@ -91,15 +91,22 @@
                 <div class="modal-body">
                     <label>Ukucajte staru lozinku!</label>
                     <input type="password" [ngModelOptions]="{standalone:true}" [(ngModel)]="staraLozinka"/>
+                    <div class="modal-body" *ngIf="showErrorNePostojiNalog ===true">Neispravna lozinka</div>
                     <Button (click)="ProvjeriLozinku()">Promijeni</Button>
                 </div>
-                <div class="modal-body"*ngIf="showPromijeniLozinku===true">
+                <hr/>
+                <div class="modal-body" *ngIf="showPromijeniLozinku===true">
                     <label>Ukucajte novu lozinku!</label>
                     <input type="password" [ngModelOptions]="{standalone:true}" [(ngModel)]="novaLozinka"/>
                 </div>
+                <div class="modal-body" *ngIf="showPromijeniLozinku===true">
+                    <label>Potvrdite lozinku!</label>
+                    <input type="password" [ngModelOptions]="{standalone:true}" [(ngModel)]="novaLozinkaPotvrda
+"/>
+                </div>
                 <div class="modal-footer">
                     <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal" (click)="prikaziDialog=false">Close</button>
-                    <button type="button"  class="btn btn-primary">Save changes</button>
+                    <button type="button"  class="btn btn-primary" (click)="ProvjeraIPromjenaLozinke()">Save changes</button>
                 </div>
             </div>
         </div>
