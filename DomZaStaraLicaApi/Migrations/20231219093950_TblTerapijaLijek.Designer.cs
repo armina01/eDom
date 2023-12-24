@@ -4,6 +4,7 @@ using DomZaStaraLicaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231219093950_TblTerapijaLijek")]
+    partial class TblTerapijaLijek
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,28 +50,7 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.HasIndex("KorisnickiNalogId");
 
-                    b.ToTable("AuthToken", (string)null);
-                });
-
-            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.CLijek", b =>
-                {
-                    b.Property<int>("LijekId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LijekId"));
-
-                    b.Property<string>("Naziv")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Uputstvo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("LijekId");
-
-                    b.ToTable("Lijek", (string)null);
+                    b.ToTable("AuthToken");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Dijagnoza", b =>
@@ -102,7 +84,7 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.HasIndex("ZaposlenikId");
 
-                    b.ToTable("Dijagnoza", (string)null);
+                    b.ToTable("Dijagnoza");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.KorisnickiNalog", b =>
@@ -138,7 +120,7 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.HasKey("NalogId");
 
-                    b.ToTable("KorisnickiNalog", (string)null);
+                    b.ToTable("KorisnickiNalog");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.KorisnikDoma", b =>
@@ -170,7 +152,28 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.HasIndex("OpstinaID");
 
-                    b.ToTable("KorisnikDoma", (string)null);
+                    b.ToTable("KorisnikDoma");
+                });
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Lijek", b =>
+                {
+                    b.Property<int>("LijekId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LijekId"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Uputstvo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LijekId");
+
+                    b.ToTable("Lijek");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Opstina", b =>
@@ -190,7 +193,7 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.HasKey("OpstinaID");
 
-                    b.ToTable("Opstina", (string)null);
+                    b.ToTable("Opstina");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.PoslovnaPozicija", b =>
@@ -214,7 +217,7 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.HasKey("PoslovnaPozicijaId");
 
-                    b.ToTable("PoslovnaPozicija", (string)null);
+                    b.ToTable("PoslovnaPozicija");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Terapija", b =>
@@ -229,6 +232,9 @@ namespace DomZaStaraLicaApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("KorisnikDomaID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LijekId")
                         .HasColumnType("int");
 
                     b.Property<string>("NacinPrimjene")
@@ -249,7 +255,9 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.HasIndex("KorisnikDomaID");
 
-                    b.ToTable("Terapija", (string)null);
+                    b.HasIndex("LijekId");
+
+                    b.ToTable("Terapija");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.TerapijaLijek", b =>
@@ -272,7 +280,7 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.HasIndex("TerapijaId");
 
-                    b.ToTable("TerapijaLijek", (string)null);
+                    b.ToTable("TerapijaLijek");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Zaposlenik", b =>
@@ -313,7 +321,7 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.HasIndex("PoslovnaPozicijaId");
 
-                    b.ToTable("Zaposlenik", (string)null);
+                    b.ToTable("Zaposlenik");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Zaposlenik");
 
@@ -436,14 +444,20 @@ namespace DomZaStaraLicaApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.Lijek", "Lijek")
+                        .WithMany()
+                        .HasForeignKey("LijekId");
+
                     b.Navigation("Doktor");
 
                     b.Navigation("KorisnikDoma");
+
+                    b.Navigation("Lijek");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.TerapijaLijek", b =>
                 {
-                    b.HasOne("DomZaStaraLicaApi.Data.Models.CLijek", "Lijek")
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.Lijek", "Lijek")
                         .WithMany()
                         .HasForeignKey("LijekId");
 

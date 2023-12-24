@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DomZaStaraLicaApi.Data
 {
-    public class ApplicationDbContext: DbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<KorisnikDoma> KorisnikDoma { get; set; }
 
@@ -15,17 +15,17 @@ namespace DomZaStaraLicaApi.Data
         public DbSet<Doktor> Doktor { get; set; }
         public DbSet<Nutricionista> Nutricionista { get; set; }
         public DbSet<Fizioterapeut> Fizioterapeut { get; set; }
-
         public DbSet<AuthToken> AuthToken { get; set; }
-
-
         public DbSet<Dijagnoza> Dijagnoza { get; set; }
-
+        public DbSet<CLijek> Lijek { get; set; }
+        public DbSet<Terapija> Terapija { get; set; }
+        public DbSet<TerapijaLijek> TerapijaLijek { get; set; }
 
 
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {
         }
+
     }
 }

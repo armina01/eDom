@@ -1,0 +1,9 @@
+.overlay {
+  /* Vaši postojeći stilovi */
+  pointer-events: none; /* Onemogući kliktanje na overlay-u */
+}
+
+.modal {
+  /* Vaši postojeći stilovi */
+  pointer-events: auto; /* Omogući kliktanje unutar dijaloga */
+}

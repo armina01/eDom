@@ -87,7 +87,7 @@ export class DijagnozaComponent implements  OnInit{
 
 
   Obrisi(item: DijagnozaGetAllResponseDijagnoza) {
-    const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
+    const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati dijagnozu?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         let url: string = MyConfig.adresa_servera + `/dijagnoza/obrisi`;
@@ -100,7 +100,7 @@ export class DijagnozaComponent implements  OnInit{
             console.error('Error:', error);
 
             if (error.status === 500) {
-              alert('Nije moguće izbrisati ovaj korisnički nalog');
+              alert('Nije moguće izbrisati ovu dijagnozu');
               console.error('Handle 500 error here');
             } else {
               // Handle other errors

@@ -1,5 +1,4 @@
 ﻿using DomZaStaraLicaApi.Data;
-using DomZaStaraLicaApi.Data.Models;
 using DomZaStaraLicaApi.Endpoints.Doktor.GetAllDoktor;
 using DomZaStaraLicaApi.Helper;
 using Microsoft.AspNetCore.Mvc;
