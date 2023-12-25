@@ -1,4 +1,4 @@
-import {RouterModule, Routes} from '@angular/router';
+import { Routes} from '@angular/router';
 import {HeaderComponent} from "./header/header.component";
 import {PregledKorisnikaDomaComponent} from "./pregled-korisnika-doma/pregled-korisnika-doma.component";
 import {OpstinaComponent} from "./opstina/opstina.component";
@@ -16,6 +16,7 @@ import {DijagnozaComponent} from "./dijagnoza/dijagnoza.component";
 import {DodajZadatkeComponent} from "./dodaj-zadatke/dodaj-zadatke.component";
 import {PregledArhiveZadatakaComponent} from "./pregled-arhive-zadataka/pregled-arhive-zadataka.component";
 import {PregledPodatakaNjegovateljComponent} from "./pregled-podataka-njegovatelj/pregled-podataka-njegovatelj.component";
+import {PregledPodatakaNutricionistaComponent} from "./pregled-podataka-nutricionista/pregled-podataka-nutricionista.component";
 
 export const routes: Routes = [
   {path: 'header', component: HeaderComponent},
@@ -34,7 +35,8 @@ export const routes: Routes = [
   {path:'dodajZadatke',component:DodajZadatkeComponent},
   {path:'pregledsedmicnihzadataka/:id',component:PregledSedmicnihZadatakaComponent},
   {path:'pregledarhivezadataka/:id',component:PregledArhiveZadatakaComponent},
-  {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent}
+  {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent},
+  {path:'nutricionista/o-meni',component:PregledPodatakaNutricionistaComponent}
 ]
 
 

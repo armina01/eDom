@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MyConfig} from "../my-config";
+import {HttpClient} from "@angular/common/http";
+import {MatDialog} from "@angular/material/dialog";
+import {
+  ProvjeraPasswordaRequest,
+  ProvjeraPasswordaResponse
+} from "../pregled-podataka-njegovatelj/provjeraPasswordaResponse";
 import {
   GetAllNjegovateljaResponseNjegovatelj,
   GetAllNjegovateljiResponse
 } from "../njegovatelj/getAllNjegovateljiResponse";
-import {HttpClient} from "@angular/common/http";
-import {FormsModule} from "@angular/forms";
+import {MyConfig} from "../my-config";
 import {
   GetAllPoslovnaPozicijaResponse,
   GetAllPoslovnaPozicijaResponsePoslovnaPozicija
@@ -15,25 +19,28 @@ import {
   GetAllKorisnickiNalogResponse,
   GetAllKorisnickiNalogResponseKorisnickiNalog
 } from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
-import {MatDialog} from "@angular/material/dialog";
-import {ProvjeraPasswordaRequest, ProvjeraPasswordaResponse} from "./provjeraPasswordaResponse";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {
+  GetAllNutricionistaResponseNutricionista,
+  GetAllNutricionisteResponse
+} from "../nutricionista/getAllNutricionisteResponse";
 
 @Component({
-  selector: 'app-pregled-podataka-njegovatelj',
+  selector: 'app-pregled-podataka-nutricionista',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './pregled-podataka-njegovatelj.component.html',
-  styleUrl: './pregled-podataka-njegovatelj.component.css'
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  templateUrl: './pregled-podataka-nutricionista.component.html',
+  styleUrl: './pregled-podataka-nutricionista.component.css'
 })
-export class PregledPodatakaNjegovateljComponent {
+export class PregledPodatakaNutricionistaComponent {
 
   constructor(public httpClient:HttpClient,private dialog: MatDialog)
   {}
-  public novoKorisnickoIme:string="";
   public prikaziDialog:boolean=false;
   public staraLozinka:string="";
   public novaLozinka:string="";
   public novaLozinkaPotvrda:string="";
+  public novoKorisnickoIme:string="";
   ngOnInit(){
     this.GetPodatkeZaposlenika();
   }
@@ -41,8 +48,8 @@ export class PregledPodatakaNjegovateljComponent {
     korisnickiNalogId:0,
     lozinka:""
   }
-  public allNjegovatelji:GetAllNjegovateljaResponseNjegovatelj[]=[];
-  public njegovatelj:GetAllNjegovateljaResponseNjegovatelj|null=null
+  public allNutricionisti:GetAllNutricionistaResponseNutricionista[]=[];
+  public nutricionista:GetAllNutricionistaResponseNutricionista|null=null
   getNjegovatelj():GetAllNjegovateljaResponseNjegovatelj | null {
     let korisnik = window.localStorage.getItem("korisnik")??"";
     try {
@@ -54,35 +61,26 @@ export class PregledPodatakaNjegovateljComponent {
   }
   GetPodatkeZaposlenika()
   {
-    let url: string = MyConfig.adresa_servera + `/getAllNjegovatelji`;
-    this.httpClient.get<GetAllNjegovateljiResponse>(url).subscribe(x => {
-      this.allNjegovatelji = x.njegovatelji;
-      this.njegovatelj=this.allNjegovatelji.find(njegovatelj=>
-          njegovatelj.zaposlenikId===this.getNjegovatelj()?.zaposlenikId) ||null;
-      this.GetVrstaNjegovatelja();
+    let url: string = MyConfig.adresa_servera + `/getAllNutricioniste`;
+    this.httpClient.get<GetAllNutricionisteResponse>(url).subscribe(x => {
+      this.allNutricionisti = x.nutricionisti;
+      this.nutricionista=this.allNutricionisti.find(nutri=>
+          nutri.zaposlenikId===this.getNjegovatelj()?.zaposlenikId) ||null;
+
       this.GetPoslovnaPozicija();
       this.GetAllKorisnickiNalog();
     })
   }
   public vrstaNjegovatelja:string="";
-  GetVrstaNjegovatelja(){
-    if(this.njegovatelj?.isNjegovatelj)
-    {
-      this.vrstaNjegovatelja="Njegovatelj";
-    }
-    else if(this.njegovatelj?.isMedicinskiTehnicar)
-    {
-      this.vrstaNjegovatelja="Njegovatelj";
-    }
-  }
+
   public poslovnaPozicija:GetAllPoslovnaPozicijaResponsePoslovnaPozicija|null=null;
   GetPoslovnaPozicija(){
     let url: string = MyConfig.adresa_servera + `/getAllPoslovnaPozicija`;
-      this.httpClient.get<GetAllPoslovnaPozicijaResponse>(url).subscribe(x => {
+    this.httpClient.get<GetAllPoslovnaPozicijaResponse>(url).subscribe(x => {
 
-        this.poslovnaPozicija = x.poslovnePozicije.find(pozicija=>
-            pozicija.poslovnaPozicijaId===this.njegovatelj?.poslovnaPozicijaId) || null;
-      })
+      this.poslovnaPozicija = x.poslovnePozicije.find(pozicija=>
+          pozicija.poslovnaPozicijaId===this.nutricionista?.poslovnaPozicijaId) || null;
+    })
   }
   public korisnickiNalog:GetAllKorisnickiNalogResponseKorisnickiNalog|null=null;
   GetAllKorisnickiNalog(): void {
@@ -90,14 +88,14 @@ export class PregledPodatakaNjegovateljComponent {
     this.httpClient.get<GetAllKorisnickiNalogResponse>(url).subscribe(x => {
 
       this.korisnickiNalog = x.korisnickiNalozi.find(
-          nalog=>nalog.nalogId===this.njegovatelj?.nalogId) || null;
+          nalog=>nalog.nalogId===this.nutricionista?.nalogId) || null;
     })
   }
- showErrorNePostojiNalog:boolean=false
+  showErrorNePostojiNalog:boolean=false
   showPromijeniLozinku:boolean=false;
   showProvjeraLozinkeZaLozinku:boolean=false;
   showProvjeraLozinkeZaNalog:boolean=false;
-  showPromijeniNalog:boolean=false
+  showPromijeniNalog:boolean=false;
   ProvjeriLozinku(){
     let url: string = MyConfig.adresa_servera + `/provjeraPassworda`;
     this.requestLozinka.korisnickiNalogId=this.getNjegovatelj()?.nalogId || 0;
@@ -116,17 +114,19 @@ export class PregledPodatakaNjegovateljComponent {
         }
 
       }
-        else{
-          this.showErrorNePostojiNalog=true;
+      else{
         this.showPromijeniLozinku=false;
-        }
+        this.showErrorNePostojiNalog=true;
+
+      }
     })
   }
 
   PromijeniLozinku() {
     this.prikaziDialog=true;
+    this.showProvjeraLozinkeZaNalog=false;
+    this.showProvjeraLozinkeZaLozinku=true;
   }
-
   lozicnkeNotMatching:boolean=false;
   emptyKorIme:boolean=false;
   ProvjeraIPromjenaLozinke() {
@@ -146,34 +146,34 @@ export class PregledPodatakaNjegovateljComponent {
       }
     }
     else if(this.showProvjeraLozinkeZaNalog)
-    {
-      if(this.novoKorisnickoIme!=="" && this.korisnickiNalog)
-      {
-        this.korisnickiNalog.korisnickoIme=this.novoKorisnickoIme;
-        let url: string = MyConfig.adresa_servera + `/updateNaloga`;
-        this.httpClient.post(url, this.korisnickiNalog).subscribe(x => {
-          console.log("Uspjesno promijenjeno")
-        })
-        this.SveFalse();
-      }
-      else {
-        this.emptyKorIme=true;
-      }
-    }
+     {
+       if(this.novoKorisnickoIme!=="" && this.korisnickiNalog)
+       {
+         this.korisnickiNalog.korisnickoIme=this.novoKorisnickoIme;
+         let url: string = MyConfig.adresa_servera + `/updateNaloga`;
+         this.httpClient.post(url, this.korisnickiNalog).subscribe(x => {
+           console.log("Uspjesno promijenjeno")
+         })
+         this.SveFalse();
+       }
+       else {
+         this.emptyKorIme=true;
+       }
+     }
   }
-  SveFalse(){
-    this.showProvjeraLozinkeZaNalog=false;
-    this.showProvjeraLozinkeZaLozinku=false;
-    this.showPromijeniLozinku=false;
-    this.showErrorNePostojiNalog=false;
-    this.showErrorNePostojiNalog=false
-    this.showPromijeniLozinku=false;
-    this.showProvjeraLozinkeZaLozinku=false;
-    this.showProvjeraLozinkeZaNalog=false;
-    this.showPromijeniNalog=false;
-    this.emptyKorIme=false;
-    this.lozicnkeNotMatching=false;
-  }
+ SveFalse(){
+   this.showProvjeraLozinkeZaNalog=false;
+   this.showProvjeraLozinkeZaLozinku=false;
+   this.showPromijeniLozinku=false;
+   this.showErrorNePostojiNalog=false;
+   this.showErrorNePostojiNalog=false
+   this.showPromijeniLozinku=false;
+   this.showProvjeraLozinkeZaLozinku=false;
+   this.showProvjeraLozinkeZaNalog=false;
+   this.showPromijeniNalog=false;
+   this.emptyKorIme=false;
+   this.lozicnkeNotMatching=false;
+ }
   PromijeniKorisnickoIme() {
     this.prikaziDialog=true;
     this.showProvjeraLozinkeZaNalog=true;
