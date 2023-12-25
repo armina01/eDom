@@ -25,7 +25,7 @@ export class NapomenaComponent implements OnInit{
   public vrsteNapomena:VrstaNapomeneGetAllResponseVrstaNapomene[]=[];
   public prikazaniKorisniciDoma:  OdabraniKorisnikDoma[] = [];
     ngOnInit(): void {
-      this.getNapomene();
+      this.getVrsteNapomene();
       this.getAllKorisnici();
     }
     constructor(public httpClient: HttpClient,private dialog: MatDialog) {
@@ -48,7 +48,7 @@ export class NapomenaComponent implements OnInit{
     })
   }
 
-  getNapomene() {
+  getVrsteNapomene() {
     let url = MyConfig.adresa_servera + `/vrstaNapomene/getAll`
     this.httpClient.get<VrstaNapomeneGetAllResponse>(url).subscribe((x: VrstaNapomeneGetAllResponse) => {
       this.vrsteNapomena=x.vrsteNapomena;
