@@ -34,6 +34,7 @@ export class NapomenaComponent implements OnInit{
     public napomenaDodajRequest:NapomenaDodajRequest={
       opis:"",
       datumPostavke:new Date(),
+      isAktivna:false,
       prioritet:false,
       zaposlenikId:0,
       korisnikDomaID:0,
@@ -82,7 +83,6 @@ export class NapomenaComponent implements OnInit{
       console.log("Napomena uspjesno dodana");
     });
     korisnik.selected=false;
-    this.napomenaDodajRequest.prioritet=false;
   }
 
   Dodaj() {

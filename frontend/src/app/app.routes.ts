@@ -20,6 +20,7 @@ import {TerapijaComponent} from "./terapija/terapija.component";
 import {LijekComponent} from "./lijek/lijek.component";
 import {NapomenaComponent} from "./napomena/napomena.component";
 import {PregledNapomenaComponent} from "./pregled-napomena/pregled-napomena.component";
+import {PregledAktivnihNapomenaComponent} from "./pregled-aktivnih-napomena/pregled-aktivnih-napomena.component";
 
 
 export const routes: Routes = [
@@ -38,8 +39,8 @@ export const routes: Routes = [
   {path:'terapija',component:TerapijaComponent},
   {path:'lijek',component:LijekComponent},
   {path:'napomena',component:NapomenaComponent},
-  {path:'pregledNapomena/:id', component: PregledNapomenaComponent}
-
+  {path:'pregledNapomena/:id', component: PregledNapomenaComponent},
+  {path:'pregledAktivnihNapomena/:id', component: PregledAktivnihNapomenaComponent}
 ]
 
 

@@ -22,6 +22,7 @@ namespace DomZaStaraLicaApi.Endpoints.Napomena.Dodaj
             {
                 Opis = request.Opis,
                 Prioritet = request.Prioritet,
+                isAktivna=request.isAktivna,
                 DatumPostavke = request.DatumPostavke,
                 ZaposlenikId = request.ZaposlenikId,
                 KorisnikDomaID=request.KorisnikDomaID,

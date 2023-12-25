@@ -26,6 +26,7 @@ namespace DomZaStaraLicaApi.Endpoints.Napomena.Update
 
             napomena.Opis=request.Opis;
             napomena.Prioritet=request.Prioritet;
+            napomena.isAktivna = request.isAktivna;
             napomena.DatumPostavke=request.DatumPostavke;
             napomena.ZaposlenikId=request.ZaposlenikId;
             napomena.KorisnikDomaID = request.KorisnikDomaID;

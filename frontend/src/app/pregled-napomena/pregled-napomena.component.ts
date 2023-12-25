@@ -4,18 +4,12 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {ActivatedRoute} from "@angular/router";
 import {MyConfig} from "../my-config";
-import {
-  KorisnikDomaGetAllResponse,
-  KorisnikDomaGetAllResponseKorisnik
-} from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
 import {NapomenaGetAllResponse, NapomenaGetAllResponseNapomena} from "./napomenaGetAllResponse";
 import {
   VrstaNapomeneGetAllResponse,
   VrstaNapomeneGetAllResponseVrstaNapomene
 } from "../napomena/vrstaNapomeneGetAllResponse";
-import {DoktorGetAllResponse} from "../doktor/doktorGetAllResponse";
 import {ZaposlenikGetAllRsponse, ZaposlenikGetAllRsponseZaposlenik} from "./zaposlenikGetAllRsponse";
-import {DijagnozaGetAllResponseDijagnoza} from "../dijagnoza/dijagnozaGetAllResponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
@@ -34,7 +28,9 @@ export class PregledNapomenaComponent implements OnInit{
   public zaposlenici:ZaposlenikGetAllRsponseZaposlenik[]=[];
   public vrsteNapomena:VrstaNapomeneGetAllResponseVrstaNapomene[]=[];
   public OdabranaNapomena: NapomenaGetAllResponseNapomena | null=null
-  public napomenaPrioritet:string="";
+
+
+
     ngOnInit(): void {
       this.route.params.subscribe(params => {
         this.korisnikId = +params['id'];
@@ -50,6 +46,7 @@ export class PregledNapomenaComponent implements OnInit{
       napomenaId:0,
       opis:"",
       datumPostavke:new Date(),
+      isAktivna:false,
       prioritet:false,
       zaposlenikId:0,
       vrstaNapomeneId:0,
@@ -113,12 +110,14 @@ export class PregledNapomenaComponent implements OnInit{
   };
 
 
+
   Odaberi(item: NapomenaGetAllResponseNapomena) {
     this.OdabranaNapomena={
       napomenaId:item.napomenaId,
       opis:item.opis,
       prioritet:item.prioritet,
       datumPostavke:item.datumPostavke,
+      isAktivna:item.isAktivna,
       zaposlenikId:item.zaposlenikId,
       korisnikDomaID:item.korisnikDomaID,
       vrstaNapomeneId:item.vrstaNapomeneId
@@ -133,6 +132,7 @@ export class PregledNapomenaComponent implements OnInit{
         opis:this.OdabranaNapomena.opis,
         prioritet:this.OdabranaNapomena.prioritet,
         datumPostavke:this.OdabranaNapomena.datumPostavke,
+        isAktivna:this.OdabranaNapomena.isAktivna,
         zaposlenikId:this.OdabranaNapomena.zaposlenikId,
         korisnikDomaID:this.OdabranaNapomena.korisnikDomaID,
         vrstaNapomeneId:this.OdabranaNapomena.vrstaNapomeneId
@@ -148,4 +148,5 @@ export class PregledNapomenaComponent implements OnInit{
       this.ngOnInit();
     }, 5000);
   }
+
 }

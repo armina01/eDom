@@ -13,6 +13,10 @@
     <input type="date" name="datumPostavke" [ngModelOptions]="{standalone: true}" [(ngModel)]="napomenaDodajRequest.datumPostavke">
   </div>
   <div>
+    <label>Aktivna</label>
+    <input  type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="napomenaDodajRequest.isAktivna">
+  </div>
+  <div>
     <label>Zaposlenik</label>
     <input type="number" name="zaposlenikId" [ngModelOptions]="{standalone: true}" [(ngModel)]="napomenaDodajRequest.zaposlenikId">
   </div>

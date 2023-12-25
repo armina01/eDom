@@ -25,6 +25,7 @@ namespace DomZaStaraLicaApi.Endpoints.Napomena.GetAll
                     NapomenaId=x.NapomenaId,
                     Opis = x.Opis,
                     Prioritet = x.Prioritet,
+                    isAktivna=x.isAktivna,
                     DatumPostavke = x.DatumPostavke,
                     ZaposlenikId = x.ZaposlenikId,
                     KorisnikDomaID=x.KorisnikDomaID,

@@ -7,6 +7,7 @@ export interface NapomenaGetAllResponseNapomena{
   opis: string
   prioritet: boolean
   datumPostavke: Date
+  isAktivna:boolean
   zaposlenikId: number
   korisnikDomaID: number
   vrstaNapomeneId: number

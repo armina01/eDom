@@ -117,4 +117,8 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     this.router.navigate(['/pregledNapomena', item.korisnikDomaID]);
 
   }
+
+  PrikaziAktivneNapomene(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/pregledAktivnihNapomena', item.korisnikDomaID]);
+  }
 }

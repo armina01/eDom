@@ -4,6 +4,7 @@ using DomZaStaraLicaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231225113149_editNapomene")]
+    partial class editNapomene
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,6 +184,9 @@ namespace DomZaStaraLicaApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NapomenaId"));
 
+                    b.Property<DateTime?>("DatumIsteka")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DatumPostavke")
                         .HasColumnType("datetime2");
 
@@ -199,9 +205,6 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.Property<int>("ZaposlenikId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("isAktivna")
-                        .HasColumnType("bit");
 
                     b.HasKey("NapomenaId");
 
