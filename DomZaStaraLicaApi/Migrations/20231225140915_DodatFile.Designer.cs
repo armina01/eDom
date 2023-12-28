@@ -4,6 +4,7 @@ using DomZaStaraLicaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231225140915_DodatFile")]
+    partial class DodatFile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,6 +85,23 @@ namespace DomZaStaraLicaApi.Migrations
                     b.HasIndex("ZaposlenikId");
 
                     b.ToTable("Dijagnoza");
+                });
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.MyFiles", b =>
+                {
+                    b.Property<int>("FileId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileId"));
+
+                    b.Property<byte[]>("MyFile")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.HasKey("FileId");
+
+                    b.ToTable("MyFiles");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.IntervalZadatka", b =>
@@ -172,23 +192,6 @@ namespace DomZaStaraLicaApi.Migrations
                     b.HasIndex("OpstinaID");
 
                     b.ToTable("KorisnikDoma");
-                });
-
-            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.MyFile", b =>
-                {
-                    b.Property<int>("FileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileId"));
-
-                    b.Property<byte[]>("MojFile")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.HasKey("FileId");
-
-                    b.ToTable("MyFiles");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Opstina", b =>
@@ -477,7 +480,7 @@ namespace DomZaStaraLicaApi.Migrations
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.PlanIshrane", b =>
                 {
-                    b.HasOne("DomZaStaraLicaApi.Data.Models.MyFile", "File")
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.MyFiles", "MyFiles")
                         .WithMany()
                         .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -495,7 +498,7 @@ namespace DomZaStaraLicaApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("File");
+                    b.Navigation("MyFiles");
 
                     b.Navigation("Nutricionista");
 

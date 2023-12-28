@@ -4,6 +4,7 @@ using DomZaStaraLicaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231225121310_DodanPlanIshrane")]
+    partial class DodanPlanIshrane
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,23 +177,6 @@ namespace DomZaStaraLicaApi.Migrations
                     b.ToTable("KorisnikDoma");
                 });
 
-            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.MyFile", b =>
-                {
-                    b.Property<int>("FileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileId"));
-
-                    b.Property<byte[]>("MojFile")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.HasKey("FileId");
-
-                    b.ToTable("MyFiles");
-                });
-
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Opstina", b =>
                 {
                     b.Property<int>("OpstinaID")
@@ -219,8 +205,9 @@ namespace DomZaStaraLicaApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlanIshraneId"));
 
-                    b.Property<int>("FileId")
-                        .HasColumnType("int");
+                    b.Property<byte[]>("MyFiles")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("KorisnikDomaId")
                         .HasColumnType("int");
@@ -229,8 +216,6 @@ namespace DomZaStaraLicaApi.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("PlanIshraneId");
-
-                    b.HasIndex("FileId");
 
                     b.HasIndex("KorisnikDomaId");
 
@@ -477,12 +462,6 @@ namespace DomZaStaraLicaApi.Migrations
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.PlanIshrane", b =>
                 {
-                    b.HasOne("DomZaStaraLicaApi.Data.Models.MyFile", "File")
-                        .WithMany()
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DomZaStaraLicaApi.Data.Models.KorisnikDoma", "korisnikDoma")
                         .WithMany()
                         .HasForeignKey("KorisnikDomaId")
@@ -494,8 +473,6 @@ namespace DomZaStaraLicaApi.Migrations
                         .HasForeignKey("NutricionistaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("File");
 
                     b.Navigation("Nutricionista");
 

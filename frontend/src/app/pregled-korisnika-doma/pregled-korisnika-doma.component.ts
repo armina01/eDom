@@ -122,4 +122,8 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   PregledArhiveZadataka(item: KorisnikDomaGetAllResponseKorisnik) {
     this.router.navigate(['/pregledarhivezadataka', item.korisnikDomaID]);
   }
+
+  DodajPlanIshrane(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/dodajplanishrane', item.korisnikDomaID]);
+  }
 }

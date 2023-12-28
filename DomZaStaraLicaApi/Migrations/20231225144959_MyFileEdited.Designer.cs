@@ -4,6 +4,7 @@ using DomZaStaraLicaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231225144959_MyFileEdited")]
+    partial class MyFileEdited
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,7 +187,8 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.Property<byte[]>("MojFile")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("MojFile");
 
                     b.HasKey("FileId");
 
@@ -477,7 +481,7 @@ namespace DomZaStaraLicaApi.Migrations
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.PlanIshrane", b =>
                 {
-                    b.HasOne("DomZaStaraLicaApi.Data.Models.MyFile", "File")
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.MyFile", "MyFiles")
                         .WithMany()
                         .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -495,7 +499,7 @@ namespace DomZaStaraLicaApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("File");
+                    b.Navigation("MyFiles");
 
                     b.Navigation("Nutricionista");
 

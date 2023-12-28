@@ -24,8 +24,8 @@ namespace DomZaStaraLicaApi.Data
 
 
         public DbSet<Dijagnoza> Dijagnoza { get; set; }
-
-
+        public DbSet<PlanIshrane> PlanIshrane { get; set; }
+        public DbSet<MyFile> MyFiles { get; set; }
 
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
