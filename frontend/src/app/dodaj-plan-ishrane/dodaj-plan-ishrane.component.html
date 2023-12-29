@@ -1,4 +1,11 @@
 <input type="file" (change)="onFileSelected($event)">
 <button (click)="uploadFile()">Upload</button>
-<button (click)="DodajPlanIshrane()">Upload</button>
+<button (click)="DodajPlanIshrane()">Add Plan</button>
+
+<div *ngFor="let planIshrane of planIshraneResponse" class="plan-item">
+    <div class="file-id">File ID: {{ planIshrane.fileId }}</div>
+    <div class="file-name">File Name: {{ PrikaziImeFajla(planIshrane.fileId) }}</div>
+    <button class="download-button" (click)="downloadFile(planIshrane.fileId)">Download</button>
+    <button class="delete-button" (click)="deletePlanIshrane(planIshrane)">Izbrisi</button>
+</div>
 

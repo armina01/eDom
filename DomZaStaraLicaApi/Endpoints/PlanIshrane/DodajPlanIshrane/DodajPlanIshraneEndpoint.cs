@@ -20,7 +20,8 @@ namespace DomZaStaraLicaApi.Endpoints.PlanIshrane.DodajPlanIshrane
             {
                 KorisnikDomaId=request.KorisnikDomaId,
                 NutricionistaId=request.NutricionistaId,
-                FileId=request.FileId
+                FileId=request.FileId,
+                DatumPostavke=request.DatumPostavke
             };
             _applicationDbContext.PlanIshrane.Add(planIshrane);
             await _applicationDbContext.SaveChangesAsync();

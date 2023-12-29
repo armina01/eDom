@@ -8,6 +8,7 @@ namespace DomZaStaraLicaApi.Data.Models
     {
         [Key]
         public int FileId { get; set; }
+        public string ImeFile { get; set; }
         public byte[] MojFile { get; set; }
     }
 }

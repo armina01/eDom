@@ -7,6 +7,7 @@ namespace DomZaStaraLicaApi.Data.Models
     {
         [Key]
         public int PlanIshraneId { get; set; }
+        public DateTime DatumPostavke { get; set; }
         public int FileId { get; set; }
         [ForeignKey(nameof(FileId))]
         public MyFile File { get; set; }

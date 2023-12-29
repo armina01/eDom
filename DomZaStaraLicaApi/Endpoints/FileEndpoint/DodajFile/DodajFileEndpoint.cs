@@ -32,7 +32,8 @@ namespace DomZaStaraLicaApi.Endpoints.FileEndpoint.DodajFile
                     file.CopyTo(ms);
                     var fileEntity = new Data.Models.MyFile
                     {
-                        MojFile = ms.ToArray()
+                        MojFile = ms.ToArray(),
+                        ImeFile=file.FileName
                     };
 
                     _applicationDbContext.MyFiles.Add(fileEntity);
@@ -44,25 +45,22 @@ namespace DomZaStaraLicaApi.Endpoints.FileEndpoint.DodajFile
             
         }
 
-        [HttpGet("getAllFiles")]
-        public IActionResult GetAllFiles()
+        [HttpGet("downloadFile/{fileId}")]
+        public IActionResult DownloadFile(int fileId)
         {
             try
             {
-                var files = _applicationDbContext.MyFiles.ToList();
-                var filesWithBase64 = files.Select(file =>
+                var fileEntity = _applicationDbContext.MyFiles.Find(fileId);
+
+                if (fileEntity == null)
                 {
-                    return new
-                    {
-                        file.FileId,
-                        FileContent = Convert.ToBase64String(file.MojFile)
-                    };
-                });
-                return Ok(files);
+                    return NotFound("File not found");
+                }
+
+                return File(fileEntity.MojFile, "application/octet-stream", fileEntity.ImeFile);
             }
             catch (Exception ex)
             {
-                
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
         }

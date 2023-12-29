@@ -1,0 +1,30 @@
+/* dodaj-plan-ishrane.component.css */
+
+input,
+button {
+    margin-bottom: 10px;
+}
+
+.plan-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.file-id {
+    font-weight: bold;
+    color: #333;
+}
+
+.file-name {
+    margin-top: 5px;
+    color: #555;
+}
+
+.download-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+}
