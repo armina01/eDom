@@ -17,7 +17,7 @@ export class MyAuthInterceptor implements HttpInterceptor {
 
     // Get the auth token from the service.
     const authToken = this.authService.getAuthorizationToken()?.vrijednost ?? "";
-    console.log('token', authToken);
+
 
     // Clone the request and replace the original headers with
     // cloned headers, updated with the authorization.
@@ -26,7 +26,6 @@ export class MyAuthInterceptor implements HttpInterceptor {
         'my-auth-token': authToken
       }
     });
-    console.log('request', authReq);
 
     // send cloned request with header to the next handler.
     return next.handle(authReq);

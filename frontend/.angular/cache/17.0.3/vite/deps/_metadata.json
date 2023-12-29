@@ -41,6 +41,7 @@
     "@angular/platform-browser/animations": {
       "src": "../../../../../node_modules/@angular/platform-browser/fesm2022/animations.mjs",
       "file": "@angular_platform-browser_animations.js",
+
       "fileHash": "fbc72ee5",
       "needsInterop": false
     },

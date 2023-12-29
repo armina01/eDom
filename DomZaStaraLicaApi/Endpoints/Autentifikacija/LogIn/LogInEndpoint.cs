@@ -28,10 +28,10 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
                 throw new Exception("nije pronadjen korisnicki nalog za korisnicko ime = " + request.KorisnickoIme);
 
             }
-            //if (!BCrypt.Net.BCrypt.EnhancedVerify(request.Lozinka,logiraniKorisnik.Lozinka))
-            //{
-            //    throw new Exception("Lozinka ne odgovara nalogu " + request.KorisnickoIme);
-            //}
+            if (!BCrypt.Net.BCrypt.EnhancedVerify(request.Lozinka,logiraniKorisnik.Lozinka))
+            {
+                throw new Exception("Lozinka ne odgovara nalogu " + request.KorisnickoIme);
+            }
             string randomString = TokenGenerator.Generate(10);
 
             var noviToken = new AuthToken()

@@ -1,11 +1,13 @@
-import { ApplicationConfig } from '@angular/core';
+import {ApplicationConfig, ErrorHandler} from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpHandler} from "@angular/common/http";
 import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
-import {MyAuthService} from "./Services/MyAuthService";
+import {MY_AUTH_SERVICE_TOKEN, MyAuthService} from "./Services/MyAuthService";
+import {ZaposlenikEndpoint} from "./Services/ZaposlenikEndpoint";
+import {CustomErrorHandler} from "./Services/CustomErrorHandler";
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes), provideAnimations()
@@ -13,7 +15,9 @@ export const appConfig: ApplicationConfig = {
     {provide: HttpHandler,
       useClass: MyAuthInterceptor,
       multi: true,},
-    HttpClient
+       { provide: MY_AUTH_SERVICE_TOKEN, useClass: MyAuthService },
+      { provide: ErrorHandler, useClass: CustomErrorHandler },
+        HttpClient
    ]
 
 };

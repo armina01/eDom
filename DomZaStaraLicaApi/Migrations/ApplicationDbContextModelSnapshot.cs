@@ -50,6 +50,7 @@ namespace DomZaStaraLicaApi.Migrations
                     b.ToTable("AuthToken");
                 });
 
+
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.CLijek", b =>
                 {
                     b.Property<int>("LijekId")
@@ -105,6 +106,27 @@ namespace DomZaStaraLicaApi.Migrations
                     b.ToTable("Dijagnoza");
                 });
 
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.IntervalZadatka", b =>
+                {
+                    b.Property<int>("IntervalZadatkaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IntervalZadatkaId"));
+
+                    b.Property<bool>("JeDnevni")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("JeSedmicni")
+                        .HasColumnType("bit");
+
+                    b.HasKey("IntervalZadatkaId");
+
+                    b.ToTable("IntervalZadatka");
+                });
+
+
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.KorisnickiNalog", b =>
                 {
                     b.Property<int>("NalogId")
@@ -130,13 +152,16 @@ namespace DomZaStaraLicaApi.Migrations
 
                     b.Property<string>("KorisnickoIme")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Lozinka")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("NalogId");
+
+                    b.HasIndex("KorisnickoIme")
+                        .IsUnique();
 
                     b.ToTable("KorisnickiNalog");
                 });
@@ -258,6 +283,7 @@ namespace DomZaStaraLicaApi.Migrations
                     b.ToTable("PoslovnaPozicija");
                 });
 
+
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Terapija", b =>
                 {
                     b.Property<int>("TerapijaId")
@@ -276,9 +302,46 @@ namespace DomZaStaraLicaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.VrstaZadatka", b =>
+                {
+                    b.Property<int>("VrstaZadatkaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VrstaZadatkaId"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VrstaZadatkaId");
+
+                    b.ToTable("VrstaZadatka");
+                });
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Zadatak", b =>
+                {
+                    b.Property<int>("ZadatakId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ZadatakId"));
+
+                    b.Property<DateTime>("DatumPostavke")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IntervalZadatkaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("KorisnikDomaId")
+                        .HasColumnType("int");
+
+
                     b.Property<string>("Opis")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
 
                     b.Property<string>("VremenskiInterval")
                         .IsRequired()
@@ -331,6 +394,33 @@ namespace DomZaStaraLicaApi.Migrations
                     b.HasKey("VrstaNapomeneId");
 
                     b.ToTable("VrstaNapomene");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("VrstaZadatkaId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ZaposlenikEditovaoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ZaposlenikPostavioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ZadatakId");
+
+                    b.HasIndex("IntervalZadatkaId");
+
+                    b.HasIndex("KorisnikDomaId");
+
+                    b.HasIndex("VrstaZadatkaId");
+
+                    b.HasIndex("ZaposlenikEditovaoId");
+
+                    b.HasIndex("ZaposlenikPostavioId");
+
+                    b.ToTable("Zadatak");
+
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Zaposlenik", b =>
@@ -480,6 +570,7 @@ namespace DomZaStaraLicaApi.Migrations
                     b.Navigation("Opstina");
                 });
 
+
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Napomena", b =>
                 {
                     b.HasOne("DomZaStaraLicaApi.Data.Models.KorisnikDoma", "KorisnikDoma")
@@ -512,6 +603,13 @@ namespace DomZaStaraLicaApi.Migrations
                     b.HasOne("DomZaStaraLicaApi.Data.Models.Doktor", "Doktor")
                         .WithMany()
                         .HasForeignKey("DoktorId")
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Zadatak", b =>
+                {
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.IntervalZadatka", "IntervalZadatka")
+                        .WithMany()
+                        .HasForeignKey("IntervalZadatkaId")
+
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -541,6 +639,37 @@ namespace DomZaStaraLicaApi.Migrations
                     b.Navigation("Lijek");
 
                     b.Navigation("Terapija");
+
+                        .HasForeignKey("KorisnikDomaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.VrstaZadatka", "VrstaZadatka")
+                        .WithMany()
+                        .HasForeignKey("VrstaZadatkaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.Zaposlenik", "ZaposlenikEditovao")
+                        .WithMany()
+                        .HasForeignKey("ZaposlenikEditovaoId");
+
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.Zaposlenik", "ZaposlenikPostavio")
+                        .WithMany()
+                        .HasForeignKey("ZaposlenikPostavioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IntervalZadatka");
+
+                    b.Navigation("KorisnikDoma");
+
+                    b.Navigation("VrstaZadatka");
+
+                    b.Navigation("ZaposlenikEditovao");
+
+                    b.Navigation("ZaposlenikPostavio");
+
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Zaposlenik", b =>

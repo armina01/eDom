@@ -2,7 +2,7 @@
 {
     public class UpdateKorisnickiNalogRequest
     {
-        public int KorisnikId { get; set; }
+        public int NalogId { get; set; }
         public string KorisnickoIme { get; set; }
         public string Lozinka { get; set; }
         public bool JeAdmin { get; set; }

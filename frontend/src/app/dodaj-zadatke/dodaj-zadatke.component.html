@@ -1,0 +1,54 @@
+<div class="form-group">
+    <label for="opisZadatka">Opis zadatka</label>
+    <input type="text" class="form-control" id="opisZadatka" placeholder="Enter opis zadatka"
+           [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.opis" >
+    <label *ngIf="showErrorPrazno" style="color: red;" >Polje je obavezno!</label>
+</div>
+
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" id="gridCheck2"
+           [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.status">
+    <label class="form-check-label" for="gridCheck2" >Status zadatka</label>
+</div>
+
+<div class="form-group">
+    <label for="datumZadatka">Datum zadatka</label>
+    <input type="date" class="form-control" id="datumZadatka"
+           [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.datumPostavke">
+</div>
+
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" id="dnevni"
+           [ngModelOptions]="{standalone:true}" [(ngModel)]="_vrstaDnevnogZadatkaId">
+    <label class="form-check-label" for="dnevni">Dnevni</label>
+</div>
+
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" id="sedmicni"
+           [ngModelOptions]="{standalone:true}" [(ngModel)]="_vrstaSedmicnogZadatkaId">
+    <label class="form-check-label" for="sedmicni">Sedmični</label>
+</div>
+<label *ngIf="this.showErrorObojeIzabrano===true"  style="color: red;" >Nije moguće izabrati obje opcije!</label>
+<label *ngIf="this.showErrorNijeIzabrano===true"  style="color: red;" >Obavezno je izabrati jednu opciju!</label>
+<Button (click)="DodajZadatak()" >Dodaj zadatak</Button>
+<button type="button" class="btn btn-primary btn-sm" (click)="SelectAll()" >Oznaci sve</button>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Oznaci</th>
+        <th>ImePrezime</th>
+        <th>JMBG</th>
+        <th>Datum rodjenja</th>
+        <th>Broj sobe</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of getKorisnici()">
+        <td><input  type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="item.selected" /></td>
+        <td>{{ item.imePrezime }}</td>
+        <td>{{ item.jmbg}}</td>
+        <td>{{ item.datumRodjenja | date }}</td>
+        <td>{{ item.brojSobe }}</td>
+    </tr>
+    </tbody>
+</table>
