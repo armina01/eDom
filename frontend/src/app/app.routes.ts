@@ -26,6 +26,7 @@ import {DodajZadatkeComponent} from "./dodaj-zadatke/dodaj-zadatke.component";
 import {PregledArhiveZadatakaComponent} from "./pregled-arhive-zadataka/pregled-arhive-zadataka.component";
 import {PregledPodatakaNjegovateljComponent} from "./pregled-podataka-njegovatelj/pregled-podataka-njegovatelj.component";
 import {PregledPodatakaNutricionistaComponent} from "./pregled-podataka-nutricionista/pregled-podataka-nutricionista.component";
+import {PregledPodatakaDoktorComponent} from "./pregled-podataka-doktor/pregled-podataka-doktor.component";
 
 export const routes: Routes = [
   {path: 'header', component: HeaderComponent},
@@ -50,7 +51,8 @@ export const routes: Routes = [
   {path:'pregledsedmicnihzadataka/:id',component:PregledSedmicnihZadatakaComponent},
   {path:'pregledarhivezadataka/:id',component:PregledArhiveZadatakaComponent},
   {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent},
-  {path:'nutricionista/o-meni',component:PregledPodatakaNutricionistaComponent}
+  {path:'nutricionista/o-meni',component:PregledPodatakaNutricionistaComponent},
+  {path:'doktor/o-meni',component:PregledPodatakaDoktorComponent}
 
 ]
 
