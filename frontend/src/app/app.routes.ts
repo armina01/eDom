@@ -14,21 +14,11 @@ import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/h
 import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
 import {MyAuthService} from "./Services/MyAuthService";
 import {FormsModule} from "@angular/forms";
-
-
-
-
-
-
-import {PregledKorisnikaDomaComponent} from "./pregled-korisnika-doma/pregled-korisnika-doma.component";
-import {OpstinaComponent} from "./opstina/opstina.component";
-import {KorisnickiNalogComponent} from "./korisnicki-nalog/korisnicki-nalog.component";
-import {KorisnikComponent} from "./korisnik/korisnik.component";
-import {PoslovnaPozicijaComponent} from "./poslovna-pozicija/poslovna-pozicija.component";
-import {NjegovateljComponent} from "./njegovatelj/njegovatelj.component";
-import {DoktorComponent} from "./doktor/doktor.component";
-import {FizioterapeutComponent} from "./fizioterapeut/fizioterapeut.component";
 import {DijagnozaComponent} from "./dijagnoza/dijagnoza.component";
+import {PregledPodatakaDoktorComponent} from "./pregled-podataka-doktor/pregled-podataka-doktor.component";
+import {
+  PregledPodatakaFizioterapeutComponent
+} from "./pregled-podataka-fizioterapeut/pregled-podataka-fizioterapeut.component";
 
 
 export const routes: Routes = [
@@ -43,7 +33,9 @@ export const routes: Routes = [
   {path:'fizioterapeut',component:FizioterapeutComponent},
   {path:'dijagnoza',component:DijagnozaComponent},
   {path:'login',component:LogInComponent},
-  {path:'home',component:HomepageComponent}
+  {path:'home',component:HomepageComponent},
+  {path:'doktor/o-meni',component:PregledPodatakaDoktorComponent},
+  {path:'fizioterapeut/o-meni',component:PregledPodatakaFizioterapeutComponent}
 ]
 
 
