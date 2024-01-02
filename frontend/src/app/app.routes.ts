@@ -15,7 +15,6 @@ import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
 import {MyAuthService} from "./Services/MyAuthService";
 import {FormsModule} from "@angular/forms";
 import {DijagnozaComponent} from "./dijagnoza/dijagnoza.component";
-import {PregledPodatakaDoktorComponent} from "./pregled-podataka-doktor/pregled-podataka-doktor.component";
 import {
   PregledPodatakaFizioterapeutComponent
 } from "./pregled-podataka-fizioterapeut/pregled-podataka-fizioterapeut.component";
@@ -34,7 +33,6 @@ export const routes: Routes = [
   {path:'dijagnoza',component:DijagnozaComponent},
   {path:'login',component:LogInComponent},
   {path:'home',component:HomepageComponent},
-  {path:'doktor/o-meni',component:PregledPodatakaDoktorComponent},
   {path:'fizioterapeut/o-meni',component:PregledPodatakaFizioterapeutComponent}
 ]
 

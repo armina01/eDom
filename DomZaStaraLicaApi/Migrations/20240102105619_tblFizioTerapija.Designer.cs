@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231206191658_editedPoslovnaPozicija")]
-    partial class editedPoslovnaPozicija
+    [Migration("20240102105619_tblFizioTerapija")]
+    partial class tblFizioTerapija
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,98 @@ namespace DomZaStaraLicaApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.AuthToken", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("KorisnickiNalogId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ipAdresa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("vrijednost")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("vrijemeEvidentiranja")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("KorisnickiNalogId");
+
+                    b.ToTable("AuthToken");
+                });
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Dijagnoza", b =>
+                {
+                    b.Property<int>("dijagnozaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("dijagnozaId"));
+
+                    b.Property<int>("KorisnikDomaID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ZaposlenikId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("datumDijagnoze")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("nazivBolesti")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("opis")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("dijagnozaId");
+
+                    b.HasIndex("KorisnikDomaID");
+
+                    b.HasIndex("ZaposlenikId");
+
+                    b.ToTable("Dijagnoza");
+                });
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.FizioTerapija", b =>
+                {
+                    b.Property<int>("FizioTerapijaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FizioTerapijaId"));
+
+                    b.Property<DateTime>("DatumPostavke")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("KorisnikDomaID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Opis")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ZaposlenikId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FizioTerapijaId");
+
+                    b.HasIndex("KorisnikDomaID");
+
+                    b.HasIndex("ZaposlenikId");
+
+                    b.ToTable("FizioTerapija");
+                });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.KorisnickiNalog", b =>
                 {
@@ -241,6 +333,55 @@ namespace DomZaStaraLicaApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("Nutricionista");
+                });
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.AuthToken", b =>
+                {
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.KorisnickiNalog", "korisnickiNalog")
+                        .WithMany()
+                        .HasForeignKey("KorisnickiNalogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("korisnickiNalog");
+                });
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Dijagnoza", b =>
+                {
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.KorisnikDoma", "KorisnikDoma")
+                        .WithMany()
+                        .HasForeignKey("KorisnikDomaID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.Zaposlenik", "Zaposlenik")
+                        .WithMany()
+                        .HasForeignKey("ZaposlenikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("KorisnikDoma");
+
+                    b.Navigation("Zaposlenik");
+                });
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.FizioTerapija", b =>
+                {
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.KorisnikDoma", "KorisnikDoma")
+                        .WithMany()
+                        .HasForeignKey("KorisnikDomaID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomZaStaraLicaApi.Data.Models.Zaposlenik", "Zaposlenik")
+                        .WithMany()
+                        .HasForeignKey("ZaposlenikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("KorisnikDoma");
+
+                    b.Navigation("Zaposlenik");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.KorisnikDoma", b =>
