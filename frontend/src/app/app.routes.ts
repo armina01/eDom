@@ -30,6 +30,7 @@ import {PregledArhiveZadatakaComponent} from "./pregled-arhive-zadataka/pregled-
 import {PregledPodatakaNjegovateljComponent} from "./pregled-podataka-njegovatelj/pregled-podataka-njegovatelj.component";
 import {PregledPodatakaNutricionistaComponent} from "./pregled-podataka-nutricionista/pregled-podataka-nutricionista.component";
 import {PregledPodatakaDoktorComponent} from "./pregled-podataka-doktor/pregled-podataka-doktor.component";
+import {FizioTerapijaComponent} from "./fizio-terapija/fizio-terapija.component";
 
 
 export const routes: Routes = [
@@ -57,7 +58,9 @@ export const routes: Routes = [
   {path:'pregledarhivezadataka/:id',component:PregledArhiveZadatakaComponent},
   {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent},
   {path:'nutricionista/o-meni',component:PregledPodatakaNutricionistaComponent},
-  {path:'doktor/o-meni',component:PregledPodatakaDoktorComponent}
+  {path:'doktor/o-meni',component:PregledPodatakaDoktorComponent},
+  {path:'fizioterapeut/o-meni',component:PregledPodatakaFizioterapeutComponent},
+  {path:'fizioTerapija',component:FizioTerapijaComponent}
 
 
 ]

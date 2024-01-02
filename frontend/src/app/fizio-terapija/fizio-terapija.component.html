@@ -1,0 +1,23 @@
+<h1>Dodavanje fizio terapije</h1>
+<form>
+  <div>
+    <label>Opis</label>
+    <input type="text" name="opis" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.opis">
+  </div>
+  <div>
+    <label>Datum postavke </label>
+    <input type="date" name="datumPostavke" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.datumPostavke">
+  </div>
+  <div>
+    <label>ZizioterapeutId</label>
+    <input type="number" name="zaposlenikId" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.zaposlenikId">
+  </div>
+  <div>
+    <label for="cmbKorisnik">Izaberite korisnika doma:</label>
+    <select id="cmbKorisnik"  [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.korisnikDomaID">
+      <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime}}</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary mb-2" (click)="Dodaj()">Dodaj</button>
+</form>
+
