@@ -9,8 +9,12 @@ import {
   KorisnikDomaGetAllResponseKorisnik
 } from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
 import {MyConfig} from "../my-config";
-import {TerapijaGetAllResponseTerapija} from "../terapija/TerapijaGetAllResponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
+import {
+  FizioterapeutGetAllResponse,
+  FizioterapeutGetAllResponseFizioterapeut
+} from "../fizioterapeut/fizioterapeutGetAll";
+import {FizioTerapijaGetAllResponse, FizioTerapijaGetAllResponseFizioTerapija} from "./fizioTerapijaGetAllResponse";
 
 @Component({
   selector: 'app-fizio-terapija',
@@ -26,25 +30,48 @@ import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component
 export class FizioTerapijaComponent implements OnInit{
     ngOnInit(): void {
        this.GetAllKorisnike();
+       this.GetAllFizioTerapije();
+       this.getFizioterapeut();
+       this.GetAllFizioterapeuti();
     }
     constructor(public httpClient: HttpClient, private dialog: MatDialog) {
     }
     public korisniciDoma:KorisnikDomaGetAllResponseKorisnik[]=[];
+    public pretragaPoKorisniku: number = 0;
+    public allFizioterapeuti: FizioterapeutGetAllResponseFizioterapeut[] = [];
+    public allTerapije:FizioTerapijaGetAllResponseFizioTerapija[]=[];
+    public odabranaTerapija:FizioTerapijaGetAllResponseFizioTerapija | null=null;
+
+
 
     public terapijaRequest:FizioTerapijaRequest={
       opis:"",
       datumPostavke:new Date(),
       korisnikDomaID:0,
-      zaposlenikId:0
+      zaposlenikId:this.getFizioterapeut()?.zaposlenikId??0
+
 
     }
+  public terapijaUpdateRequest:FizioTerapijaGetAllResponseFizioTerapija={
+      fizioTerapijaId:0,
+    opis:"",
+    datumPostavke:new Date(),
+    korisnikDomaID:0,
+    zaposlenikId:0
+
+  }
   GetAllKorisnike() {
     let url = MyConfig.adresa_servera + `/korisnikDoma-getAll`
     this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x: KorisnikDomaGetAllResponse) => {
       this.korisniciDoma = x.korisnici;
     })
   }
-
+  GetAllFizioterapeuti() {
+    let url: string = MyConfig.adresa_servera + `/fizioterapeut-getAll`;
+    this.httpClient.get<FizioterapeutGetAllResponse>(url).subscribe(x => {
+      this.allFizioterapeuti= x.fizioterapeuti
+    })
+  }
 
   Dodaj() {
     let url = MyConfig.adresa_servera + `/fizioTerapija/dodaj`;
@@ -53,12 +80,12 @@ export class FizioTerapijaComponent implements OnInit{
       console.log("Terapija uspjesno dodana");
     });
   }
-  Obrisi(item: TerapijaGetAllResponseTerapija) {
+  Obrisi(item: FizioTerapijaGetAllResponseFizioTerapija) {
     const dialogRef: MatDialogRef<WarningDialogComponent, boolean> = this.openWarningDialog('Da li ste sigurni da želite izbrisati terapiju?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         let url: string = MyConfig.adresa_servera + `/fizioTerapija/obrisi`;
-        const params = new HttpParams().set('fizioTerapijaId', item.terapijaId);
+        const params = new HttpParams().set('fizioTerapijaId', item.fizioTerapijaId);
         this.httpClient.delete(url, {params}).subscribe(
           response => () => {
             console.log("Deleted item")
@@ -83,5 +110,61 @@ export class FizioTerapijaComponent implements OnInit{
       data: {message},
     });
   };
+
+  GetAllFizioTerapije() {
+    let url: string = MyConfig.adresa_servera + `/fizioTerapija/getAll`;
+    this.httpClient.get<FizioTerapijaGetAllResponse>(url).subscribe(x => {
+      this.allTerapije = x.fizioTerapije
+    })
+  }
+  getFiltriraneTerapije() {
+     return this.allTerapije.filter(x=>x.korisnikDomaID===this.pretragaPoKorisniku);
+  }
+
+  Odaberi(item: FizioTerapijaGetAllResponseFizioTerapija) {
+    this.odabranaTerapija = {
+      fizioTerapijaId:item.fizioTerapijaId,
+      opis:item.opis,
+      datumPostavke:item.datumPostavke,
+      zaposlenikId:item.zaposlenikId,
+      korisnikDomaID:item.korisnikDomaID
+    };
+  }
+
+  Update() {
+    if(this.odabranaTerapija)
+    {
+      this.terapijaUpdateRequest={
+        fizioTerapijaId:this.odabranaTerapija.fizioTerapijaId,
+        opis:this.odabranaTerapija.opis,
+        datumPostavke:this.odabranaTerapija.datumPostavke,
+        zaposlenikId:this.odabranaTerapija.zaposlenikId,
+        korisnikDomaID:this.odabranaTerapija.korisnikDomaID
+      }
+    }
+
+    let url: string = MyConfig.adresa_servera + `/fizioTerapija/update`;
+    console.log(this.terapijaUpdateRequest)
+    this.httpClient.post(url, this.terapijaUpdateRequest).subscribe(request => {
+      console.log("Terapija updateovana ", request)
+    })
+
+    this.odabranaTerapija=null;
+
+    setTimeout(() => {
+      this.ngOnInit();
+    }, 5000);
+  }
+
+
+  getFizioterapeut():FizioterapeutGetAllResponseFizioterapeut | null {
+    let korisnik = window.localStorage.getItem("korisnik")??"";
+    try {
+      return JSON.parse(korisnik);
+    }
+    catch (e){
+      return null;
+    }
+  }
 }
 
