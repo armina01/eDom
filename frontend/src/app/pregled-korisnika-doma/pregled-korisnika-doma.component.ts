@@ -10,6 +10,8 @@ import {KorisnikDomaUpdateRequest} from "./korisnikDomaUpdateRequest";
 import {OpsinaGetAllResponseOpstina, OpstinaGetAllResponse} from "../opstina/opstina-getAll";
 import {map, Observable} from "rxjs";
 import {KorisnikComponent} from "../korisnik/korisnik.component";
+import {Router} from "@angular/router";
+
 
 @Component({
   selector: 'app-pregled-korisnika-doma',
@@ -20,8 +22,8 @@ import {KorisnikComponent} from "../korisnik/korisnik.component";
 })
 export class PregledKorisnikaDomaComponent implements  OnInit{
 
+  constructor(public httpClient:HttpClient, private dialog: MatDialog, public router: Router) {
 
-  constructor(public httpClient:HttpClient, private dialog: MatDialog) {
   }
 
   public korisnikUpdateRequest: KorisnikDomaUpdateRequest ={
@@ -111,4 +113,28 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
       map((response:OpstinaGetAllResponse)=>response.opstine)
     );
   }
+
+
+  PrikaziNapomene(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/pregledNapomena', item.korisnikDomaID]);
+
+  }
+
+  PrikaziAktivneNapomene(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/pregledAktivnihNapomena', item.korisnikDomaID]);
+  }
+
+  PregledZadataka(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/pregleddnevnihzadataka', item.korisnikDomaID]);
+  }
+
+  PregledSedmicnihZadataka(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/pregledsedmicnihzadataka', item.korisnikDomaID]);
+  }
+
+  PregledArhiveZadataka(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/pregledarhivezadataka', item.korisnikDomaID]);
+
+  }
+
 }

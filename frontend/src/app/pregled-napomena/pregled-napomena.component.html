@@ -1,0 +1,89 @@
+<h2>Pregled napomena za korisnika doma!</h2>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Opis</th>
+    <th>Datum postavke</th>
+    <th>Status</th>
+    <th>Vrsta napomene</th>
+    <th>Zaposlenik</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of odabraneNapomene">
+    <td>{{ item.opis }}</td>
+    <td>{{ item.datumPostavke | date }}</td>
+    <td *ngIf="item.isAktivna; else neaktivna">Aktivna</td>
+    <ng-template #neaktivna><td>Neaktivna</td></ng-template>
+    <td>
+      <span *ngFor="let vrsta of vrsteNapomena">
+          <ng-container *ngIf="vrsta.vrstaNapomeneId===item.vrstaNapomeneId">
+            {{ vrsta.opis}}
+          </ng-container>
+        </span>
+    </td>
+    <td>
+      <span *ngFor="let zaposlenik of zaposlenici">
+          <ng-container *ngIf="zaposlenik.zaposlenikId===item.zaposlenikId">
+            {{ zaposlenik.imePrezime}}
+          </ng-container>
+        </span>
+    </td>
+    <td><button type="submit"  class="btn btn-primary" (click)="Obrisi(item)">Izbriši napomenu</button></td>
+    <td><button type="submit"  class="btn btn-primary" (click)="Odaberi(item)">Update napomenu</button></td>
+    <td *ngIf="item.prioritet===true" [ngStyle]="{'background-color': item.prioritet ? 'red' : 'inherit'}">
+            Bitna napomena !
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div *ngIf="OdabranaNapomena">
+
+  <div class="modal fade show" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-modal="true" role="dialog" style="display: block;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLiveLabel">Update napomene</h1>
+          <button type="button" (click)="OdabranaNapomena=null" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <div>
+            <label class="form-label"> NapomenaId: </label>
+            <input class="form-control"  [(ngModel)]="OdabranaNapomena.napomenaId" disabled>
+          </div>
+          <div>
+            <label class="form-label"> Napomena: </label>
+            <input class="form-control"  [(ngModel)]="OdabranaNapomena.opis">
+          </div>
+          <div>
+            <label>Prioritet</label>
+            <input  type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="OdabranaNapomena.prioritet">
+          </div>
+          <div>
+            <label>Aktivna</label>
+            <input  type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="OdabranaNapomena.isAktivna">
+          </div>
+          <div>
+            <label for="cmbVrstaNapomene">Izaberite vrstu napomene:</label>
+            <select id="cmbVrstaNapomene"  [ngModelOptions]="{standalone: true}" [(ngModel)]="OdabranaNapomena.vrstaNapomeneId">
+              <option *ngFor="let option of vrsteNapomena" [ngValue]="option.vrstaNapomeneId">{{ option.opis }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Zaposlenik</label>
+            <input class="form-control"  [(ngModel)]="OdabranaNapomena.zaposlenikId">
+          </div>
+
+
+          <div class="modal-footer">
+            <button type="button" (click)="OdabranaNapomena=null" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" (click)="Update()" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

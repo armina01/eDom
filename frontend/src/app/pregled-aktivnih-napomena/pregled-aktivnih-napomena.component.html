@@ -1,0 +1,39 @@
+
+<h2>Pregled aktivnih napomena</h2>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Opis</th>
+    <th>Datum postavke</th>
+    <th>Status</th>
+    <th>Vrsta napomene</th>
+    <th>Zaposlenik</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of aktivneNapomene">
+    <td>{{ item.opis }}</td>
+    <td>{{ item.datumPostavke | date }}</td>
+    <td *ngIf="item.isAktivna; else neaktivna">Aktivna</td>
+    <ng-template #neaktivna><td>Neaktivna</td></ng-template>
+    <td>
+      <span *ngFor="let vrsta of vrsteNapomena">
+          <ng-container *ngIf="vrsta.vrstaNapomeneId===item.vrstaNapomeneId">
+            {{ vrsta.opis}}
+          </ng-container>
+        </span>
+    </td>
+    <td>
+      <span *ngFor="let zaposlenik of zaposlenici">
+          <ng-container *ngIf="zaposlenik.zaposlenikId===item.zaposlenikId">
+            {{ zaposlenik.imePrezime}}
+          </ng-container>
+        </span>
+    </td>
+    <td *ngIf="item.prioritet===true" [ngStyle]="{'background-color': item.prioritet ? 'red' : 'inherit'}">
+      Bitna napomena !
+    </td>
+  </tr>
+  </tbody>
+</table>

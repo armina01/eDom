@@ -1,0 +1,38 @@
+
+<h2>Pregledajte arhivu zadataka za pacijenta {{this.korisnik?.imePrezime}}</h2>
+<Button (click)="PregledajArhivuSedmicnihZadataka()">Arhiva sedmičnih zadataka</Button>
+<Button (click)="PregledajArhivuDnevnihZadataka()">Arhiva dnevnih zadataka</Button>
+<table *ngIf="showDnevni===true" class="opstiZadaci">
+    <thead>
+    <tr>
+        <th>Opis</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+<tbody>
+<tr *ngFor="let item of getDnevniZadaci()">
+    <td>{{ item.opis }}</td>
+    <label class="form-check-label">
+        <input class="form-check-input" type="checkbox" disabled="true"  [(ngModel)]="item.status"/>
+
+    </label>
+</tr>
+</tbody>
+</table>
+<table *ngIf="showSedmicni===true" class="opstiZadaci">
+    <thead>
+    <tr>
+        <th>Opis</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of getSedmicniZadaci()">
+        <td>{{ item.opis }}</td>
+        <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" disabled="true"  [(ngModel)]="item.status"/>
+
+        </label>
+    </tr>
+    </tbody>
+</table>

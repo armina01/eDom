@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <Folder Include="Endpoints\Napomena\Dodaj\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
-
 
 </Project>

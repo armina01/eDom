@@ -1,0 +1,121 @@
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body LicniPodaci">
+            <div class="form-group row">
+                <label for="imePrezime" class="col-sm-3 col-form-label">Ime i prezime</label>
+                <div class="col-sm-9">
+                    <input id="imePrezime" class="form-control" [ngModelOptions]="{standalone:true}" [ngModel]="njegovatelj?.imePrezime" [disabled]="true" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="jmbg" class="col-sm-3 col-form-label">JMBG</label>
+                <div class="col-sm-9">
+                    <input id="jmbg" class="form-control" [ngModelOptions]="{standalone:true}" [ngModel]="njegovatelj?.jmbg" [disabled]="true" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="datumRodjenja" class="col-sm-3 col-form-label">Datum rođenja</label>
+                <div class="col-sm-9">
+                    <input id="datumRodjenja" class="form-control" [ngModelOptions]="{standalone:true}" [ngModel]="njegovatelj?.datumRodjenja" [disabled]="true" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="datumZaposlenja" class="col-sm-3 col-form-label">Datum zaposlenja</label>
+                <div class="col-sm-9">
+                    <input id="datumZaposlenja" class="form-control" [ngModelOptions]="{standalone:true}" [ngModel]="njegovatelj?.datumZaposlenja" [disabled]="true" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="vrstaZaposlenika" class="col-sm-3 col-form-label">Tip zaposlenika</label>
+                <div class="col-sm-9">
+                    <input id="vrstaZaposlenika" class="form-control" [ngModelOptions]="{standalone:true}" [ngModel]="vrstaNjegovatelja" [disabled]="true" />
+                </div>
+            </div>
+
+            <div class="form-group oPoslu">
+                <div class="form-group row">
+                    <label for="vrstaPosla" class="col-sm-3 col-form-label">Vrsta posla</label>
+                    <div class="col-sm-9">
+                        <input id="vrstaPosla" class="form-control" [ngModelOptions]="{standalone:true}" [ngModel]="poslovnaPozicija?.nazivPozicije" [disabled]="true" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="brojSati" class="col-sm-3 col-form-label">Broj sati</label>
+                    <div class="col-sm-9">
+                        <input id="brojSati" class="form-control" [ngModelOptions]="{standalone:true}" [ngModel]="poslovnaPozicija?.brojSati" [disabled]="true" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="opisPosla" class="col-sm-3 col-form-label">Opis posla</label>
+                    <div class="col-sm-9">
+                        <input id="opisPosla" class="form-control" [ngModelOptions]="{standalone:true}" [ngModel]="poslovnaPozicija?.opisPosla" [disabled]="true" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group nalog">
+                <div class="form-group row">
+                    <label for="korisnickoIme" class="col-sm-3 col-form-label">Korisničko ime</label>
+                    <div class="col-sm-9">
+                        <input id="korisnickoIme" class="form-control" [ngModelOptions]="{standalone:true}" [ngModel]="korisnickiNalog?.korisnickoIme" [disabled]="true" />
+                        <button type="button" class="btn btn-success">Promjeni korisnicko ime</button>
+                    </div>
+
+                </div>
+
+                <div class="form-group row">
+                    <label  class="col-sm-3 col-form-label">Lozinka</label>
+                    <div class="col-sm-9">
+                        <button type="button" class="btn btn-success" (click)="PromijeniLozinku()">Promjeni lozinku</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="prikaziDialog">
+
+    <div class="modal fade show" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-modal="true" role="dialog" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLiveLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="Otkazi()"></button>
+                </div>
+                <div class="modal-body">
+                    <label>Ukucajte staru lozinku!</label>
+                    <input type="password" [ngModelOptions]="{standalone:true}" [(ngModel)]="staraLozinka"/>
+                    <div class="modal-body" *ngIf="showErrorNePostojiNalog ===true">Neispravna lozinka</div>
+                    <Button (click)="ProvjeriLozinku()">Promijeni</Button>
+                </div>
+                <hr/>
+                <div class="modal-body" *ngIf="showPromijeniLozinku===true">
+                    <label>Ukucajte novu lozinku!</label>
+                    <input type="password" [ngModelOptions]="{standalone:true}" [(ngModel)]="novaLozinka"/>
+                </div>
+                <div class="modal-body" *ngIf="showPromijeniLozinku===true">
+                    <label>Potvrdite lozinku!</label>
+                    <input type="password" [ngModelOptions]="{standalone:true}" [(ngModel)]="novaLozinkaPotvrda"/>
+                    <div *ngIf="lozicnkeNotMatching">Lozinke se ne podudaraju!</div>
+                </div>
+                <div class="modal-body" *ngIf="showPromijeniNalog ===true">
+                    <label>Ukucajte novo korisnicko ime!</label>
+                    <input [ngModelOptions]="{standalone:true}" [(ngModel)]="novoKorisnickoIme"/>
+                    <label *ngIf="emptyKorIme">Korisnicko ime ne moze biti prazno polje!</label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal" (click)="Otkazi()">Close</button>
+                    <button type="button"  class="btn btn-primary" (click)="ProvjeraIPromjenaLozinke()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

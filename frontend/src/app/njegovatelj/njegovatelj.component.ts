@@ -167,7 +167,7 @@ export class NjegovateljComponent {
       let url: string = MyConfig.adresa_servera + `/updateNjegovatelja`;
       console.log(this.updNjegovateljRequest)
       this.httpClient.post(url, this.updNjegovateljRequest).subscribe(request => {
-        console.log("Korisnicki nalog dodan za ", request)
+
       })
     }
     else {

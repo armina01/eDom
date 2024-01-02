@@ -1,0 +1,76 @@
+
+<div class="form-group">
+  <label for="datumZadatka">Datum zadatka</label>
+  <input type="date" class="form-control" id="datumZadatka"
+         [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDatum" (change)="RefreshOpstiZadaci()">
+</div>
+<button class="btn btn-primary" type="submit" (click)="GetAllMedicinskiZadaci()">Pregledaj medicinske zadatke </button>
+<button class="btn btn-primary" type="submit" (click)="GetAllOpstiZadaci()">Pregledaj opste zadatke </button>
+<button class="btn btn-primary" type="submit" (click)="GetAllFizijatrijskiZadaci()">Pregledaj fizijatrijske zadatke </button>
+
+
+  <table  *ngIf="showMedicinski===true" class="medicinskiZadaci">
+  <thead>
+  <tr>
+    <th>Opis</th>
+    <th>Status</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of getAllMedicinskizadaci()">
+    <td>{{ item.opis }}</td>
+    <input class="form-check-input" type="checkbox" id="gridCheck4" [(ngModel)]="item.status">
+    <label class="form-check-label">
+      Status
+    </label>
+    <td><button type="submit"  class="btn btn-primary" >Izbrisi zadatak</button></td>
+  </tr>
+  </tbody>
+  </table>
+  <table *ngFor="let item of getAllFizijatrijskizadaci()" class="fizijatrijskiZadaci">
+    <thead>
+    <tr>
+      <th>Opis</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+  <tbody  *ngIf="showFizijatrijski===true">
+  <tr >
+    <td>{{ item.opis }}</td>
+    <td>
+      <input class="form-check-input" type="checkbox" id="gridCheck1" [(ngModel)]="item.status">
+      <label class="form-check-label">
+        Status
+      </label>
+    </td>
+    <td><button type="submit"  class="btn btn-primary" >Izbrisi zadatak</button></td>
+  </tr>
+  </tbody>
+  </table>
+  <table *ngIf="showOpsti===true" class="opstiZadaci">
+    <thead>
+    <tr>
+      <th>Opis</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+  <tbody>
+  <tr *ngFor="let item of getAllOpstizadaci()">
+    <td>{{ item.opis }}
+
+    </td>
+    <input class="form-check-input" type="checkbox" id="gridCheck8" (change)="UpdateOpstiZadatak(item)" [(ngModel)]="item.status">
+    <td><button type="submit"  class="btn btn-primary" (click)="IzbrisiZadatak(item)">Izbrisi zadatak</button></td>
+  </tr>
+  </tbody>
+    <tbody *ngIf="showDodajOpstiZadatak===true">
+    <tr>
+      <td><input [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.opis" />
+        <label *ngIf="showEmpty">Niste ispunili polje!</label></td>
+      <input class="form-check-input" type="checkbox" id="gridCheck2" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.status" >
+
+      <td><button type="submit"  class="btn btn-primary"(click)="DodajOpstiZadatak()" >Dodaj zadatak</button></td>
+    </tr>
+    </tbody>
+    <Button (click)="PrikaziDodajOpstiZadatak()">Dodaj novi zadatak</Button>
+  </table>

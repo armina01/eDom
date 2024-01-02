@@ -8,6 +8,13 @@ import {FormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
 import {MyAuthService} from "../Services/MyAuthService";
 import {MyAuthInterceptor} from "../Helper/MyAuthInterceptor";
+import {ZaposlenikEndpoint} from "../Services/ZaposlenikEndpoint";
+import {map, Observable} from "rxjs";
+import {GetAllZaposlenikResponse, GetAllZaposlenikResponseZaposlenik} from "../Services/getAllZaposleniciResponse";
+import {
+  GetAllKorisnickiNalogResponse,
+  GetAllKorisnickiNalogResponseKorisnickiNalog
+} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
 
 @Component({
   selector: 'app-log-in',
@@ -19,31 +26,69 @@ import {MyAuthInterceptor} from "../Helper/MyAuthInterceptor";
 })
 export class LogInComponent {
 
-  constructor(public httpClient:HttpClient, private router: Router, private myAuthService:MyAuthService) { }
+  constructor(public httpClient:HttpClient, private router: Router, private myAuthService:MyAuthService,
+             ) { }
 
+  ngOnInit(){
+    this.GetAllzaposlenici().subscribe(
+        response => {
+          this.korisnik = response;
+        });
+  }
+  GetAllzaposlenici(): Observable<GetAllZaposlenikResponseZaposlenik[]> {
+    let url: string = MyConfig.adresa_servera + `/getAllZaposlenici`;
+
+    // Return the observable from the HttpClient
+    return this.httpClient.get<GetAllZaposlenikResponse>(url).pipe(
+        map(response => response.zaposlenici || [])
+    );
+  }
+  public korisnik:GetAllZaposlenikResponseZaposlenik[]=[];
+  public _korisnickiNalog:AuthLogInRequest| undefined=undefined;
   public logInRequest:AuthLogInRequest={
     korisnickoIme:"",
     lozinka:"",
-    jeAdmin: true,
+    jeAdmin: false,
     jeDoktor:false,
     jeFizioterapeut:false,
-    jeNjegovatelj:false,
+    jeNjegovatelj:true,
     jeNutricionista:false
   }
   signIn() {
+    this.GetAllKorisnickiNalog();
+    console.log("Korisnicki nalog:",this.logInRequest);
     let url=MyConfig.adresa_servera+`/login`;
     this.httpClient.post<AuthLogInResponse>(url, this.logInRequest).subscribe((x)=>{
       console.log("Response",x)
       if (!x.logInInformacija.isLogiran){
-        console.log("Response",x)
+
         alert("pogresan username/pass")
       }
       else{
-        let token = x.logInInformacija.autentifikacijaToken?.vrijednost;
-        console.log(token);
-          this.myAuthService.setLogiraniKorisnik(x.logInInformacija.autentifikacijaToken);
+        let korisnikNalogId=x.logInInformacija.autentifikacijaToken.korisnickiNalogId
+        console.log(korisnikNalogId)
+        let _korisnik=this.korisnik.find(
+            item=>item.nalogId===korisnikNalogId)
+          this.myAuthService.setLogiraniKorisnik(x.logInInformacija.autentifikacijaToken,_korisnik);
+
         this.router.navigate(["/home"])
       }
     });
   }
+  GetAllKorisnickiNalog() {
+    let url: string = MyConfig.adresa_servera + `/get-all-KorisnickiNalog`;
+    this.httpClient.get<GetAllKorisnickiNalogResponse>(url).subscribe(
+        response =>
+        this._korisnickiNalog=    response.korisnickiNalozi.find(nalog =>
+                nalog.korisnickoIme === this.logInRequest.korisnickoIme))
+        if(this._korisnickiNalog){
+          this.logInRequest.jeAdmin = this._korisnickiNalog.jeAdmin;
+          this.logInRequest.jeNutricionista = this._korisnickiNalog.jeNutricionista;
+          this.logInRequest.jeDoktor=this._korisnickiNalog.jeDoktor;
+          this.logInRequest.jeNjegovatelj=this._korisnickiNalog.jeNjegovatelj;
+          this.logInRequest.jeFizioterapeut=this._korisnickiNalog.jeFizioterapeut;
+        }
+    ;
+  }
+
 }
