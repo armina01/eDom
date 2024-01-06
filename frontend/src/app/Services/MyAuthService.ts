@@ -3,7 +3,7 @@ import {Injectable, InjectionToken} from "@angular/core";
 import {AutentifikacijaToken} from "../Helper/autentifikacijToken";
 import {GetAllZaposlenikResponseZaposlenik} from "./getAllZaposleniciResponse";
 
-export const MY_AUTH_SERVICE_TOKEN = new InjectionToken<MyAuthService>('MY_AUTH_SERVICE_TOKEN');
+//export const MY_AUTH_SERVICE_TOKEN = new InjectionToken<MyAuthService>('MY_AUTH_SERVICE_TOKEN');
 @Injectable({providedIn: 'root'})
 export class MyAuthService{
   constructor(private httpClient: HttpClient) {

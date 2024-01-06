@@ -1,15 +1,10 @@
-import {ChangeDetectorRef, Component, Inject} from '@angular/core';
+import { Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MyConfig} from "../my-config";
-import {GetAllKorisnickiNalogResponse} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {GetAllZadatakResponse, GetAllZadatakResponseZadatak} from "./getAllZadaciResponse";
 import {DodajZadatakRequest} from "./dodajZadatakRequest";
-import {MY_AUTH_SERVICE_TOKEN, MyAuthService} from "../Services/MyAuthService";
-import {KorisnickiNalogFetch} from "../Services/GetAllKorisnickiNalog";
-import {NjegovateljiFetch} from "../Services/NjegovateljFetch";
-import {AutentifikacijaToken} from "../Helper/autentifikacijToken";
-import {GetAllZaposlenikResponseZaposlenik} from "../Services/getAllZaposleniciResponse";
+import { MyAuthService} from "../Services/MyAuthService";
 import {GetAllNjegovateljaResponseNjegovatelj} from "../njegovatelj/getAllNjegovateljiResponse";
 import {FormsModule} from "@angular/forms";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
@@ -17,18 +12,22 @@ import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component
 import {DodajZadatakResponse} from "./DodajZadatakResponse";
 import {finalize} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
+import {ZadaciService} from "../Services/ZadaciService";
 
 @Component({
   selector: 'app-get-zadaci',
   standalone: true,
   imports: [CommonModule, FormsModule],
+  providers: [ZadaciService],
   templateUrl: './get-zadaci.component.html',
   styleUrl: './get-zadaci.component.css'
 })
 export class GetZadaciComponent {
 
-  constructor(public httpClient: HttpClient,@Inject(MY_AUTH_SERVICE_TOKEN) private _myAuthService: MyAuthService
-  ,private dialog: MatDialog,private route: ActivatedRoute) {
+  constructor(public httpClient: HttpClient,//@Inject(MY_AUTH_SERVICE_TOKEN)
+              private _myAuthService: MyAuthService
+  ,private dialog: MatDialog,private route: ActivatedRoute,
+              private zadaciService:ZadaciService) {
   }
   showOpsti:boolean=false;
   showFizijatrijski=false;
@@ -99,8 +98,7 @@ export class GetZadaciComponent {
    GetAllZadaci() {
     let todayDate=new Date(this.odabraniDatum);
 
-    let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
-    this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
+    this.zadaciService.GetAllZadaci().subscribe(x => {
 
       x.zadaci.forEach(y=> {
         console.log("Danasnji datum", todayDate, "Datum zadatka",y.datumPostavke)
@@ -146,9 +144,7 @@ export class GetZadaciComponent {
   public showEmpty=false;
   DodajZadatak(data:DodajZadatakRequest){
     if(data.opis!=="") {
-      console.log("Data",data);
-      let url: string = MyConfig.adresa_servera + `/dodajZadatak`;
-      this.httpClient.post<DodajZadatakResponse>(url, data).subscribe((response:DodajZadatakResponse) => {
+      this.zadaciService.DodajZadatak(data).subscribe((response:DodajZadatakResponse) => {
         this.RefreshOpstiZadaci();
         this.dodajOpstiZadatak.opis="";
         this.dodajOpstiZadatak.status=false;
@@ -169,8 +165,7 @@ export class GetZadaciComponent {
     this.updateOpstiZadatak.datumPostavke=item.datumPostavke;
     this.updateOpstiZadatak.zaposlenikEditovaoId=this.getZaposlenik()?.zaposlenikId??null;
     this.updateOpstiZadatak.korisnikDomaId=this._korisnikDomaId;
-    let url: string = MyConfig.adresa_servera + `/updateZadatak`;
-    this.httpClient.post(url,  this.updateOpstiZadatak).subscribe(
+    this.zadaciService.UpdateZadatak(this.updateOpstiZadatak).subscribe(
         () => {
           console.log("Uspjesan update");
         });
@@ -178,8 +173,7 @@ export class GetZadaciComponent {
 
   RefreshOpstiZadaci() {
     let todayDate=new Date(this.odabraniDatum);
-    let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
-    this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
+    this.zadaciService.GetAllZadaci().subscribe(x => {
       this.zadaci = x.zadaci.filter(zadatak => {
         const datumPostavke = new Date(zadatak.datumPostavke);
         if (Object.prototype.toString.call(datumPostavke) === "[object Date]" && !isNaN(datumPostavke.getTime())) {
@@ -201,9 +195,7 @@ export class GetZadaciComponent {
       const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
       dialogRef.afterClosed().subscribe(res => {
         if (res) {
-          let url: string = MyConfig.adresa_servera + `/obrisiZadatak`;
-          const params = new HttpParams().set('ZadatakId', item.zadatakId);
-          this.httpClient.delete(url, {params}).pipe(
+          this.zadaciService.IzbrisiZadatak(item).pipe(
               finalize(() => {
                 this.RefreshOpstiZadaci();
               })

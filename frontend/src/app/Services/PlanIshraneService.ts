@@ -12,30 +12,29 @@ import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest
 import {GetAllZadatakResponse} from "../get-zadaci/getAllZadaciResponse";
 import {DodajZadatakResponse} from "../get-zadaci/DodajZadatakResponse";
 import {GetAllPlanIshraneResponse} from "../dodaj-plan-ishrane/getPlanIshraneResponse";
-import {GetFileResponse} from "../dodaj-plan-ishrane/getFileResponse";
 
 
 @Injectable({
     providedIn: 'root',
 })
-export class FileService {
+export class PlanIshraneService {
     constructor(private http: HttpClient,
                 private _myAuthService: MyAuthService){}
-    GetAllFile(){
-        let url: string = MyConfig.adresa_servera + `/getAllFiles`;
-        return this.http.get<GetFileResponse>(url);
+    GetAllPlanIshrane(){
+        let url: string = MyConfig.adresa_servera + `/getPlanIshrane`;
+        return this.http.get<GetAllPlanIshraneResponse>(url);
     }
-    DownloadFile(file:any){
-        let url: string = MyConfig.adresa_servera + `/uploadFile/downloadFile/${file}`;
-        return this.http.get(url, { responseType: 'arraybuffer' })
+    DodajPlanIshrane(data:any){
+        let url: string = MyConfig.adresa_servera + `/dodajPlanIshrane`;
+        return this.http.post(url,data);
     }
     UpdatePlanIshrane(updateZadatak:any){
 
     }
-    IzbrisiFile(fileId:any)
+    IzbrisiPlanIshrane(planIshrane:any)
     {
-        let url: string = MyConfig.adresa_servera + `/deleteMyFile`;
-        const params = new HttpParams().set('FileId', fileId);
+        let url: string = MyConfig.adresa_servera + `/deletePlanIshrane`;
+        const params = new HttpParams().set('PlanIshraneId', planIshrane.planIshraneId);
         return this.http.delete(url, {params})
     }
 }

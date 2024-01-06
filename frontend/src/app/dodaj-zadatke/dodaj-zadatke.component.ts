@@ -11,17 +11,19 @@ import {DodajZadatakRequest} from "../get-zadaci/dodajZadatakRequest";
 import {GetAllNjegovateljaResponseNjegovatelj} from "../njegovatelj/getAllNjegovateljiResponse";
 import {DodajZadatakResponse} from "../get-zadaci/DodajZadatakResponse";
 import {SelectKorisnikeDoma} from "./SelectKorisnikeDoma";
+import {ZadaciService} from "../Services/ZadaciService";
 
 @Component({
   selector: 'app-dodaj-zadatke',
   standalone: true,
     imports: [CommonModule, FormsModule],
+  providers :[ZadaciService],
   templateUrl: './dodaj-zadatke.component.html',
   styleUrl: './dodaj-zadatke.component.css'
 })
 export class DodajZadatkeComponent {
 
-  constructor(public httpClient:HttpClient) {
+  constructor(public httpClient:HttpClient,private zadatakService:ZadaciService) {
   }
 
   public _showKorisnici:SelectKorisnikeDoma[]=[];
@@ -123,8 +125,7 @@ export class DodajZadatkeComponent {
     this.dodajOpstiZadatak.zaposlenikPostavioId=this.njegovatelj?.zaposlenikId??0;
     this.dodajOpstiZadatak.korisnikDomaId=korisnik.korisnikDomaID;
     this.dodajOpstiZadatak.intervalZadatkaId= this._vrstaDnevnogZadatkaId?1:2;
-    let url: string = MyConfig.adresa_servera + `/dodajZadatak`;
-    this.httpClient.post<DodajZadatakResponse>(url, this.dodajOpstiZadatak).subscribe((response:DodajZadatakResponse) => {
+    this.zadatakService.DodajZadatak(this.dodajOpstiZadatak).subscribe((response:DodajZadatakResponse) => {
 
     })
   }

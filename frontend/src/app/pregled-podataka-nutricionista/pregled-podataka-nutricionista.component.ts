@@ -24,17 +24,26 @@ import {
   GetAllNutricionistaResponseNutricionista,
   GetAllNutricionisteResponse
 } from "../nutricionista/getAllNutricionisteResponse";
+import {NjegovateljiService} from "../Services/NjegovateljService";
+import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
+import {PoslovnaPozicijaService} from "../Services/PoslovnaPozicijaService";
+import {PasswordService} from "../Services/PasswordService";
+import {NutricionistaService} from "../Services/NutricionistaService";
 
 @Component({
   selector: 'app-pregled-podataka-nutricionista',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  providers: [NutricionistaService,KorisnickiNalogService,PoslovnaPozicijaService,PasswordService],
   templateUrl: './pregled-podataka-nutricionista.component.html',
   styleUrl: './pregled-podataka-nutricionista.component.css'
 })
 export class PregledPodatakaNutricionistaComponent {
 
-  constructor(public httpClient:HttpClient,private dialog: MatDialog)
+  constructor(public httpClient:HttpClient,private dialog: MatDialog,
+              private nutricionistaService:NutricionistaService, private korisnickiNalogService:KorisnickiNalogService,
+              private poslovnaPozicijaService:PoslovnaPozicijaService,
+              private passwordService:PasswordService)
   {}
   public prikaziDialog:boolean=false;
   public staraLozinka:string="";
@@ -61,8 +70,7 @@ export class PregledPodatakaNutricionistaComponent {
   }
   GetPodatkeZaposlenika()
   {
-    let url: string = MyConfig.adresa_servera + `/getAllNutricioniste`;
-    this.httpClient.get<GetAllNutricionisteResponse>(url).subscribe(x => {
+    this.nutricionistaService.GetAllNutricionisti().subscribe(x => {
       this.allNutricionisti = x.nutricionisti;
       this.nutricionista=this.allNutricionisti.find(nutri=>
           nutri.zaposlenikId===this.getNjegovatelj()?.zaposlenikId) ||null;
@@ -71,21 +79,17 @@ export class PregledPodatakaNutricionistaComponent {
       this.GetAllKorisnickiNalog();
     })
   }
-  public vrstaNjegovatelja:string="";
 
   public poslovnaPozicija:GetAllPoslovnaPozicijaResponsePoslovnaPozicija|null=null;
   GetPoslovnaPozicija(){
-    let url: string = MyConfig.adresa_servera + `/getAllPoslovnaPozicija`;
-    this.httpClient.get<GetAllPoslovnaPozicijaResponse>(url).subscribe(x => {
-
+    this.poslovnaPozicijaService.GetAllPoslovnaPozicija().subscribe(x => {
       this.poslovnaPozicija = x.poslovnePozicije.find(pozicija=>
           pozicija.poslovnaPozicijaId===this.nutricionista?.poslovnaPozicijaId) || null;
     })
   }
   public korisnickiNalog:GetAllKorisnickiNalogResponseKorisnickiNalog|null=null;
   GetAllKorisnickiNalog(): void {
-    let url: string = MyConfig.adresa_servera + `/get-all-KorisnickiNalog`;
-    this.httpClient.get<GetAllKorisnickiNalogResponse>(url).subscribe(x => {
+    this.korisnickiNalogService.GetAllKorisnickiNalog().subscribe(x => {
 
       this.korisnickiNalog = x.korisnickiNalozi.find(
           nalog=>nalog.nalogId===this.nutricionista?.nalogId) || null;
@@ -97,10 +101,9 @@ export class PregledPodatakaNutricionistaComponent {
   showProvjeraLozinkeZaNalog:boolean=false;
   showPromijeniNalog:boolean=false;
   ProvjeriLozinku(){
-    let url: string = MyConfig.adresa_servera + `/provjeraPassworda`;
     this.requestLozinka.korisnickiNalogId=this.getNjegovatelj()?.nalogId || 0;
     this.requestLozinka.lozinka=this.staraLozinka;
-    this.httpClient.post<ProvjeraPasswordaResponse>(url,this.requestLozinka).subscribe(response => {
+    this.passwordService.ProvjeriPassword(this.requestLozinka).subscribe(response => {
       console.log("Response",response.jeIspravno);
       if(response.jeIspravno)
       {
@@ -135,8 +138,7 @@ export class PregledPodatakaNutricionistaComponent {
       if (this.novaLozinka === this.novaLozinkaPotvrda && this.korisnickiNalog) {
         this.lozicnkeNotMatching=false;
         this.korisnickiNalog.lozinka = this.novaLozinka;
-        let url: string = MyConfig.adresa_servera + `/updateNaloga`;
-        this.httpClient.post(url, this.korisnickiNalog).subscribe(x => {
+        this.korisnickiNalogService.UpdateKorisnickiNalog(this.korisnickiNalog).subscribe(x => {
           console.log("Uspjesno promijenjeno")
         })
         this.SveFalse();
@@ -150,8 +152,7 @@ export class PregledPodatakaNutricionistaComponent {
        if(this.novoKorisnickoIme!=="" && this.korisnickiNalog)
        {
          this.korisnickiNalog.korisnickoIme=this.novoKorisnickoIme;
-         let url: string = MyConfig.adresa_servera + `/updateNaloga`;
-         this.httpClient.post(url, this.korisnickiNalog).subscribe(x => {
+         this.korisnickiNalogService.UpdateKorisnickiNalog(this.korisnickiNalog).subscribe(x => {
            console.log("Uspjesno promijenjeno")
          })
          this.SveFalse();

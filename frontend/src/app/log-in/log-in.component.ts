@@ -51,7 +51,7 @@ export class LogInComponent {
     jeAdmin: false,
     jeDoktor:false,
     jeFizioterapeut:false,
-    jeNjegovatelj:true,
+    jeNjegovatelj:false,
     jeNutricionista:false
   }
   signIn() {
@@ -78,17 +78,22 @@ export class LogInComponent {
   GetAllKorisnickiNalog() {
     let url: string = MyConfig.adresa_servera + `/get-all-KorisnickiNalog`;
     this.httpClient.get<GetAllKorisnickiNalogResponse>(url).subscribe(
-        response =>
-        this._korisnickiNalog=    response.korisnickiNalozi.find(nalog =>
-                nalog.korisnickoIme === this.logInRequest.korisnickoIme))
-        if(this._korisnickiNalog){
+      response => {
+        this._korisnickiNalog = response.korisnickiNalozi.find(nalog =>
+          nalog.korisnickoIme === this.logInRequest.korisnickoIme
+        );
+        console.log(response.korisnickiNalozi);
+        console.log("Korisnicki nalog iz baze", this._korisnickiNalog, "Korisnicko ime", this.logInRequest.korisnickoIme);
+        if (this._korisnickiNalog) {
           this.logInRequest.jeAdmin = this._korisnickiNalog.jeAdmin;
           this.logInRequest.jeNutricionista = this._korisnickiNalog.jeNutricionista;
-          this.logInRequest.jeDoktor=this._korisnickiNalog.jeDoktor;
-          this.logInRequest.jeNjegovatelj=this._korisnickiNalog.jeNjegovatelj;
-          this.logInRequest.jeFizioterapeut=this._korisnickiNalog.jeFizioterapeut;
+          this.logInRequest.jeDoktor = this._korisnickiNalog.jeDoktor;
+          this.logInRequest.jeNjegovatelj = this._korisnickiNalog.jeNjegovatelj;
+          this.logInRequest.jeFizioterapeut = this._korisnickiNalog.jeFizioterapeut;
         }
-    ;
+      }
+    );
+
   }
 
 }

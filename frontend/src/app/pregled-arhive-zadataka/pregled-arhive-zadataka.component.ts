@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {HttpClient} from "@angular/common/http";
-import {MY_AUTH_SERVICE_TOKEN, MyAuthService} from "../Services/MyAuthService";
+import { MyAuthService} from "../Services/MyAuthService";
 import {MatDialog} from "@angular/material/dialog";
 import {ActivatedRoute} from "@angular/router";
 import {
@@ -11,18 +11,22 @@ import {
 import {MyConfig} from "../my-config";
 import {GetAllZadatakResponse, GetAllZadatakResponseZadatak} from "../get-zadaci/getAllZadaciResponse";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {ZadaciService} from "../Services/ZadaciService";
 
 @Component({
   selector: 'app-pregled-arhive-zadataka',
   standalone: true,
     imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    providers: [ZadaciService],
   templateUrl: './pregled-arhive-zadataka.component.html',
   styleUrl: './pregled-arhive-zadataka.component.css'
 })
 export class PregledArhiveZadatakaComponent {
 
-   constructor(public httpClient: HttpClient,@Inject(MY_AUTH_SERVICE_TOKEN) private _myAuthService: MyAuthService
-                ,private dialog: MatDialog,public route: ActivatedRoute) { }
+   constructor(public httpClient: HttpClient,//@Inject(MY_AUTH_SERVICE_TOKEN)
+               private _myAuthService: MyAuthService
+                ,private dialog: MatDialog,public route: ActivatedRoute,
+               private zadaciService:ZadaciService) { }
     public korisnikId=0;
     korisnici:KorisnikDomaGetAllResponseKorisnik[]=[];
     korisnik:KorisnikDomaGetAllResponseKorisnik|undefined=undefined;
@@ -46,10 +50,10 @@ export class PregledArhiveZadatakaComponent {
 
    }
     PregledajArhivuSedmicnihZadataka() {
-        let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
+
         this.showSedmicni=true;
         this.showDnevni=false;
-        this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
+        this.zadaciService.GetAllZadaci().subscribe(x => {
             const todayDate = new Date();
 
             this.sedmicniZadaci = x.zadaci.filter(zadatak => {
@@ -79,8 +83,7 @@ export class PregledArhiveZadatakaComponent {
         let todayDate = new Date();
         this.showSedmicni=false;
         this.showDnevni=true;
-        let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
-        this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
+        this.zadaciService.GetAllZadaci().subscribe(x => {
             x.zadaci.forEach(y => {
                 console.log("Danasnji datum", todayDate, "Datum zadatka", y.datumPostavke);
             });

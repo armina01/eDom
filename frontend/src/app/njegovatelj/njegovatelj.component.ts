@@ -1,37 +1,37 @@
-import {Component, Inject, Injector} from '@angular/core';
+import {Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MyConfig} from "../my-config";
-import {
-  GetAllKorisnickiNalogResponse,
-  GetAllKorisnickiNalogResponseKorisnickiNalog
-} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
-import {map, Observable} from "rxjs";
-import {HTTP_INTERCEPTORS, HttpClient, HttpHandler, HttpClientModule, HttpParams} from "@angular/common/http";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {map, Observable, pipe} from "rxjs";
+import { HttpClient,  HttpClientModule} from "@angular/common/http";
+import {FormsModule} from "@angular/forms";
 import {
   GetAllPoslovnaPozicijaResponse,
   GetAllPoslovnaPozicijaResponsePoslovnaPozicija
 } from "../poslovna-pozicija/getAllPoslovnaPozicija";
 import {DodajNjegovateljaRequest} from "./dodajNjegovateljaRequest";
-import {GetAllNjegovateljaResponseNjegovatelj, GetAllNjegovateljiResponse} from "./getAllNjegovateljiResponse";
+import {GetAllNjegovateljaResponseNjegovatelj} from "./getAllNjegovateljiResponse";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import{jePrazno} from "../Helper/Provjera";
-import {MY_AUTH_SERVICE_TOKEN, MyAuthService} from "../Services/MyAuthService";
+import { MyAuthService} from "../Services/MyAuthService";
 import {Router} from "@angular/router";
-import {MyAuthInterceptor} from "../Helper/MyAuthInterceptor";
+import {NjegovateljiService} from "../Services/NjegovateljService";
+import {PoslovnaPozicijaService} from "../Services/PoslovnaPozicijaService";
 
 @Component({
   selector: 'app-njegovatelj',
   standalone: true,
   imports: [CommonModule, FormsModule, HttpClientModule],
-  providers: [MyAuthService,{ provide: MY_AUTH_SERVICE_TOKEN, useClass: MyAuthService }],
+  providers: [MyAuthService, NjegovateljiService, HttpClient,PoslovnaPozicijaService],
   templateUrl: './njegovatelj.component.html',
   styleUrl: './njegovatelj.component.css'
 })
 export class NjegovateljComponent {
   constructor(private httpClient: HttpClient,private dialog: MatDialog
-    ,private router: Router,@Inject(MY_AUTH_SERVICE_TOKEN) private _myAuthService: MyAuthService) {
+    ,private router: Router,//@Inject(MY_AUTH_SERVICE_TOKEN)
+              private _myAuthService: MyAuthService,
+              private njegovateljService: NjegovateljiService,
+              private poslovnaPozicijaService:PoslovnaPozicijaService) {
 
   }
   isValid: boolean = false;
@@ -45,8 +45,8 @@ export class NjegovateljComponent {
 
   public poslovnaPozicija: GetAllPoslovnaPozicijaResponsePoslovnaPozicija[] = [];
   GetAllPoslovnaPozicija():Observable<GetAllPoslovnaPozicijaResponsePoslovnaPozicija[]> {
-    let url: string = MyConfig.adresa_servera + `/getAllPoslovnaPozicija`;
-    return this.httpClient.get<GetAllPoslovnaPozicijaResponse>(url).pipe(
+
+    return this.poslovnaPozicijaService.GetAllPoslovnaPozicija().pipe(
         map((response)=>response.poslovnePozicije)
     )
   }
@@ -97,10 +97,10 @@ export class NjegovateljComponent {
     if(jePrazno(this.njegovatelj.imePrezime) && jePrazno(this.njegovatelj.jmbg)
         && jePrazno(this.njegovatelj.poslovnaPozicijaId) )
     {
-      let url: string = MyConfig.adresa_servera + `/dodajNjegovatelja`;
-    this.httpClient.post(url, this.njegovatelj).subscribe(request => {
-      console.log("Korisnicki nalog dodan za ", request)
-    })}
+
+      this.njegovateljService.dodajNjegovatelja(this.njegovatelj).subscribe(request => {
+        console.log("Korisnicki nalog dodan za ", request)
+      })}
     else {
       this.showError=1;
     }
@@ -108,12 +108,9 @@ export class NjegovateljComponent {
   }
   public allNjegovatelji: GetAllNjegovateljaResponseNjegovatelj[]=[];
   GetAllNjegovatelji() {
-    const authToken = this._myAuthService.getAuthorizationToken();
-    console.log('Authentication Token:', authToken);
-    let url: string = MyConfig.adresa_servera + `/getAllNjegovatelji`;
-    this.httpClient.get<GetAllNjegovateljiResponse>(url).subscribe(x => {
-      this.allNjegovatelji = x.njegovatelji;
-    })
+    this.njegovateljService.GetAllNjegovatelji().subscribe((data) => {
+      this.allNjegovatelji = data.njegovatelji;
+    });
   }
   getAllNjegovatelji() {
     return this.allNjegovatelji;
@@ -123,23 +120,24 @@ export class NjegovateljComponent {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/izbrisiNjegovatelja`;
-        const params = new HttpParams().set('NjegovateljId', data.zaposlenikId);
-        this.httpClient.delete(url, {params}).subscribe(
-            response => () => {
-              console.log("Deleted item")
-            },
-            (error: any) => {
-              console.error('Error:', error);
+        this.njegovateljService.deleteNjegovatelj(data.zaposlenikId)
+            .subscribe(
+                () => {
+                  console.log("Deleted item");
+                  // Update your component data or perform any other actions
+                },
+                (error: any) => {
+                  console.error('Error:', error);
 
-              if (error.status === 500) {
-                alert('Nije moguće izbrisati ovaj korisnički nalog');
-                console.error('Handle 500 error here');
-              } else {
-                // Handle other errors
-                alert('An error occurred.');
-              }
-            })
+                  if (error.status === 500) {
+                    alert('Nije moguće izbrisati ovaj korisnički nalog');
+                    console.error('Handle 500 error here');
+                  } else {
+                    // Handle other errors
+                    alert('An error occurred.');
+                  }
+                }
+            );
       }
     });
 

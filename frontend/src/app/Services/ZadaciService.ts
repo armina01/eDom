@@ -11,31 +11,30 @@ import {GetAllKorisnickiNalogResponse} from "../korisnicki-nalog/getAllKorisnick
 import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
 import {GetAllZadatakResponse} from "../get-zadaci/getAllZadaciResponse";
 import {DodajZadatakResponse} from "../get-zadaci/DodajZadatakResponse";
-import {GetAllPlanIshraneResponse} from "../dodaj-plan-ishrane/getPlanIshraneResponse";
-import {GetFileResponse} from "../dodaj-plan-ishrane/getFileResponse";
 
 
 @Injectable({
     providedIn: 'root',
 })
-export class FileService {
-    constructor(private http: HttpClient,
+export class ZadaciService {
+    constructor(private httpClient: HttpClient,
                 private _myAuthService: MyAuthService){}
-    GetAllFile(){
-        let url: string = MyConfig.adresa_servera + `/getAllFiles`;
-        return this.http.get<GetFileResponse>(url);
+    GetAllZadaci(){
+        let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
+        return this.httpClient.get<GetAllZadatakResponse>(url)
     }
-    DownloadFile(file:any){
-        let url: string = MyConfig.adresa_servera + `/uploadFile/downloadFile/${file}`;
-        return this.http.get(url, { responseType: 'arraybuffer' })
+    DodajZadatak(data:any){
+        let url: string = MyConfig.adresa_servera + `/dodajZadatak`;
+        return this.httpClient.post<DodajZadatakResponse>(url, data);
     }
-    UpdatePlanIshrane(updateZadatak:any){
-
+    UpdateZadatak(updateZadatak:any){
+        let url: string = MyConfig.adresa_servera + `/updateZadatak`;
+        return this.httpClient.post(url,updateZadatak)
     }
-    IzbrisiFile(fileId:any)
+    IzbrisiZadatak(item:any)
     {
-        let url: string = MyConfig.adresa_servera + `/deleteMyFile`;
-        const params = new HttpParams().set('FileId', fileId);
-        return this.http.delete(url, {params})
+        let url: string = MyConfig.adresa_servera + `/obrisiZadatak`;
+        const params = new HttpParams().set('ZadatakId', item.zadatakId);
+        return this.httpClient.delete(url, {params})
     }
 }

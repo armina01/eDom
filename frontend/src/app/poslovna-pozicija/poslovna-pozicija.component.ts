@@ -7,16 +7,19 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {GetAllPoslovnaPozicijaResponse, GetAllPoslovnaPozicijaResponsePoslovnaPozicija} from "./getAllPoslovnaPozicija";
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
+import {PoslovnaPozicijaService} from "../Services/PoslovnaPozicijaService";
 
 @Component({
   selector: 'app-poslovna-pozicija',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  providers:[PoslovnaPozicijaService],
   templateUrl: './poslovna-pozicija.component.html',
   styleUrl: './poslovna-pozicija.component.css'
 })
 export class PoslovnaPozicijaComponent {
-  constructor(public httpClient: HttpClient,private dialog: MatDialog) {
+  constructor(public httpClient: HttpClient,private dialog: MatDialog,
+              private poslovnaPozicijaService:PoslovnaPozicijaService) {
   }
   public poslovnaPozicijaRequest: PoslovnaPozicijaRequest={
     opisPosla:"",
@@ -24,16 +27,13 @@ export class PoslovnaPozicijaComponent {
     nazivPozicije:""
   }
   DodajPoslovnuPoziciju() {
-    let url = MyConfig.adresa_servera + `/dodajPoslovnuPoziciju`;
-    this.httpClient.post(url, this.poslovnaPozicijaRequest).subscribe(request => {
+    this.poslovnaPozicijaService.DodajPoslovnuPoziciju(this.poslovnaPozicijaRequest).subscribe(request => {
       console.log("Korisnicki nalog dodan za ", request)
     })
   }
   poslovnaPozicija: GetAllPoslovnaPozicijaResponsePoslovnaPozicija[] = [];
   GetAllPoslovnaPozicija() {
-    let url: string = MyConfig.adresa_servera + `/getAllPoslovnaPozicija`;
-    this.httpClient.get<GetAllPoslovnaPozicijaResponse>(url).subscribe(x => {
-      console.log(x.poslovnePozicije)
+    this.poslovnaPozicijaService.GetAllPoslovnaPozicija().subscribe(x => {
       this.poslovnaPozicija = x.poslovnePozicije
     })
   }
@@ -46,9 +46,7 @@ export class PoslovnaPozicijaComponent {
     const dialogRef: MatDialogRef<WarningDialogComponent, boolean> = this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/izbrisiPoslovnuPoziciju`;
-        const params = new HttpParams().set('PoslovnaPozicijaId', data.poslovnaPozicijaId);
-        this.httpClient.delete(url, {params}).subscribe(
+        this.poslovnaPozicijaService.IzbrisiPoslovnuPoziciju(data).subscribe(
             response => () => {
               console.log("Deleted item")
             },

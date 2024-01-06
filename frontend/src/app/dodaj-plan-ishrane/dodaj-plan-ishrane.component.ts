@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpClientModule, HttpParams} from "@angular/common/http";
 import {MyConfig} from "../my-config";
 import {PlanIshraneRequest} from "./PlanIshraneRequest";
 import {ActivatedRoute} from "@angular/router";
@@ -11,10 +11,13 @@ import FileSaver from "file-saver";
 import {GetAllPlanIshraneResponse, GetAllPlanIshraneResponsePlan} from "./getPlanIshraneResponse";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
+import {PlanIshraneService} from "../Services/PlanIshraneService";
+import {FileService} from "../Services/FileService";
 @Component({
   selector: 'app-dodaj-plan-ishrane',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,HttpClientModule],
+  providers: [FileService],
   templateUrl: './dodaj-plan-ishrane.component.html',
   styleUrl: './dodaj-plan-ishrane.component.css'
 })
@@ -24,7 +27,8 @@ export class DodajPlanIshraneComponent {
     private _korisnikDomaId: number=0;
     public fajl:GetFileResponseFile|undefined=undefined;
     public fajlIme:string="";
-    constructor(private http: HttpClient,private dialog: MatDialog,private route: ActivatedRoute) {}
+    constructor(private http: HttpClient,private dialog: MatDialog,private route: ActivatedRoute,
+                private planIshraneService:PlanIshraneService, private fileService:FileService) {}
     onFileSelected($event: Event) {
         const inputElement = event?.target as HTMLInputElement;
         if (inputElement.files && inputElement.files.length > 0) {
@@ -95,9 +99,7 @@ export class DodajPlanIshraneComponent {
         return this.http.post<{ fileId: number }>(`${url}/upload`, formData);
     }
     dodajPlanIshraneFetch(data: PlanIshraneRequest) {
-        let url: string = MyConfig.adresa_servera + `/dodajPlanIshrane`;
-
-        return this.http.post(`${url}`,data);
+        return this.planIshraneService.DodajPlanIshrane(data);
     }
     DodajPlanIshrane(){
 
@@ -112,14 +114,12 @@ export class DodajPlanIshraneComponent {
     }
 
     GetAllFiles():Observable<GetFileResponse>{
-        let url: string = MyConfig.adresa_servera + `/getAllFiles`;
-        return this.http.get<GetFileResponse>(url);}
+        return this.fileService.GetAllFile();}
 
 
 
     downloadFile(file:number) {
-        let url: string = MyConfig.adresa_servera + `/uploadFile/downloadFile/${file}`;
-        this.http.get(url, { responseType: 'arraybuffer' })
+        this.fileService.DownloadFile(file)
             .subscribe((data: ArrayBuffer) => {
                     const blob = new Blob([data], { type: 'application/octet-stream' });
                     FileSaver.saveAs(blob, 'downloaded_file.pdf');
@@ -129,8 +129,7 @@ export class DodajPlanIshraneComponent {
                 });
     }
     GetPlanIshrane():Observable<GetAllPlanIshraneResponse>{
-        let url: string = MyConfig.adresa_servera + `/getPlanIshrane`;
-        return this.http.get<GetAllPlanIshraneResponse>(url);
+        return this.planIshraneService.GetAllPlanIshrane();
     }
 
     PrikaziImeFajla(fileId: number) {
@@ -142,9 +141,7 @@ export class DodajPlanIshraneComponent {
         const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nutricionistu?');
         dialogRef.afterClosed().subscribe(res => {
             if (res) {
-                let url: string = MyConfig.adresa_servera + `/deletePlanIshrane`;
-                const params = new HttpParams().set('PlanIshraneId', planIshrane.planIshraneId);
-                this.http.delete(url, {params}).subscribe(
+               this.planIshraneService.IzbrisiPlanIshrane(planIshrane).subscribe(
                     () => {
                         this.DeleteFile(planIshrane.fileId);
                         this.ngOnInit();
@@ -159,8 +156,6 @@ export class DodajPlanIshraneComponent {
     };
     DeleteFile(fileId:number){
 
-        let url: string = MyConfig.adresa_servera + `/deleteMyFile`;
-        const params = new HttpParams().set('FileId', fileId);
-        this.http.delete(url, {params}).subscribe(x=>{})
+        this.fileService.IzbrisiFile(fileId).subscribe(x=>{})
     }
 }

@@ -18,11 +18,13 @@ import {
 import {jePrazno} from "../Helper/Provjera";
 import {GetAllNutricionistaResponseNutricionista, GetAllNutricionisteResponse} from "./getAllNutricionisteResponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
+import {NutricionistaService} from "../Services/NutricionistaService";
 
 @Component({
   selector: 'app-nutricionista',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  providers:[NutricionistaService],
   templateUrl: './nutricionista.component.html',
   styleUrls: ['./nutricionista.component.css']
 })
@@ -34,7 +36,8 @@ export class NutricionistaComponent {
     this.isValid = regex.test(data);
   }
   showError: number=0;
-  constructor(private httpClient: HttpClient,private dialog: MatDialog) {}
+  constructor(private httpClient: HttpClient,private dialog: MatDialog,
+              private nutricionistaService:NutricionistaService) {}
 
   public poslovnaPozicija: GetAllPoslovnaPozicijaResponsePoslovnaPozicija[] = [];
   GetAllPoslovnaPozicija():Observable<GetAllPoslovnaPozicijaResponsePoslovnaPozicija[]> {
@@ -64,8 +67,7 @@ export class NutricionistaComponent {
         && jePrazno(this.dodajNutricionistu.poslovnaPozicijaId) && jePrazno(this.dodajNutricionistu.nutricionistickiCentar)
     && jePrazno(this.dodajNutricionistu.oblastNutricionizma))
     {
-      let url: string = MyConfig.adresa_servera + `/dodajNutricionistu`;
-      this.httpClient.post(url, this.dodajNutricionistu).subscribe(request => {
+      this.nutricionistaService.DodajNutricionistu(this.dodajNutricionistu).subscribe(request => {
         console.log("Korisnicki nalog dodan za ", request)
       })}
     else {
@@ -74,8 +76,7 @@ export class NutricionistaComponent {
   }
   public getNutricioniste:GetAllNutricionistaResponseNutricionista[]=[];
   GetAllNutricionisti() {
-    let url: string = MyConfig.adresa_servera + `/getAllNutricioniste`;
-    this.httpClient.get<GetAllNutricionisteResponse>(url).subscribe(x => {
+    this.nutricionistaService.GetAllNutricionisti().subscribe(x => {
       this.getNutricioniste = x.nutricionisti;
     })
   }
@@ -87,9 +88,7 @@ export class NutricionistaComponent {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nutricionistu?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/izbrisiNutricionistu`;
-        const params = new HttpParams().set('ZaposlenikId', item.zaposlenikId);
-        this.httpClient.delete(url, {params}).subscribe(
+        this.nutricionistaService.IzbrisiNutricioniste(item).subscribe(
             response => () => {
               console.log("Deleted item")
             },
@@ -145,8 +144,7 @@ export class NutricionistaComponent {
       this.updatedNutricionista.datumZaposlenja = this.dodajNutricionistu.datumZaposlenja;
       this.updatedNutricionista.datumRodjenja = this.dodajNutricionistu.datumRodjenja;
       this.updatedNutricionista.poslovnaPozicijaId = this.dodajNutricionistu.poslovnaPozicijaId;
-      let url: string = MyConfig.adresa_servera + `/updateNutricionistu`;
-      this.httpClient.post(url, this.updatedNutricionista).subscribe(request => {
+      this.nutricionistaService.UpdateNutricionistu(this.updatedNutricionista).subscribe(request => {
         console.log(request)
       })
     }
