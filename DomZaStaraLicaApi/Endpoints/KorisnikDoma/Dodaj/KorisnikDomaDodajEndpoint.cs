@@ -54,14 +54,14 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnikDoma.Dodaj
                 var folderPath = "slike-korisnika";
                 if (!Directory.Exists(folderPath))
                 {
-                    // Create the folder if it does not exist
+                   
                     Directory.CreateDirectory(folderPath);
                 }
 
                 await System.IO.File.WriteAllBytesAsync($"{folderPath}/{noviObj.KorisnikDomaID}-velika.jpg", slika_bajtovi_resized_velika);
                 await System.IO.File.WriteAllBytesAsync($"{folderPath}/{noviObj.KorisnikDomaID}-mala.jpg", slika_bajtovi_resized_mala);
 
-                //1- file system od web servera ili neki treci servis kao sto je azure blob store ili aws 
+                
             }
 
 

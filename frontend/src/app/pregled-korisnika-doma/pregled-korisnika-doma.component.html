@@ -24,6 +24,11 @@
       <select [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.opstinaID">
         <option name="opstina" *ngFor="let option of options" [value]="option.opstinaID">{{ option.nazivOpstine }}</option>
       </select>
+      <div>
+        <label>Slika korisnika</label>
+        <input id="slika-input" type="file" accept="image/*" (change)="generisi_preview()">
+        <img style="max-width: 100%; height: 200px" src="{{odabraniKorisnik.slika_base64_format}}">
+      </div>
     </div>
     <button type="submit" class="btn btn-primary mb-2" (click)="UpdateKorisnika()">Update</button>
 
@@ -50,7 +55,7 @@
     <td>{{ item.opstinaNaziv}}</td>
     <td>{{ item.opstinaBroj}}</td>
     <td>
-      <img class="profilna-slika" src="{{MyConfig.adresa_servera}}/korisnikDoma/getSlika?id={{item.korisnikDomaID}}">
+      <img class="profilna-slika" src="{{MyConfig.adresa_servera}}/korisnikDoma/getSlika?id={{item.korisnikDomaID}}&random={{item.random}}">
     </td>
     <td><button type="submit"  class="btn btn-primary" (click)="ObrisiKorisnika(item)">Izbriši korisnika</button></td>
     <td><button type="submit"  class="btn btn-primary" (click)="OdaberiKorisnika(item)">Update korisnika</button></td>

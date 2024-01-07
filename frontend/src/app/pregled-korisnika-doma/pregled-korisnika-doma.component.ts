@@ -9,7 +9,6 @@ import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component
 import {KorisnikDomaUpdateRequest} from "./korisnikDomaUpdateRequest";
 import {OpsinaGetAllResponseOpstina, OpstinaGetAllResponse} from "../opstina/opstina-getAll";
 import {map, Observable} from "rxjs";
-import {KorisnikComponent} from "../korisnik/korisnik.component";
 import {Router} from "@angular/router";
 
 
@@ -32,7 +31,8 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     jmbg: "",
     datumRodjenja: "",
     brojSobe: 0,
-    opstinaID:0
+    opstinaID:0,
+    slika_base64_format:""
 
   }
   pretragaNaziv="";
@@ -42,9 +42,18 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
 
 
   ngOnInit(): void {
-    let url =MyConfig.adresa_servera +`/korisnikDoma-getAll`
-    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x:KorisnikDomaGetAllResponse)=>{
-      this.korisnici = x.korisnici;
+    let url=MyConfig.adresa_servera +`/korisnikDoma-getAll`
+    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe({
+      next: x =>{
+        x.korisnici.forEach(k=>{
+          k.random = this.getRandomNumber();
+        })
+        this.korisnici=x.korisnici;
+
+      },
+      error: x =>{
+        alert("greska: " + x.error)
+      }
     })
   }
   getFiltriraniKorisnici() {
@@ -89,6 +98,7 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     const url = MyConfig.adresa_servera+`/korisnikDoma-update`;
     this.httpClient.post(url, podaci).subscribe((res) =>
       console.log("Korisnik doma updatovan"))
+    this.ngOnInit();
   }
 
   OdaberiKorisnika(item: KorisnikDomaGetAllResponseKorisnik) {
@@ -98,7 +108,8 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
       jmbg: item.jmbg,
       datumRodjenja: item.datumRodjenja,
       brojSobe: item.brojSobe,
-      opstinaID:item.opstinaID
+      opstinaID:item.opstinaID,
+      slika_base64_format:""
 
     }
     console.log(this.odabraniKorisnik);
@@ -138,4 +149,24 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   }
 
   protected readonly MyConfig = MyConfig;
+
+  generisi_preview() {
+    // @ts-ignore
+    var file = document.getElementById("slika-input").files[0];
+    if (file)
+    {
+      var reader = new FileReader();
+      reader.onload = ()=>{
+        this.odabraniKorisnik!.slika_base64_format = reader.result?.toString();
+      }
+      reader.readAsDataURL(file)
+    }
+
+  }
+
+  private getRandomNumber() {
+    let min = 1;
+    let max = 10000;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 }
