@@ -21,5 +21,6 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnikDoma.GetAll
         public int OpstinaID { get; set; }
         public string OpstinaNaziv { get; set; }
         public int OpstinaBroj { get; set; }
+        public string SlikaKorisnika { get; set; }
     }
 }

@@ -38,6 +38,7 @@
     <th>Broj sobe</th>
     <th>Naziv opštine</th>
     <th>Poštanski broj</th>
+    <th>Slika korisnika</th>
   </tr>
   </thead>
   <tbody>
@@ -48,6 +49,9 @@
     <td>{{ item.brojSobe }}</td>
     <td>{{ item.opstinaNaziv}}</td>
     <td>{{ item.opstinaBroj}}</td>
+    <td>
+      <img class="profilna-slika" src="{{MyConfig.adresa_servera}}/korisnikDoma/getSlika?id={{item.korisnikDomaID}}">
+    </td>
     <td><button type="submit"  class="btn btn-primary" (click)="ObrisiKorisnika(item)">Izbriši korisnika</button></td>
     <td><button type="submit"  class="btn btn-primary" (click)="OdaberiKorisnika(item)">Update korisnika</button></td>
 

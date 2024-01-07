@@ -39,7 +39,7 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   korisnici:KorisnikDomaGetAllResponseKorisnik[]=[];
   public odabraniKorisnik: KorisnikDomaUpdateRequest | null=null;
   options:OpsinaGetAllResponseOpstina[]=[];
-  forma: any;
+
 
   ngOnInit(): void {
     let url =MyConfig.adresa_servera +`/korisnikDoma-getAll`
@@ -137,4 +137,5 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
 
   }
 
+  protected readonly MyConfig = MyConfig;
 }

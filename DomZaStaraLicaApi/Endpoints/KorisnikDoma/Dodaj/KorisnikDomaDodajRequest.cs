@@ -7,6 +7,7 @@
         public DateTime DatumRodjenja { get; set; }
         public int BrojSobe { get; set; }
         public int OpstinaID { get; set; }
+        public string? Slika_base64_format { get; set; }
 
     }
 }

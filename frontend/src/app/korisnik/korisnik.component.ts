@@ -30,7 +30,8 @@ export class KorisnikComponent implements OnInit {
         jmbg: "",
         datumRodjenja: "",
         brojSobe: 0,
-        opstinaID: 0
+        opstinaID: 0,
+        slika_base64_format:""
 
     }
 
@@ -57,5 +58,17 @@ export class KorisnikComponent implements OnInit {
         }
     }
 
+  generisi_preview() {
+    // @ts-ignore
+    var file = document.getElementById("slika-input").files[0];
+    if (file)
+    {
+      var reader = new FileReader();
+      reader.onload = ()=>{
+        this.korisnikRequest!.slika_base64_format = reader.result?.toString();
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 }
 
