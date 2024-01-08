@@ -169,4 +169,29 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     let max = 10000;
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+
+  ObrisiSlikuKorisnika() {
+    const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati sliku korisnika?');
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        let url: string = MyConfig.adresa_servera + `/korisnikDoma/obrisiSliku`;
+        const params = new HttpParams().set('KorisnikDomaID', this.odabraniKorisnik?.korisnikDomaID??0);
+        this.httpClient.delete(url, {params}).subscribe(
+          response => () => {
+            console.log("Deleted item")
+          },
+          (error: any) => {
+            console.error('Error:', error);
+
+            if (error.status === 500) {
+              alert('Nije moguće izbrisati korisnika');
+              console.error('Handle 500 error here');
+            } else {
+              // Handle other errors
+              alert('An error occurred.');
+            }
+          })
+      }
+    });
+  }
 }
