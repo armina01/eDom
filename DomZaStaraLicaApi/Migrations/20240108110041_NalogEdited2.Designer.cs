@@ -4,6 +4,7 @@ using DomZaStaraLicaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240108110041_NalogEdited2")]
+    partial class NalogEdited2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,14 +33,8 @@ namespace DomZaStaraLicaApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<bool>("Is2FOtkljucano")
-                        .HasColumnType("bit");
-
                     b.Property<int>("KorisnickiNalogId")
                         .HasColumnType("int");
-
-                    b.Property<string>("TwoFKey")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ipAdresa")
                         .HasColumnType("nvarchar(max)");

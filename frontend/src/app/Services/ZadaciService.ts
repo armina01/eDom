@@ -9,7 +9,11 @@ import { MyAuthService} from "./MyAuthService";
 import {Observable} from "rxjs";
 import {GetAllKorisnickiNalogResponse} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
 import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
-import {GetAllZadatakResponse} from "../get-zadaci/getAllZadaciResponse";
+import {
+    GetAllZadatakResponse,
+    GetIntervalZadatakaResponse,
+    GetVrstaZadatakaResponse
+} from "../get-zadaci/getAllZadaciResponse";
 import {DodajZadatakResponse} from "../get-zadaci/DodajZadatakResponse";
 
 
@@ -22,6 +26,14 @@ export class ZadaciService {
     GetAllZadaci(){
         let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
         return this.httpClient.get<GetAllZadatakResponse>(url)
+    }
+  GetIntervalZadataka(){
+    let url: string = MyConfig.adresa_servera + `/getIntervalZadatka`;
+    return this.httpClient.get<GetIntervalZadatakaResponse>(url)
+  }
+    GetVrsteZadataka(){
+        let url: string = MyConfig.adresa_servera + `/getVrsteZadatka`;
+        return this.httpClient.get<GetVrstaZadatakaResponse>(url)
     }
     DodajZadatak(data:any){
         let url: string = MyConfig.adresa_servera + `/dodajZadatak`;

@@ -1,0 +1,17 @@
+<div class="input-group">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="">Korisnicko ime</span>
+    </div>
+    <input type="text" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="korisnickoIme">
+</div>
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Email</span>
+    </div>
+    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"
+           [ngModel]="email">
+</div>
+<button class="btn btn-primary" type="submit" (click)="PosaljiMail()">Send mail</button>
+<div><label >Ukucajte Sifru</label></div>
+<div><input [ngModel]="Auth2FOtkljucajRequest.kljuc" ></div>
+<Button (click)="PotvrdiSifru()" >Potvrdi</Button>

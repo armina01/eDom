@@ -96,4 +96,7 @@ export class LogInComponent {
 
   }
 
+  Enable2FA() {
+
+  }
 }

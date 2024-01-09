@@ -41,6 +41,9 @@ export class DodajZadatkeComponent {
 
   public njegovatelj:GetAllNjegovateljaResponseNjegovatelj|null=null;
   ngOnInit(){
+    this.zadatakService.GetVrsteZadataka().subscribe(response=>{
+      this.dodajOpstiZadatak.vrstaZadatkaId=response.vrsteZadatka.find(x=>x.naziv==="Opsti zadatak")?.vrstaZadatkaId??0;
+    })
   this.GetAllKorisnici();
 
     this.njegovatelj=this.getZaposlenik();
@@ -107,7 +110,7 @@ export class DodajZadatkeComponent {
         );
         this.showErrorNijeIzabrano=false;
         this.showErrorObojeIzabrano=false;
-        this.dodajOpstiZadatak.opis="";
+
         this.dodajOpstiZadatak.status=false;
       }
     }
@@ -122,12 +125,18 @@ export class DodajZadatkeComponent {
     }
   }
   private AddZadatak(korisnik: SelectKorisnikeDoma) {
-    this.dodajOpstiZadatak.zaposlenikPostavioId=this.njegovatelj?.zaposlenikId??0;
-    this.dodajOpstiZadatak.korisnikDomaId=korisnik.korisnikDomaID;
-    this.dodajOpstiZadatak.intervalZadatkaId= this._vrstaDnevnogZadatkaId?1:2;
-    this.zadatakService.DodajZadatak(this.dodajOpstiZadatak).subscribe((response:DodajZadatakResponse) => {
-
+    let intervalZadatkaId:number=0;
+    let intervalZadatka=this.zadatakService.GetIntervalZadataka().subscribe(response=> {
+        intervalZadatkaId = response.intervaliZadatka.find(x =>
+            x.jeDnevni === this._vrstaDnevnogZadatkaId)?.intervalZadatkaId ?? 0;
+        this.dodajOpstiZadatak.zaposlenikPostavioId=this.njegovatelj?.zaposlenikId??0;
+        this.dodajOpstiZadatak.korisnikDomaId=korisnik.korisnikDomaID;
+        this.dodajOpstiZadatak.intervalZadatkaId= intervalZadatkaId;
+        this.zadatakService.DodajZadatak(this.dodajOpstiZadatak).subscribe((response:DodajZadatakResponse) => {
+            this.dodajOpstiZadatak.opis="";
+        })
     })
+
   }
   public isSelected:boolean=true
   SelectAll() {

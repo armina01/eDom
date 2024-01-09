@@ -20,6 +20,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x => x.OperationFilter<AutorizacijaSwaggerHeader>());
 builder.Services.AddTransient<MyAuthService>();
+builder.Services.AddTransient<MyEmailSenderService>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

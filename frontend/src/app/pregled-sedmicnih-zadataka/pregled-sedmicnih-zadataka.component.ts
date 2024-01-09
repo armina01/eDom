@@ -23,6 +23,8 @@ import {ZadaciService} from "../Services/ZadaciService";
   styleUrl: './pregled-sedmicnih-zadataka.component.css'
 })
 export class PregledSedmicnihZadatakaComponent {
+  public DnevniZadatakId: number=0;
+
 
   constructor(public httpClient: HttpClient,//@Inject(MY_AUTH_SERVICE_TOKEN)
               private _myAuthService: MyAuthService
@@ -32,6 +34,9 @@ export class PregledSedmicnihZadatakaComponent {
   showOpsti:boolean=false;
   showFizijatrijski=false;
   showMedicinski=false;
+  public OpstiZadatakId: number = 0;
+  public MedicinskiZadatakId: number = 0;
+  public FizijatrijskiZadatakId: number = 0;
   public njegovatelj:GetAllNjegovateljaResponseNjegovatelj|null=null;
   public medicinskiZadatak: GetAllZadatakResponseZadatak[]=[];
   public opstiZadatak: GetAllZadatakResponseZadatak[]=[];
@@ -46,8 +51,8 @@ export class PregledSedmicnihZadatakaComponent {
     datumPostavke:new Date(),
     zaposlenikPostavioId: 0,
     zaposlenikEditovaoId:null,
-    intervalZadatkaId:2,
-    vrstaZadatkaId:6,
+    intervalZadatkaId:0,
+    vrstaZadatkaId:0,
     korisnikDomaId:0
   }
   public updateOpstiZadatak:GetAllZadatakResponseZadatak={
@@ -57,8 +62,8 @@ export class PregledSedmicnihZadatakaComponent {
     datumPostavke:new Date(),
     zaposlenikPostavioId: 0,
     zaposlenikEditovaoId:null,
-    intervalZadatkaId:2,
-    vrstaZadatkaId:6,
+    intervalZadatkaId:0,
+    vrstaZadatkaId:0,
     korisnikDomaId:0
   }
   GetAllMedicinskiZadaci() {
@@ -75,12 +80,29 @@ export class PregledSedmicnihZadatakaComponent {
   }
   GetAllOpstiZadaci() {
     this.GetAllZadaci();
-    this.opstiZadatak= this.zadaci.filter(x=>x.vrstaZadatkaId===6)
+    this.opstiZadatak= this.zadaci.filter(x=>x.vrstaZadatkaId===this.OpstiZadatakId
+    && x.korisnikDomaId===this._korisnikDomaId)
     this.showOpsti=true;
     this.showFizijatrijski=false;
     this.showMedicinski=false;
   }
   ngOnInit(){
+    this.zadaciService.GetVrsteZadataka().subscribe(response=>{
+      this.OpstiZadatakId=response.vrsteZadatka.find(x=>x.naziv==="Opsti zadatak")?.vrstaZadatkaId??0;
+      this.dodajOpstiZadatak.vrstaZadatkaId=response.vrsteZadatka.find(x=>x.naziv==="Opsti zadatak")?.vrstaZadatkaId??0;
+      this.updateOpstiZadatak.vrstaZadatkaId=response.vrsteZadatka.find(x=>x.naziv==="Opsti zadatak")?.vrstaZadatkaId??0;
+    })
+    this.zadaciService.GetVrsteZadataka().subscribe(response=>{
+      this.MedicinskiZadatakId=response.vrsteZadatka.find(x=>x.naziv==="Medicinski zadatak")?.vrstaZadatkaId??0;
+    });
+    this.zadaciService.GetVrsteZadataka().subscribe(response=>{
+      this.FizijatrijskiZadatakId=response.vrsteZadatka.find(x=>x.naziv==="Fizijatrijski zadatak")?.vrstaZadatkaId??0;
+    });
+    this.zadaciService.GetIntervalZadataka().subscribe(response=>{
+      this.dodajOpstiZadatak.intervalZadatkaId=response.intervaliZadatka.find(x=>x.jeDnevni===false)?.intervalZadatkaId??0;
+      this.updateOpstiZadatak.intervalZadatkaId=response.intervaliZadatka.find(x=>x.jeDnevni===false)?.intervalZadatkaId??0;
+      this.DnevniZadatakId=response.intervaliZadatka.find(x=>x.jeDnevni===false)?.intervalZadatkaId??0;
+    })
     this.GetAllZadaci();
     this.njegovatelj=this.getZaposlenik();
     this.route.params.subscribe(params => {
@@ -110,7 +132,7 @@ export class PregledSedmicnihZadatakaComponent {
           const endOfWeek = new Date(todayDate);
           endOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 7);
           return (
-              zadatak.intervalZadatkaId === 2 &&
+              zadatak.intervalZadatkaId === this.DnevniZadatakId &&
               datumPostavke >= startOfWeek &&
               datumPostavke <= endOfWeek
           );
@@ -186,7 +208,7 @@ export class PregledSedmicnihZadatakaComponent {
             const endOfWeek = new Date(todayDate);
             endOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 7);
             return (
-                zadatak.intervalZadatkaId === 2 &&
+                zadatak.intervalZadatkaId === this.MedicinskiZadatakId &&
                 datumPostavke >= startOfWeek &&
                 datumPostavke <= endOfWeek
             );

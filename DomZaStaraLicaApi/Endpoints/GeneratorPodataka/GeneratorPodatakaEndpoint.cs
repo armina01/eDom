@@ -36,14 +36,15 @@ namespace DomZaStaraLicaApi.Endpoints.GeneratorPodataka
                 JeFizioterapeut=false,
                 JeNjegovatelj=false,
                 JeNutricionista=false,
-                JeAdmin= true
+                JeAdmin= true,
+                Je2FActive=true
             });
-            vrstaZadatka.Add(new Data.Models.VrstaZadatka { VrstaZadatkaId=4, Naziv = "Medicinski zadatak" });
-            vrstaZadatka.Add(new Data.Models.VrstaZadatka { VrstaZadatkaId = 5, Naziv = "Fizioterapeutski zadatak" });
-            vrstaZadatka.Add(new Data.Models.VrstaZadatka { VrstaZadatkaId = 6, Naziv = "Opsti zadatak" });
+            vrstaZadatka.Add(new Data.Models.VrstaZadatka { Naziv = "Medicinski zadatak" });
+            vrstaZadatka.Add(new Data.Models.VrstaZadatka {  Naziv = "Fizioterapeutski zadatak" });
+            vrstaZadatka.Add(new Data.Models.VrstaZadatka { Naziv = "Opsti zadatak" });
 
-            intervalZadatka.Add(new Data.Models.IntervalZadatka { IntervalZadatkaId = 1, JeDnevni = true, JeSedmicni = false });
-            intervalZadatka.Add(new Data.Models.IntervalZadatka { IntervalZadatkaId = 2, JeSedmicni = true, JeDnevni = false });
+            intervalZadatka.Add(new Data.Models.IntervalZadatka {  JeDnevni = true, JeSedmicni = false });
+            intervalZadatka.Add(new Data.Models.IntervalZadatka {  JeSedmicni = true, JeDnevni = false });
 
             _dbContext.AddRange(nalog);
             _dbContext.AddRange(vrstaZadatka);

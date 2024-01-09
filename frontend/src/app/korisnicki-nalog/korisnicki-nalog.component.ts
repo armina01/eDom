@@ -27,11 +27,13 @@ export class KorisnickiNalogComponent {
   public korisnickiNalogRequest: KorisnickiNalogRequest = {
     korisnickoIme: "",
     lozinka: "",
+    email:"sadzidadziho@gmail.com",
     jeAdmin: true,
     jeDoktor: false,
     jeFizioterapeut: false,
     jeNjegovatelj: false,
-    jeNutricionista: false
+    jeNutricionista: false,
+    je2FActive:true,
   }
   korisnickiNalog: GetAllKorisnickiNalogResponseKorisnickiNalog[] = [];
 
