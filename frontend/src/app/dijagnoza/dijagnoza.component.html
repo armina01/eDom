@@ -64,7 +64,6 @@
             <label class="form-label"> Datum uspostavljanja dijagnoze </label>
             <input class="form-control"  [(ngModel)]="odabranaDijagnoza.datumDijagnoze">
           </div>
-
           <div>
             <label class="form-label"> Korisnik doma </label>
             <select class="form-control"  [(ngModel)]="odabranaDijagnoza.korisnikDomaID" disabled>
@@ -77,15 +76,15 @@
               <option *ngFor="let item of doktori" [value]="item.zaposlenikId">{{item.imePrezime}}</option>
             </select>
           </div>
-        </div>
+
         <div class="modal-footer">
           <button type="button" (click)="odabranaDijagnoza = null" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <button type="button" (click)="Update()" class="btn btn-primary">Save changes</button>
         </div>
+        </div>
       </div>
     </div>
   </div>
-
 </div>
 
 
@@ -104,6 +103,7 @@
     <th>Opis</th>
     <th>Datum uspostavljanja dijagnoze</th>
     <th>Ime doktora</th>
+    <th>Nalaz</th>
     <th>Obriši dijagnozu</th>
     <th>Update dijagnozu</th>
   </tr>
@@ -120,12 +120,11 @@
           </ng-container>
         </span>
     </td>
-
+    <td><button (click)="downloadFile(item.dijagnozaId)">Preuzmi nalaz</button></td>
+    <td><button (click)="deleteFile(item.dijagnozaId)">Obriši nalaz</button></td>
     <td><button type="submit"  class="btn btn-primary" style="background-color: red;" (click)="Obrisi(item)" >Izbriši</button></td>
     <td><button type="submit"  class="btn btn-primary"  (click)="Odaberi(item)" >Update</button></td>
 
   </tr>
   </tbody>
 </table>
-
-

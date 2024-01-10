@@ -163,6 +163,32 @@ export class DijagnozaComponent implements  OnInit{
       }
     }
   }
+
+  downloadFile(dijagnozaId: number) {
+    const url = `${MyConfig.adresa_servera}/dijagnoza/downloadFile/${dijagnozaId}`;
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.download = `Dijagnoza_${dijagnozaId}.dat`;
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+  }
+
+  deleteFile(dijagnozaId: number) {
+    const url = `${MyConfig.adresa_servera}/dijagnoza/deleteFile/${dijagnozaId}`;
+    this.httpClient.delete(url, { responseType: 'text' }).subscribe(
+      () => {
+        console.log('Fajl uspešno obrisan.');
+
+      },
+      (error) => {
+        console.error('Greška prilikom brisanja fajla:', error);
+      }
+    );
+  }
 }
 
 
