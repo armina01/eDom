@@ -7,7 +7,7 @@ import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpHandler} from "@ang
 import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
 import {MY_AUTH_SERVICE_TOKEN, MyAuthService} from "./Services/MyAuthService";
 import {ZaposlenikEndpoint} from "./Services/ZaposlenikEndpoint";
-import {CustomErrorHandler} from "./Services/CustomErrorHandler";
+
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes), provideAnimations()
@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
       useClass: MyAuthInterceptor,
       multi: true,},
        { provide: MY_AUTH_SERVICE_TOKEN, useClass: MyAuthService },
-      { provide: ErrorHandler, useClass: CustomErrorHandler },
+
         HttpClient
    ]
 

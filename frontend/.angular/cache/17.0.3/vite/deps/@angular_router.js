@@ -1,7 +1,7 @@
 import {
   Title
-} from "./chunk-K5IBUJ7L.js";
-import "./chunk-YZILP6V2.js";
+} from "./chunk-ORZMFWF5.js";
+import "./chunk-VT2SJOGA.js";
 import {
   DOCUMENT,
   HashLocationStrategy,
@@ -10,7 +10,7 @@ import {
   LocationStrategy,
   PathLocationStrategy,
   ViewportScroller
-} from "./chunk-CRS6PUEZ.js";
+} from "./chunk-LYWEOCCW.js";
 import {
   APP_BOOTSTRAP_LISTENER,
   APP_INITIALIZER,
@@ -28,7 +28,6 @@ import {
   EventEmitter,
   HostBinding,
   HostListener,
-  InitialRenderPendingTasks,
   Inject,
   InjectFlags,
   Injectable,
@@ -40,6 +39,7 @@ import {
   NgZone,
   Optional,
   Output,
+  PendingTasks,
   Renderer2,
   RuntimeError,
   SkipSelf,
@@ -77,7 +77,7 @@ import {
   ɵɵloadQuery,
   ɵɵqueryRefresh,
   ɵɵsanitizeUrlOrResourceUrl
-} from "./chunk-WJ76EGMG.js";
+} from "./chunk-LY46VLFS.js";
 import {
   BehaviorSubject,
   ConnectableObservable,
@@ -1484,8 +1484,8 @@ function getInherited(route, parent, paramsInheritanceStrategy = "emptyOnly") {
     };
   } else {
     inherited = {
-      params: route.params,
-      data: route.data,
+      params: __spreadValues({}, route.params),
+      data: __spreadValues({}, route.data),
       resolve: __spreadValues(__spreadValues({}, route.data), route._resolvedData ?? {})
     };
   }
@@ -2460,7 +2460,7 @@ function runCanActivate(futureRSS, futureARS, injector) {
     return defer(() => {
       const closestInjector = getClosestRouteInjector(futureARS) ?? injector;
       const guard = getTokenOrFunctionIdentity(canActivate2, closestInjector);
-      const guardVal = isCanActivate(guard) ? guard.canActivate(futureARS, futureRSS) : closestInjector.runInContext(() => guard(futureARS, futureRSS));
+      const guardVal = isCanActivate(guard) ? guard.canActivate(futureARS, futureRSS) : runInInjectionContext(closestInjector, () => guard(futureARS, futureRSS));
       return wrapIntoObservable(guardVal).pipe(first());
     });
   });
@@ -2474,7 +2474,7 @@ function runCanActivateChild(futureRSS, path, injector) {
       const guardsMapped = d.guards.map((canActivateChild) => {
         const closestInjector = getClosestRouteInjector(d.node) ?? injector;
         const guard = getTokenOrFunctionIdentity(canActivateChild, closestInjector);
-        const guardVal = isCanActivateChild(guard) ? guard.canActivateChild(futureARS, futureRSS) : closestInjector.runInContext(() => guard(futureARS, futureRSS));
+        const guardVal = isCanActivateChild(guard) ? guard.canActivateChild(futureARS, futureRSS) : runInInjectionContext(closestInjector, () => guard(futureARS, futureRSS));
         return wrapIntoObservable(guardVal).pipe(first());
       });
       return of(guardsMapped).pipe(prioritizedGuardValue());
@@ -2489,7 +2489,7 @@ function runCanDeactivate(component, currARS, currRSS, futureRSS, injector) {
   const canDeactivateObservables = canDeactivate.map((c) => {
     const closestInjector = getClosestRouteInjector(currARS) ?? injector;
     const guard = getTokenOrFunctionIdentity(c, closestInjector);
-    const guardVal = isCanDeactivate(guard) ? guard.canDeactivate(component, currARS, currRSS, futureRSS) : closestInjector.runInContext(() => guard(component, currARS, currRSS, futureRSS));
+    const guardVal = isCanDeactivate(guard) ? guard.canDeactivate(component, currARS, currRSS, futureRSS) : runInInjectionContext(closestInjector, () => guard(component, currARS, currRSS, futureRSS));
     return wrapIntoObservable(guardVal).pipe(first());
   });
   return of(canDeactivateObservables).pipe(prioritizedGuardValue());
@@ -2501,7 +2501,7 @@ function runCanLoadGuards(injector, route, segments, urlSerializer) {
   }
   const canLoadObservables = canLoad.map((injectionToken) => {
     const guard = getTokenOrFunctionIdentity(injectionToken, injector);
-    const guardVal = isCanLoad(guard) ? guard.canLoad(route, segments) : injector.runInContext(() => guard(route, segments));
+    const guardVal = isCanLoad(guard) ? guard.canLoad(route, segments) : runInInjectionContext(injector, () => guard(route, segments));
     return wrapIntoObservable(guardVal);
   });
   return of(canLoadObservables).pipe(prioritizedGuardValue(), redirectIfUrlTree(urlSerializer));
@@ -2519,7 +2519,7 @@ function runCanMatchGuards(injector, route, segments, urlSerializer) {
     return of(true);
   const canMatchObservables = canMatch.map((injectionToken) => {
     const guard = getTokenOrFunctionIdentity(injectionToken, injector);
-    const guardVal = isCanMatch(guard) ? guard.canMatch(route, segments) : injector.runInContext(() => guard(route, segments));
+    const guardVal = isCanMatch(guard) ? guard.canMatch(route, segments) : runInInjectionContext(injector, () => guard(route, segments));
     return wrapIntoObservable(guardVal);
   });
   return of(canMatchObservables).pipe(prioritizedGuardValue(), redirectIfUrlTree(urlSerializer));
@@ -2552,9 +2552,6 @@ var ApplyRedirects = class {
   constructor(urlSerializer, urlTree) {
     this.urlSerializer = urlSerializer;
     this.urlTree = urlTree;
-  }
-  noMatchError(e) {
-    return new RuntimeError(4002, (typeof ngDevMode === "undefined" || ngDevMode) && `Cannot match any routes. URL Segment: '${e.segmentGroup}'`);
   }
   lineralizeSegments(route, urlTree) {
     let res = [];
@@ -2639,6 +2636,9 @@ function matchWithChecks(segmentGroup, route, segments, injector, urlSerializer)
   return runCanMatchGuards(injector, route, segments, urlSerializer).pipe(map((v) => v === true ? result : __spreadValues({}, noMatch)));
 }
 function match(segmentGroup, route, segments) {
+  if (route.path === "**") {
+    return createWildcardMatchResult(segments);
+  }
   if (route.path === "") {
     if (route.pathMatch === "full" && (segmentGroup.hasChildren() || segments.length > 0)) {
       return __spreadValues({}, noMatch);
@@ -2667,6 +2667,15 @@ function match(segmentGroup, route, segments) {
     // TODO(atscott): investigate combining parameters and positionalParamSegments
     parameters,
     positionalParamSegments: res.posParams ?? {}
+  };
+}
+function createWildcardMatchResult(segments) {
+  return {
+    matched: true,
+    parameters: segments.length > 0 ? last2(segments).parameters : {},
+    consumedSegments: segments,
+    remainingSegments: [],
+    positionalParamSegments: {}
   };
 }
 function split(segmentGroup, consumedSegments, slicedSegments, config) {
@@ -2727,9 +2736,6 @@ function isImmediateMatch(route, rawSegment, segments, outlet) {
   if (getOutlet(route) !== outlet && (outlet === PRIMARY_OUTLET || !emptyPathMatch(rawSegment, segments, route))) {
     return false;
   }
-  if (route.path === "**") {
-    return true;
-  }
   return match(rawSegment, route, segments).matched;
 }
 function noLeftoversInUrl(segmentGroup, segments, outlet) {
@@ -2755,7 +2761,7 @@ var Recognizer = class {
     this.allowRedirects = true;
   }
   noMatchError(e) {
-    return new RuntimeError(4002, (typeof ngDevMode === "undefined" || ngDevMode) && `Cannot match any routes. URL Segment: '${e.segmentGroup}'`);
+    return new RuntimeError(4002, typeof ngDevMode === "undefined" || ngDevMode ? `Cannot match any routes. URL Segment: '${e.segmentGroup}'` : `'${e.segmentGroup}'`);
   }
   recognize() {
     const rootSegmentGroup = split(this.urlTree.root, [], [], this.config).segmentGroup;
@@ -2869,7 +2875,7 @@ var Recognizer = class {
       consumedSegments,
       positionalParamSegments,
       remainingSegments
-    } = route.path === "**" ? createWildcardMatchResult(segments) : match(segmentGroup, route, segments);
+    } = match(segmentGroup, route, segments);
     if (!matched)
       return noMatch$1(segmentGroup);
     if (route.redirectTo.startsWith("/")) {
@@ -2888,12 +2894,9 @@ This is currently a dev mode only error but will become a call stack size exceed
     }));
   }
   matchSegmentAgainstRoute(injector, rawSegment, route, segments, outlet) {
-    let matchResult;
+    const matchResult = matchWithChecks(rawSegment, route, segments, injector, this.urlSerializer);
     if (route.path === "**") {
-      matchResult = of(createWildcardMatchResult(segments));
       rawSegment.children = {};
-    } else {
-      matchResult = matchWithChecks(rawSegment, route, segments, injector, this.urlSerializer);
     }
     return matchResult.pipe(switchMap((result) => {
       if (!result.matched) {
@@ -3015,15 +3018,6 @@ function getData(route) {
 function getResolve(route) {
   return route.resolve || {};
 }
-function createWildcardMatchResult(segments) {
-  return {
-    matched: true,
-    parameters: segments.length > 0 ? last2(segments).parameters : {},
-    consumedSegments: segments,
-    remainingSegments: [],
-    positionalParamSegments: {}
-  };
-}
 function recognize(injector, configLoader, rootComponentType, config, serializer, paramsInheritanceStrategy) {
   return mergeMap((t) => recognize$1(injector, configLoader, rootComponentType, config, t.extractedUrl, serializer, paramsInheritanceStrategy).pipe(map(({
     state: targetSnapshot,
@@ -3046,23 +3040,25 @@ function resolveData(paramsInheritanceStrategy, injector) {
     if (!canActivateChecks.length) {
       return of(t);
     }
-    const routesWithResolversToRun = canActivateChecks.map((check) => check.route);
-    const routesWithResolversSet = new Set(routesWithResolversToRun);
-    const routesNeedingDataUpdates = (
-      // List all ActivatedRoutes in an array, starting from the parent of the first route to run
-      // resolvers. We go from the parent because the first route might have siblings that also
-      // run resolvers.
-      flattenRouteTree(routesWithResolversToRun[0].parent).slice(1)
-    );
+    const routesWithResolversToRun = new Set(canActivateChecks.map((check) => check.route));
+    const routesNeedingDataUpdates = /* @__PURE__ */ new Set();
+    for (const route of routesWithResolversToRun) {
+      if (routesNeedingDataUpdates.has(route)) {
+        continue;
+      }
+      for (const newRoute of flattenRouteTree(route)) {
+        routesNeedingDataUpdates.add(newRoute);
+      }
+    }
     let routesProcessed = 0;
     return from(routesNeedingDataUpdates).pipe(concatMap((route) => {
-      if (routesWithResolversSet.has(route)) {
+      if (routesWithResolversToRun.has(route)) {
         return runResolve(route, targetSnapshot, paramsInheritanceStrategy, injector);
       } else {
         route.data = getInherited(route, route.parent, paramsInheritanceStrategy).resolve;
         return of(void 0);
       }
-    }), tap(() => routesProcessed++), takeLast(1), mergeMap((_) => routesProcessed === routesNeedingDataUpdates.length ? of(t) : EMPTY));
+    }), tap(() => routesProcessed++), takeLast(1), mergeMap((_) => routesProcessed === routesNeedingDataUpdates.size ? of(t) : EMPTY));
   });
 }
 function flattenRouteTree(route) {
@@ -3094,7 +3090,7 @@ function resolveNode(resolve, futureARS, futureRSS, injector) {
 function getResolver(injectionToken, futureARS, futureRSS, injector) {
   const closestInjector = getClosestRouteInjector(futureARS) ?? injector;
   const resolver = getTokenOrFunctionIdentity(injectionToken, closestInjector);
-  const resolverValue = resolver.resolve ? resolver.resolve(futureARS, futureRSS) : closestInjector.runInContext(() => resolver(futureARS, futureRSS));
+  const resolverValue = resolver.resolve ? resolver.resolve(futureARS, futureRSS) : runInInjectionContext(closestInjector, () => resolver(futureARS, futureRSS));
   return wrapIntoObservable(resolverValue);
 }
 function switchTap(next) {
@@ -3616,7 +3612,7 @@ var _NavigationTransitions = class _NavigationTransitions {
               }
               return loaders;
             };
-            return combineLatest(loadComponents(t.targetSnapshot.root)).pipe(defaultIfEmpty(), take(1));
+            return combineLatest(loadComponents(t.targetSnapshot.root)).pipe(defaultIfEmpty(null), take(1));
           }),
           switchTap(() => this.afterPreactivation()),
           switchMap(() => {
@@ -4053,7 +4049,7 @@ var _Router = class _Router {
     this.options = inject(ROUTER_CONFIGURATION, {
       optional: true
     }) || {};
-    this.pendingTasks = inject(InitialRenderPendingTasks);
+    this.pendingTasks = inject(PendingTasks);
     this.urlUpdateStrategy = this.options.urlUpdateStrategy || "deferred";
     this.navigationTransitions = inject(NavigationTransitions);
     this.urlSerializer = inject(UrlSerializer);
@@ -5296,7 +5292,7 @@ function withNavigationErrorHandler(fn) {
       const injector = inject(EnvironmentInjector);
       inject(Router).events.subscribe((e) => {
         if (e instanceof NavigationError) {
-          injector.runInContext(() => fn(e));
+          runInInjectionContext(injector, () => fn(e));
         }
       });
     }
@@ -5505,7 +5501,7 @@ function mapToCanDeactivate(providers) {
 function mapToResolve(provider) {
   return (...params) => inject(provider).resolve(...params);
 }
-var VERSION = new Version("17.0.4");
+var VERSION = new Version("17.0.8");
 export {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -5585,7 +5581,7 @@ export {
 
 @angular/router/fesm2022/router.mjs:
   (**
-   * @license Angular v17.0.4
+   * @license Angular v17.0.8
    * (c) 2010-2022 Google LLC. https://angular.io/
    * License: MIT
    *)

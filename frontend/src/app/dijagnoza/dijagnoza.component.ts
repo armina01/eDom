@@ -28,6 +28,11 @@ export class DijagnozaComponent implements  OnInit{
   pretragaPoKorisniku: number=0;
   filtriraneDijagnoze:DijagnozaGetAllResponseDijagnoza[]=[];
   public odabranaDijagnoza: DijagnozaGetAllResponseDijagnoza | null = null;
+
+  fileSelected = false;
+  selectedFile: File | null = null;
+
+
   constructor(public httpClient: HttpClient, private dialog: MatDialog) {
   }
     ngOnInit(): void {
@@ -43,8 +48,8 @@ export class DijagnozaComponent implements  OnInit{
     opis: "",
     datumDijagnoze: new Date(),
     zaposlenikId: 0,
-    korisnikDomaID: 0
-
+    korisnikDomaID: 0,
+    nalazFile:this.selectedFile
 
   }
 
@@ -65,12 +70,23 @@ export class DijagnozaComponent implements  OnInit{
   }
 
   Dodaj() {
+
+    const formData: FormData = new FormData();
+    formData.append('nazivBolesti', this.dijagnozaRequest.nazivBolesti);
+    formData.append('opis', this.dijagnozaRequest.opis);
+    formData.append('datumDijagnoze', this.dijagnozaRequest.datumDijagnoze.toString());
+    formData.append('zaposlenikId', this.dijagnozaRequest.zaposlenikId.toString());
+    formData.append('korisnikDomaID', this.dijagnozaRequest.korisnikDomaID.toString());
+
+    if (this.dijagnozaRequest.nalazFile) {
+      formData.append('file', this.dijagnozaRequest.nalazFile);
+    }
     let url=MyConfig.adresa_servera + "/dijagnoza/dodaj";
-    console.log(this.dijagnozaRequest);
-    this.httpClient.post(url, this.dijagnozaRequest).subscribe(x=>{
+    this.httpClient.post(url, formData).subscribe(x=>{
       console.log("Dijagnoza dodana za korisnikId= "+ this.dijagnozaRequest.korisnikDomaID)
     });
   }
+
 
   GetAllDijagnoze() {
     let url: string = MyConfig.adresa_servera + `/dijagnoza/getAll`;
@@ -136,6 +152,16 @@ export class DijagnozaComponent implements  OnInit{
     this.httpClient.post(url, this.odabranaDijagnoza).subscribe(request => {
       console.log("Dijagnoza updateovana ", request)
     })
+  }
+
+  onFileSelected($event: Event) {
+    if (event && event.target) {
+      const inputElement = event.target as HTMLInputElement;
+      if (inputElement.files && inputElement.files.length > 0) {
+        this.dijagnozaRequest.nalazFile = inputElement.files[0];
+        this.fileSelected = true;
+      }
+    }
   }
 }
 
