@@ -34,8 +34,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-app.MapControllers();
+
 
 app.UseCors(
     options => options
@@ -44,5 +43,6 @@ app.UseCors(
         .AllowAnyHeader()
         .AllowCredentials()
 ); //This needs to set everything allowed
-
+app.UseAuthorization();
+app.MapControllers();
 app.Run();

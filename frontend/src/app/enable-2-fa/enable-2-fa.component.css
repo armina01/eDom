@@ -1,0 +1,30 @@
+/* Custom Styles for Verification Form */
+.verification-form {
+  max-width: 400px;
+  margin: auto;
+}
+
+.custom-label {
+  background-color: rgba(255, 255, 255, 0.02);
+  color: #000000;
+}
+
+.custom-input {
+  border: 1px solid #007bff;
+  border-radius: 5px;
+}
+
+.custom-btn {
+  background-color: #007bff;
+  border-color: #2260cb;
+  color: #fff;
+  margin-top: 10px;
+}
+.upozorenje{
+  color:red;
+}
+
+.custom-btn:hover {
+  background-color: #1ac5a6;
+  border-color: #1ac5a6;
+}

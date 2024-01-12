@@ -1,0 +1,27 @@
+.opstiZadaci{
+  margin-left: 17%;
+  width:70%;
+}
+.medicinskiZadaci{
+  margin-left: 17%;
+  width:70%;
+}
+.Naslov {
+  margin-left: 15%;
+}
+.fizijatrijskiZadaci{
+  margin-left: 17%;
+  width:70%;
+}
+.datumZadatkaDiv{
+  width:20%;
+}
+thead{
+  width:70%;
+}
+tbody{
+  widht:70%;
+}
+.button{
+  background: #276027;
+}

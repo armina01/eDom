@@ -72,7 +72,11 @@ export class DodajZadatkeComponent {
     });
   }
   getKorisnici() {
+    if(this.pretragaNaziv!=="") {
+      return this._showKorisnici.filter(x => (x.imePrezime.toLowerCase()).startsWith(this.pretragaNaziv.toLowerCase()))
+    } else {
       return this._showKorisnici;
+    }
   }
 
   public _vrstaDnevnogZadatkaId:boolean=false;
@@ -80,6 +84,7 @@ export class DodajZadatkeComponent {
   public showErrorNijeIzabrano:boolean=false;
   public showErrorObojeIzabrano:boolean=false;
   public showErrorPrazno:boolean=false;
+  public showErrorNemaKorisnika=false;
   DodajZadatak() {
     if(this._vrstaDnevnogZadatkaId===this._vrstaSedmicnogZadatkaId)
     {
@@ -102,7 +107,10 @@ export class DodajZadatkeComponent {
       }
       else {
         let selectedKorisnici=this._showKorisnici.filter(x=>x.selected===true)
-
+        if (selectedKorisnici.length===0)
+        {
+          this.showErrorNemaKorisnika=true;
+        }
         selectedKorisnici.forEach(korisnik=> {
 
               this.AddZadatak(korisnik);
@@ -110,7 +118,7 @@ export class DodajZadatkeComponent {
         );
         this.showErrorNijeIzabrano=false;
         this.showErrorObojeIzabrano=false;
-
+          this.showConfirmationDialog = true;
         this.dodajOpstiZadatak.status=false;
       }
     }
@@ -134,13 +142,27 @@ export class DodajZadatkeComponent {
         this.dodajOpstiZadatak.intervalZadatkaId= intervalZadatkaId;
         this.zadatakService.DodajZadatak(this.dodajOpstiZadatak).subscribe((response:DodajZadatakResponse) => {
             this.dodajOpstiZadatak.opis="";
+            this._vrstaSedmicnogZadatkaId=false;
+            this._vrstaDnevnogZadatkaId=false;
+            this.dodajOpstiZadatak.status=false;
         })
     })
 
   }
-  public isSelected:boolean=true
+  public isSelected:boolean=true;
   SelectAll() {
     this._showKorisnici.forEach(x=>x.selected=this.isSelected)
-    this.isSelected=false;
+    this.isSelected = !this.isSelected;
   }
+
+  toggleSwitch() {
+
+  }
+  pretragaNaziv="";
+  SelektirajKorisnike() {
+
+  }
+    public showConfirmationDialog: boolean = false;
+
+
 }

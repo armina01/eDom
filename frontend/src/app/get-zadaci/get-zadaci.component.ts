@@ -110,6 +110,7 @@ export class GetZadaciComponent {
     this.showOpsti=true;
     this.showFizijatrijski=false;
     this.showMedicinski=false;
+    this.showDodajOpstiZadatak=true;
   }
 
     getZaposlenik():GetAllNjegovateljaResponseNjegovatelj | null {
@@ -123,9 +124,9 @@ export class GetZadaciComponent {
     }
    GetAllZadaci() {
     let todayDate=new Date(this.odabraniDatum);
-
+    console.log(todayDate);
     this.zadaciService.GetAllZadaci().subscribe(x => {
-
+      console.log("Zadaci",this.zadaci)
       this.zadaci = x.zadaci.filter(zadatak => {
         const datumPostavke = new Date(zadatak.datumPostavke);
         if (Object.prototype.toString.call(datumPostavke) === "[object Date]" && !isNaN(datumPostavke.getTime())) {

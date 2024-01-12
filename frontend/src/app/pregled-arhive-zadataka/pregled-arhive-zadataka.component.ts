@@ -22,7 +22,8 @@ import {ZadaciService} from "../Services/ZadaciService";
   styleUrl: './pregled-arhive-zadataka.component.css'
 })
 export class PregledArhiveZadatakaComponent {
-
+    private DnevniZadatakId: number=0;
+    private SedmicniZadatakId=0;
    constructor(public httpClient: HttpClient,//@Inject(MY_AUTH_SERVICE_TOKEN)
                private _myAuthService: MyAuthService
                 ,private dialog: MatDialog,public route: ActivatedRoute,
@@ -35,7 +36,11 @@ export class PregledArhiveZadatakaComponent {
     public showSedmicni:boolean=false;
     public showDnevni:boolean=false;
    ngOnInit(){
-
+       this.zadaciService.GetIntervalZadataka().subscribe(response=>{
+           this.DnevniZadatakId=response.intervaliZadatka.find(x=>x.jeDnevni===true)?.intervalZadatkaId??0;
+            this.SedmicniZadatakId=response.intervaliZadatka.find(x=>x.jeSedmicni===true)?.intervalZadatkaId??0;
+           console.log(this.DnevniZadatakId);
+       })
        this.route.params.subscribe(params => {
            this.korisnikId = +params['id'] || 0;
        });
@@ -66,7 +71,7 @@ export class PregledArhiveZadatakaComponent {
                     startOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 1); // Set to the first day of the week (Monday)
 
                     return (
-                        zadatak.intervalZadatkaId === 2 &&
+                        zadatak.intervalZadatkaId === this.SedmicniZadatakId &&
                         datumPostavke < startOfWeek
                     );
                 } else {
@@ -80,12 +85,13 @@ export class PregledArhiveZadatakaComponent {
     }
 
     PregledajArhivuDnevnihZadataka() {
+
         let todayDate = new Date();
         this.showSedmicni=false;
         this.showDnevni=true;
         this.zadaciService.GetAllZadaci().subscribe(x => {
             x.zadaci.forEach(y => {
-                console.log("Danasnji datum", todayDate, "Datum zadatka", y.datumPostavke);
+                console.log(y);
             });
 
             this.dnevniZadaci = x.zadaci.filter(zadatak => {
@@ -94,7 +100,7 @@ export class PregledArhiveZadatakaComponent {
                 // Check if datumPostavke is a valid Date object
                 if (Object.prototype.toString.call(datumPostavke) === "[object Date]" && !isNaN(datumPostavke.getTime())) {
                     return (
-                        zadatak.intervalZadatkaId === 1 &&
+                        zadatak.intervalZadatkaId === this.DnevniZadatakId &&
                         datumPostavke < todayDate
                     );
                 } else {
@@ -107,11 +113,11 @@ export class PregledArhiveZadatakaComponent {
     }
     getDnevniZadaci()
     {
-        return this.dnevniZadaci;
+        return this.dnevniZadaci.filter(x=>x.korisnikDomaId===this.korisnikId);
     }
     getSedmicniZadaci()
     {
-        return this.sedmicniZadaci;
+        return this.sedmicniZadaci.filter(x=>x.korisnikDomaId===this.korisnikId);
     }
 
 }

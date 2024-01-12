@@ -32,6 +32,10 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija._2FAuth
                 token.Is2FOtkljucano = true;
                 await _applicationDbContext.SaveChangesAsync();
             }
+            else
+            {
+                throw new Exception("Netacan kljuc");
+            }
 
             return new NoResponse();
         }

@@ -1,0 +1,14 @@
+.custom-table {
+  width: 40%;
+  margin: 0 auto;
+}
+
+.container.text-center {
+  text-align: center;
+}
+.table-striped-custom tbody tr:nth-of-type(odd) {
+  background-color: #25353f; /* light blue */
+}
+.table-striped-custom tbody tr:nth-of-type(even) {
+  background-color: white;
+}

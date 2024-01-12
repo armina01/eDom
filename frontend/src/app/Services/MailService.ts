@@ -9,6 +9,7 @@ import { MyAuthService} from "./MyAuthService";
 import {Observable} from "rxjs";
 import {Enable2FAuthRequest} from "../enable-2-fa/Enable2FAuthRequest";
 import {Auth2FOtkljucajRequest} from "../enable-2-fa/OtkljucajRequest";
+import {NoResponse} from "../Helper/NoResponse";
 
 
 @Injectable({
@@ -22,8 +23,9 @@ export class MailService {
         return this.httpClient.post(url, mailRequest);
     }
     OtkljucajAuth(Auth2FOtkljucajRequest:Auth2FOtkljucajRequest){
+
         const url: string = MyConfig.adresa_servera + '/2f-otklucaj';
-        return this.httpClient.post(url, Auth2FOtkljucajRequest);
+        return this.httpClient.post<NoResponse>(url, Auth2FOtkljucajRequest);
     }
 
 }

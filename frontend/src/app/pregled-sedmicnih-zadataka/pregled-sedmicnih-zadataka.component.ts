@@ -85,6 +85,7 @@ export class PregledSedmicnihZadatakaComponent {
     this.showOpsti=true;
     this.showFizijatrijski=false;
     this.showMedicinski=false;
+    this.showDodajOpstiZadatak=true;
   }
   ngOnInit(){
     this.zadaciService.GetVrsteZadataka().subscribe(response=>{

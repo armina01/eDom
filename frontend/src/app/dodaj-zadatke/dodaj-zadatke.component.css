@@ -1,0 +1,137 @@
+/* Add some spacing and styling */
+.card {
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: red;
+}
+
+/* Additional styling for icons */
+i.far {
+  margin-right: 8px;
+}
+
+/* Style the buttons */
+button {
+  margin-right: 8px;
+}
+.form-check-input {
+  background-color: rgba(143, 155, 138, 0.37); /* Green background color */
+  border-color: rgba(120, 128, 115, 0.26); /* Green border color */
+  color: #fff; /* White text color */
+}
+
+/* Hover effect for checkboxes */
+.form-check-input:hover {
+  background-color: #218838; /* Darker green on hover */
+  border-color: #218838; /* Darker border color on hover */
+}
+.btn-success {
+  background-color: rgb(129, 176, 129); /* Your custom green color */
+  color: #ffffff; /* Text color, change as needed */
+}
+/* Checked state for checkboxes */
+.form-check-input:checked {
+  background-color: #218838; /* Darker green when checked */
+  border-color: #218838; /* Darker border color when checked */
+  color: #fff; /* White text color when checked */
+}
+
+.Naslov {
+  margin-left: 7%;
+}
+.btn-success:hover {
+  background-color: #0a2a0a; /* Your custom green color on hover */
+}
+.checkbox-container {
+  display: flex;
+  gap: 10px; /* Adjust the gap as needed */
+}
+
+.checkbox-container .form-check {
+  flex: 1;
+}
+/* Style the table header */
+.table thead th {
+  text-align: center;
+}
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-label {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+.tbody tbody tr:nth-child(even) {
+  background-color: #28a745; /* Green background color */
+  color: #fff; /* White text color */
+}
+
+.toggle-bar {
+  background-color: #8ea985;
+  height: 20px;
+  width: 40px;
+  border-radius: 10px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  transition: background-color 0.3s;
+}
+
+.toggle-circle {
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.toggle-label.active .toggle-bar {
+  background-color: #4caf50;
+}
+
+.toggle-label.active .toggle-circle {
+  transform: translateX(20px);
+  background-color: #1a2d1a;
+}
+.scrollable-tbody {
+  max-height: 200px; /* Set your desired maximum height */
+  overflow-y: auto;
+  display: block;
+}
+.table-container {
+  max-height: 200px; /* Set your desired maximum height */
+  overflow-y: auto;
+}
+.confirmation-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Styling for the circle-check icon */
+.far.fa-check-circle {
+    font-size: 50px;
+    color: #4caf50; /* Green color */
+    margin-bottom: 10px;
+}

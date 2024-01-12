@@ -9,11 +9,13 @@ import {MailService} from "../Services/MailService";
 import {GetAllKorisnickiNalogResponseKorisnickiNalog} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
 import {Enable2FAuthRequest} from "./Enable2FAuthRequest";
 import {Auth2FOtkljucajRequest} from "./OtkljucajRequest";
+import {catchError, finalize, throwError} from "rxjs";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @Component({
   selector: 'app-enable-2-fa',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,FontAwesomeModule],
   providers : [MailService,KorisnickiNalogService],
   templateUrl: './enable-2-fa.component.html',
   styleUrl: './enable-2-fa.component.css'
@@ -32,21 +34,43 @@ export class Enable2FAComponent {
   public Auth2FOtkljucajRequest: Auth2FOtkljucajRequest ={
       kljuc:""
   }
+  isSendingEmail: boolean = false;
+  neispravniPodaci=false;
+  neispravnoKorisnickoIme=false;
   PosaljiMail() {
-        this.korisnickiNalogService.GetAllKorisnickiNalog().subscribe(response=>
-        {
-          console.log(this.korisnickoIme);
-          this.korisnickiNalog=response.korisnickiNalozi.find(x=>x.korisnickoIme===this.korisnickoIme)||null;
-          console.log("Korisnicki nalog",this.korisnickiNalog)
-          this.enable2FAuthRequest.nalogId=this.korisnickiNalog?.nalogId??0;
-          this.mailService.PosaljiMail(this.enable2FAuthRequest).subscribe();
 
-        });
+    if(this.email!=="" && this.korisnickoIme!=="")
+    {
+
+      this.isSendingEmail=true;
+      this.korisnickiNalogService.GetAllKorisnickiNalog().subscribe(response => {
+
+        this.korisnickiNalog = response.korisnickiNalozi.find(x => x.korisnickoIme === this.korisnickoIme) || null;
+
+        this.enable2FAuthRequest.nalogId = this.korisnickiNalog?.nalogId ?? 0;
+        this.mailService.PosaljiMail(this.enable2FAuthRequest).pipe(
+          catchError(error => {
+            console.error('Error in PosaljiMail:', error);
+            this.neispravnoKorisnickoIme = true;
+            return throwError('An error occurred while sending mail');
+          }),
+          finalize(() => {
+            this.neispravnoKorisnickoIme = true;
+          })
+        ).subscribe(()=>{console.log("Uspjesno poslano")});
+
+      });
+    }
+    else{
+      this.neispravniPodaci=true;
+    }
   }
-
+  public verifikacijaNijeOkej=false;
   PotvrdiSifru() {
-      this.mailService.OtkljucajAuth(this.Auth2FOtkljucajRequest).subscribe(()=>{
+      this.mailService.OtkljucajAuth(this.Auth2FOtkljucajRequest).subscribe(response=>{
         this.router.navigate(["/home"])
+      },(error)=>{
+            this.verifikacijaNijeOkej=true;
       });
   }
 }
