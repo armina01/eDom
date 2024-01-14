@@ -112,26 +112,32 @@
           </div>
           <div class="card-body">
             <form>
-              <div class="form-group">
+              <div class="form-group mb-3">
                 <label for="Opis"><i class="bi bi-file-text"></i> Opis</label>
                 <input type="text" id="Opis" class="form-control" name="Opis" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.opis">
+                <div *ngIf="!terapijaRequest.opis" class="text-danger small">
+                  * Obavezno polje
+                </div>
               </div>
-              <div class="form-group">
+              <div class="form-group mb-3">
                 <label for="nacinPrimjene"><i class="bi bi-gear"></i> Način primjene</label>
                 <input type="text" id="nacinPrimjene" class="form-control" name="nacinPrimjene" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.nacinPrimjene">
+                <div *ngIf="!terapijaRequest.nacinPrimjene" class="text-danger small">
+                  * Obavezno polje
+                </div>
               </div>
-              <div class="form-group">
+              <div class="form-group mb-3">
                 <label for="vremenskiInterval"><i class="bi bi-clock"></i> Vremenski interval</label>
                 <input type="text" id="vremenskiInterval" class="form-control" name="vremenskiInterval" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.vremenskiInterval">
               </div>
               <div class="card mb-4" style="box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 15px; border-radius: 10px;">
-                <div class="form-group">
+                <div class="form-group mb-3">
                   <label for="naziv"><i class="bi bi-search"></i> Pretraga</label>
                   <div class="input-group">
                     <input type="text" id="naziv" class="form-control" name="naziv" (input)="pretraziLijekove()" placeholder="Unesite naziv lijeka" [(ngModel)]="odabraniNazivLijeka">
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group mb-3">
                   <label *ngIf="prikaziOdabaneLijekoveLabel">Odabrani lijekovi:</label>
                   <ul class="list-group">
                     <li class="list-group-item" *ngFor="let lijek of odabraniLijekovi">
@@ -153,11 +159,11 @@
                   </tbody>
                 </table>
               </div>
-              <div class="form-group">
+              <div class="form-group mb-3">
                 <label for="doktorId"><i class="bi bi-person"></i> DoktorId</label>
                 <input type="number" id="doktorId" class="form-control" name="doktorId" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.doktorId">
               </div>
-              <div class="form-group">
+              <div class="form-group mb-3">
                 <label for="cmbKorisnik"><i class="bi bi-person"></i> Izaberite korisnika doma:</label>
                 <select id="cmbKorisnik" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.korisnikDomaID">
                   <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime}}</option>
@@ -224,11 +230,17 @@
           <div>
             <label class="form-label"> Naziv: </label>
             <input class="form-control" [(ngModel)]="lijekRequest.naziv">
+            <div *ngIf="!lijekRequest.naziv" class="text-danger small">
+              * Obavezno polje
+            </div>
           </div>
 
           <div>
             <label class="form-label"> Uputstvo</label>
             <input class="form-control" [(ngModel)]="lijekRequest.uputstvo">
+            <div *ngIf="!lijekRequest.uputstvo" class="text-danger small">
+              * Obavezno polje
+            </div>
           </div>
           <div class="text-end mt-3">
             <button type="button" (click)="DodajLijek()" class="btn btn-primary mr-2">

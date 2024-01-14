@@ -1,4 +1,4 @@
-
+<form #updateForm="ngForm"  name="dijagnozaUpdForm">
 <div *ngIf="odabranaDijagnoza">
   <div class="modal fade show" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-modal="true" role="dialog" style="display: block;">
     <div class="modal-dialog">
@@ -52,7 +52,7 @@
     </div>
   </div>
 </div>
-
+</form>
 
 <div class="container mt-4">
   <ul class="nav nav-tabs">
@@ -83,12 +83,18 @@
                 <label for="nazivBolesti" class="form-label"><i class="bi bi-file-text"></i> Naziv bolesti</label>
                 <div>
                   <input type="text" id="nazivBolesti" name="nazivBolesti" class="form-control" [(ngModel)]="dijagnozaRequest.nazivBolesti">
+                  <div *ngIf="!dijagnozaRequest.nazivBolesti" class="text-danger small">
+                    * Obavezno polje
+                  </div>
                 </div>
               </div>
               <div class="mb-3">
                 <label for="opis" class="form-label"><i class="bi bi-file-text"></i> Opis</label>
                 <div>
                   <input type="text" id="opis" name="opis" class="form-control" [(ngModel)]="dijagnozaRequest.opis">
+                  <div *ngIf="!dijagnozaRequest.opis" class="text-danger small">
+                    * Obavezno polje
+                  </div>
                 </div>
               </div>
               <div class="mb-3">
@@ -106,7 +112,7 @@
               <div class="mb-3">
                 <label for="cmbKorisnik" class="form-label"><i class="bi bi-person"></i> Izaberite korisnika doma:</label>
                 <div>
-                  <select id="cmbKorisnik" class="form-select" [(ngModel)]="dijagnozaRequest.korisnikDomaID">
+                  <select id="cmbKorisnik" class="form-select" [ngModelOptions]="{standalone: true}" [(ngModel)]="dijagnozaRequest.korisnikDomaID">
                     <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime}}</option>
                   </select>
                 </div>
@@ -114,15 +120,27 @@
               <div class="mb-3">
                 <label for="cmbDoktor" class="form-label"><i class="bi bi-person"></i> Doktor:</label>
                 <div>
-                  <select id="cmbDoktor" class="form-select" [(ngModel)]="dijagnozaRequest.zaposlenikId">
+                  <select id="cmbDoktor" class="form-select" [ngModelOptions]="{standalone: true}" [(ngModel)]="dijagnozaRequest.zaposlenikId">
                     <option *ngFor="let option of doktori" [ngValue]="option.zaposlenikId">{{ option.imePrezime}}</option>
                   </select>
                 </div>
               </div>
               <div class="mb-3">
-                <button type="submit" class="btn btn-success mb-2" style="background-color: #28a745;">
+                <button (click)="Dodaj()" class="btn btn-success mb-2" style="background-color: #28a745;">
                   <i class="bi bi-plus-circle"></i> Dodaj
                 </button>
+                <!-- Dijalog -->
+                <div *ngIf="showConfirmationDialog" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="confirmationDialogLabel" aria-modal="true" style="display: block;">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content bg-success text-white">
+                      <div class="modal-header">
+                        <h5 class="modal-title">
+                          <i class="bi bi-check-circle"></i> Uspješno ste dodali dijagnozu
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </form>
           </div>
@@ -130,14 +148,15 @@
       </div>
     </div>
 
-    <!-- Pretraga terapija -->
+    <!-- Pretraga dijagnoza -->
     <div class="tab-pane fade" id="pretragaTerapija">
-      <!-- Ostatak vašeg HTML koda za pretragu terapija... -->
+      <!-- Ostatak koda za pretragu dijagnoza... -->
       <div class="container mt-4">
         <div class="card">
           <div class="card-header bg-primary text-white">
             <h1 class="fs-5"> Pregled dijagnoze</h1>
           </div>
+          <form #PregledForma="ngForm" name="PregledDijagnozeForm">
           <div class="card-body">
             <div class="mb-3">
               <label for="cmbKorisnikPretraga" class="form-label">Izaberite korisnika doma:</label>
@@ -146,6 +165,7 @@
               </select>
             </div>
           </div>
+          </form>
           <div class="row row-cols-1 g-4">
             <div *ngFor="let item of getFiltriraneDijagnoze()" class="col">
               <div class="card" style="width: 100%;">
@@ -163,9 +183,6 @@
                   <div class="btn-group" role="group" aria-label="Akcije">
                     <button class="btn btn-light border border-primary" style="margin-right: 15px;"(click)="downloadFile(item.dijagnozaId)">
                       <i class="bi bi-download"></i> Preuzmi nalaz
-                    </button>
-                    <button class="btn btn-light border border-primary" style="margin-right: 15px;" (click)="deleteFile(item.dijagnozaId)">
-                      <i class="bi bi-trash"></i> Obriši nalaz
                     </button>
                     <button type="submit" class="btn btn-primary" style="background-color: red; margin-right: 15px;" (click)="Obrisi(item)">
                       <i class="bi bi-x"></i> Izbriši dijagnozu

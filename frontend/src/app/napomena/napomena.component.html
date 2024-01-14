@@ -66,6 +66,9 @@
             <i class="bi bi-file-text"></i> Opis
           </label>
           <input type="text" id="opis" name="opis" class="form-control" [(ngModel)]="napomenaDodajRequest.opis">
+          <div *ngIf="!napomenaDodajRequest.opis" class="text-danger small">
+            * Obavezno polje
+          </div>
         </div>
         <div class="mb-3 form-check">
           <input id="prioritet" type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="napomenaDodajRequest.prioritet">

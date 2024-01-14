@@ -28,6 +28,7 @@ export class DijagnozaComponent implements  OnInit{
   pretragaPoKorisniku: number=0;
   filtriraneDijagnoze:DijagnozaGetAllResponseDijagnoza[]=[];
   public odabranaDijagnoza: DijagnozaGetAllResponseDijagnoza | null = null;
+  public showConfirmationDialog:boolean=false;
 
   fileSelected = false;
   selectedFile: File | null = null;
@@ -71,6 +72,7 @@ export class DijagnozaComponent implements  OnInit{
 
   Dodaj() {
 
+    console.log(this.dijagnozaRequest);
     const formData: FormData = new FormData();
     formData.append('nazivBolesti', this.dijagnozaRequest.nazivBolesti);
     formData.append('opis', this.dijagnozaRequest.opis);
@@ -85,8 +87,15 @@ export class DijagnozaComponent implements  OnInit{
     this.httpClient.post(url, formData).subscribe(x=>{
       console.log("Dijagnoza dodana za korisnikId= "+ this.dijagnozaRequest.korisnikDomaID)
     });
+    this.showConfirmationDialog=true;
+    this.setAutoHide();
   }
 
+  setAutoHide() {
+    setTimeout(() => {
+      this.showConfirmationDialog = false;
+    }, 3000);
+  }
 
   GetAllDijagnoze() {
     let url: string = MyConfig.adresa_servera + `/dijagnoza/getAll`;
@@ -177,6 +186,7 @@ export class DijagnozaComponent implements  OnInit{
     document.body.removeChild(link);
   }
 
+  //dugme uklonjeno za potrebe hci-a postaviti opet gdje bude potrebno
   deleteFile(dijagnozaId: number) {
     const url = `${MyConfig.adresa_servera}/dijagnoza/deleteFile/${dijagnozaId}`;
     this.httpClient.delete(url, { responseType: 'text' }).subscribe(
