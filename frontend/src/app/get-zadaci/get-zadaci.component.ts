@@ -13,11 +13,12 @@ import {DodajZadatakResponse} from "./DodajZadatakResponse";
 import {finalize} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {ZadaciService} from "../Services/ZadaciService";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
 
 @Component({
   selector: 'app-get-zadaci',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, NavBarNjejgovateljComponent],
   providers: [ZadaciService],
   templateUrl: './get-zadaci.component.html',
   styleUrl: './get-zadaci.component.css'

@@ -16,11 +16,12 @@ import {
 } from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
 import {MyAuthService} from "../Services/MyAuthService";
 import {FormsModule} from "@angular/forms";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
 
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [CommonModule, FormsModule,HttpClientModule],
+    imports: [CommonModule, FormsModule, HttpClientModule, NavBarNjejgovateljComponent],
   providers: [MyAuthService],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'

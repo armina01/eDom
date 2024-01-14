@@ -29,11 +29,12 @@ import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
 import {PoslovnaPozicijaService} from "../Services/PoslovnaPozicijaService";
 import {PasswordService} from "../Services/PasswordService";
 import {NutricionistaService} from "../Services/NutricionistaService";
+import {NavBarNutricionistaComponent} from "../nav-bar-nutricionista/nav-bar-nutricionista.component";
 
 @Component({
   selector: 'app-pregled-podataka-nutricionista',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule,NavBarNutricionistaComponent],
   providers: [NutricionistaService,KorisnickiNalogService,PoslovnaPozicijaService,PasswordService],
   templateUrl: './pregled-podataka-nutricionista.component.html',
   styleUrl: './pregled-podataka-nutricionista.component.css'
@@ -186,5 +187,14 @@ export class PregledPodatakaNutricionistaComponent {
   Otkazi() {
     this.prikaziDialog=false;
     this.SveFalse();
+  }
+
+  PromijeniKorIme() {
+
+      this.showProvjeraLozinkeZaNalog=true;
+      this.showPromijeniNalog=false;
+      this.prikaziDialog=true;
+      this.showProvjeraLozinkeZaLozinku=false;
+      this.showPromijeniLozinku=false;
   }
 }

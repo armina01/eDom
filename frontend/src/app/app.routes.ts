@@ -20,6 +20,7 @@ import {PregledPodatakaNutricionistaComponent} from "./pregled-podataka-nutricio
 import{DodajPlanIshraneComponent} from "./dodaj-plan-ishrane/dodaj-plan-ishrane.component";
 import {Enable2FAComponent} from "./enable-2-fa/enable-2-fa.component";
 import {AutorizacijaGuard} from "./Helper/autorizacija-guard.service";
+import {DodajVisePlanovaComponent} from "./dodaj-vise-planova/dodaj-vise-planova.component";
 
 export const routes: Routes = [
   {path: 'header', component: HeaderComponent},
@@ -42,6 +43,7 @@ export const routes: Routes = [
   {path:'nutricionista/o-meni',component:PregledPodatakaNutricionistaComponent,canActivate: [AutorizacijaGuard]},
   {path:'dodajplanishrane/:id',component:DodajPlanIshraneComponent,canActivate: [AutorizacijaGuard]},
   {path:'autorizacija',component:Enable2FAComponent},
+  {path:'dodajPlanoveIshrane', component: DodajVisePlanovaComponent,canActivate: [AutorizacijaGuard]}
 ]
 
 

@@ -12,11 +12,12 @@ import {GetAllNjegovateljaResponseNjegovatelj} from "../njegovatelj/getAllNjegov
 import {DodajZadatakResponse} from "../get-zadaci/DodajZadatakResponse";
 import {SelectKorisnikeDoma} from "./SelectKorisnikeDoma";
 import {ZadaciService} from "../Services/ZadaciService";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
 
 @Component({
   selector: 'app-dodaj-zadatke',
   standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, NavBarNjejgovateljComponent],
   providers :[ZadaciService],
   templateUrl: './dodaj-zadatke.component.html',
   styleUrl: './dodaj-zadatke.component.css'

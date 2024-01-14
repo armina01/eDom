@@ -1,11 +1,46 @@
-<input type="file" (change)="onFileSelected($event)">
-<button (click)="uploadFile()">Upload</button>
-<button (click)="DodajPlanIshrane()">Add Plan</button>
+<!-- File Upload Component -->
+<app-nav-bar-nutricionista></app-nav-bar-nutricionista>
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-body file-upload">
+      <h1 class="text-center mb-4">
+        <i class="fas fa-file-upload"></i>
+        File Upload
+      </h1>
 
-<div *ngFor="let planIshrane of planIshraneResponse" class="plan-item">
-    <div class="file-id">File ID: {{ planIshrane.fileId }}</div>
-    <div class="file-name">File Name: {{ PrikaziImeFajla(planIshrane.fileId) }}</div>
-    <button class="download-button" (click)="downloadFile(planIshrane.fileId)">Download</button>
-    <button class="delete-button" (click)="deletePlanIshrane(planIshrane)">Izbrisi</button>
+      <!-- File Input -->
+      <div class="form-group text-center">
+        <label for="fileInput">
+          <i class="fas fa-cloud-upload-alt"></i> Dodajte plan ishrane
+        </label>
+        <br>
+        <input type="file" id="fileInput" (change)="onFileSelected($event)" class="form-control-file" />
+      </div>
+
+      <!-- Upload and Add Buttons -->
+      <div class="text-center mt-3">
+        <button class="btn btn-success" (click)="DodajPlanIshrane()">
+          <i class="fas fa-plus"></i> Dodaj
+        </button>
+      </div>
+
+      <!-- File List -->
+      <div class="mt-4">
+        <div *ngFor="let planIshrane of planIshraneResponse" class="plan-item text-center">
+          <div class="file-id">
+            <i class="fas fa-file-alt"></i>  Naziv plana: {{ PrikaziImeFajla(planIshrane.fileId) }}
+          </div>
+          <div class="file-name">
+            <i class="fas fa-file"></i> File dodao: {{ PrikaziImeDodavaca(planIshrane.nutricionistaId) }}
+          </div>
+          <button class="btn btn-primary download-button" (click)="downloadFile(planIshrane.fileId)">
+            <i class="fas fa-download"></i> Download
+          </button>
+          <button class="btn btn-danger delete-button" (click)="deletePlanIshrane(planIshrane)">
+            <i class="fas fa-trash"></i> Izbrisi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-

@@ -12,11 +12,12 @@ import {MyConfig} from "../my-config";
 import {GetAllZadatakResponse, GetAllZadatakResponseZadatak} from "../get-zadaci/getAllZadaciResponse";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ZadaciService} from "../Services/ZadaciService";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
 
 @Component({
   selector: 'app-pregled-arhive-zadataka',
   standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, NavBarNjejgovateljComponent],
     providers: [ZadaciService],
   templateUrl: './pregled-arhive-zadataka.component.html',
   styleUrl: './pregled-arhive-zadataka.component.css'

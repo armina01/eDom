@@ -22,11 +22,12 @@ import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
 import {PoslovnaPozicijaService} from "../Services/PoslovnaPozicijaService";
 import {PasswordService} from "../Services/PasswordService";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
 
 @Component({
   selector: 'app-pregled-podataka-njegovatelj',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, FontAwesomeModule, NavBarNjejgovateljComponent],
   providers: [NjegovateljiService,KorisnickiNalogService,PoslovnaPozicijaService,PasswordService],
   templateUrl: './pregled-podataka-njegovatelj.component.html',
   styleUrl: './pregled-podataka-njegovatelj.component.css'

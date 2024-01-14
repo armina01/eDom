@@ -11,16 +11,21 @@ import {OpsinaGetAllResponseOpstina, OpstinaGetAllResponse} from "../opstina/ops
 import {map, Observable} from "rxjs";
 import {KorisnikComponent} from "../korisnik/korisnik.component";
 import {Router} from "@angular/router";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
+import {MyAuthService} from "../Services/MyAuthService";
+import {NavBarNutricionistaComponent} from "../nav-bar-nutricionista/nav-bar-nutricionista.component";
 
 @Component({
   selector: 'app-pregled-korisnika-doma',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarNjejgovateljComponent,NavBarNutricionistaComponent],
+  providers:[MyAuthService],
   templateUrl: './pregled-korisnika-doma.component.html',
   styleUrl: './pregled-korisnika-doma.component.css'
 })
 export class PregledKorisnikaDomaComponent implements  OnInit{
-  constructor(public httpClient:HttpClient, private dialog: MatDialog,public router: Router) {
+  constructor(public httpClient:HttpClient, private dialog: MatDialog,public router: Router
+  , private _myAuthService:MyAuthService) {
   }
 
   public korisnikUpdateRequest: KorisnikDomaUpdateRequest ={
@@ -37,8 +42,15 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   public odabraniKorisnik: KorisnikDomaUpdateRequest | null=null;
   options:OpsinaGetAllResponseOpstina[]=[];
   forma: any;
-
+  jeNjegovatelj=false;
+  jeNutricionista=false;
   ngOnInit(): void {
+    if(this._myAuthService.jeNjegovatelj())
+    {
+      this.jeNjegovatelj=true;
+    }else if (this._myAuthService.jeNutricionista()) {
+      this.jeNutricionista=true;
+    }
     let url =MyConfig.adresa_servera +`/korisnikDoma-getAll`
     this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x:KorisnikDomaGetAllResponse)=>{
       this.korisnici = x.korisnici;

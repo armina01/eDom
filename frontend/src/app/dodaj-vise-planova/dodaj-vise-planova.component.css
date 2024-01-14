@@ -1,0 +1,115 @@
+/* dodaj-plan-ishrane.component.css */
+
+input,
+button {
+  margin-bottom: 10px;
+}
+
+.plan-item {
+  border: 1px solid #ccc;
+  border-radius: 30%;
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-left:430px;
+  width:30%;
+}
+
+.plan-item:hover{
+  background: rgba(128, 128, 128, 0.53);
+}
+.file-id {
+  font-weight: bold;
+  color: #333;
+}
+
+.file-name {
+  margin-top: 5px;
+  color: #555;
+}
+
+.download-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-label {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+.tbody tbody tr:nth-child(even) {
+  background-color: #28a745; /* Green background color */
+  color: #fff; /* White text color */
+}
+
+.toggle-bar {
+  background-color: #8ea985;
+  height: 20px;
+  width: 40px;
+  border-radius: 10px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  transition: background-color 0.3s;
+}
+
+.toggle-circle {
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.toggle-label.active .toggle-bar {
+  background-color: #4caf50;
+}
+
+.toggle-label.active .toggle-circle {
+  transform: translateX(15px);
+  background-color: #1a2d1a;
+}
+.scrollable-tbody {
+  max-height: 200px; /* Set your desired maximum height */
+  overflow-y: auto;
+  display: block;
+}
+.table-container {
+  max-height: 200px; /* Set your desired maximum height */
+  overflow-y: auto;
+}
+.confirmation-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Styling for the circle-check icon */
+.far.fa-check-circle {
+  font-size: 50px;
+  color: #4caf50; /* Green color */
+  margin-bottom: 10px;
+}

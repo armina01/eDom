@@ -13,11 +13,14 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {PlanIshraneService} from "../Services/PlanIshraneService";
 import {FileService} from "../Services/FileService";
+import {NutricionistaService} from "../Services/NutricionistaService";
+import {DodajVisePlanovaComponent} from "../dodaj-vise-planova/dodaj-vise-planova.component";
+import {NavBarNutricionistaComponent} from "../nav-bar-nutricionista/nav-bar-nutricionista.component";
 @Component({
   selector: 'app-dodaj-plan-ishrane',
   standalone: true,
-  imports: [CommonModule,HttpClientModule],
-  providers: [FileService],
+  imports: [CommonModule,HttpClientModule,NavBarNutricionistaComponent],
+  providers: [FileService,PlanIshraneService,FileService,NutricionistaService],
   templateUrl: './dodaj-plan-ishrane.component.html',
   styleUrl: './dodaj-plan-ishrane.component.css'
 })
@@ -28,13 +31,25 @@ export class DodajPlanIshraneComponent {
     public fajl:GetFileResponseFile|undefined=undefined;
     public fajlIme:string="";
     constructor(private http: HttpClient,private dialog: MatDialog,private route: ActivatedRoute,
-                private planIshraneService:PlanIshraneService, private fileService:FileService) {}
+                private planIshraneService:PlanIshraneService, private fileService:FileService,
+                private nutricionistaService:NutricionistaService) {}
     onFileSelected($event: Event) {
         const inputElement = event?.target as HTMLInputElement;
         if (inputElement.files && inputElement.files.length > 0) {
             this.selectedFile = inputElement.files[0];
+          if (this.selectedFile) {
+            this.uploadFileFetch(this.selectedFile)
+              .subscribe(response => {
+                this.fileId= response.fileId;
+                this.PlanIshraneRequest.fileId=this.fileId;
+              }, error => {
+                console.error('Error uploading file', error);
+              });
+
+          }
         }
     }
+    nutricionisti:any;
     files: GetFileResponse|null=null;
     planIshraneResponse: GetAllPlanIshraneResponsePlan [] = [];
     ngOnInit(){
@@ -61,6 +76,9 @@ export class DodajPlanIshraneComponent {
                 console.error(error);
             }
         );
+      this.nutricionistaService.GetAllNutricionisti().subscribe(x=>{
+        this.nutricionisti=x.nutricionisti;
+      })
     }
     public fileId:number=0;
 
@@ -158,4 +176,10 @@ export class DodajPlanIshraneComponent {
 
         this.fileService.IzbrisiFile(fileId).subscribe(x=>{})
     }
+    nutricionistaIme="";
+  PrikaziImeDodavaca(nutricionistaId: number):string {
+    console.log(this.nutricionisti);
+      return this.nutricionisti.find((nut:any)=>nut.zaposlenikId===nutricionistaId)?.imePrezime??"";
+
+  }
 }

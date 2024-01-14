@@ -13,11 +13,12 @@ import {DodajZadatakResponse} from "../get-zadaci/DodajZadatakResponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {finalize} from "rxjs";
 import {ZadaciService} from "../Services/ZadaciService";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
 
 @Component({
   selector: 'app-pregled-sedmicnih-zadataka',
   standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, NavBarNjejgovateljComponent],
   providers: [ZadaciService],
   templateUrl: './pregled-sedmicnih-zadataka.component.html',
   styleUrl: './pregled-sedmicnih-zadataka.component.css'

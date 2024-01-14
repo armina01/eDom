@@ -7,10 +7,16 @@ button {
 
 .plan-item {
     border: 1px solid #ccc;
+  border-radius: 30%;
     padding: 10px;
     margin-bottom: 10px;
+  margin-left:430px;
+  width:30%;
 }
 
+.plan-item:hover{
+  background: rgba(128, 128, 128, 0.53);
+}
 .file-id {
     font-weight: bold;
     color: #333;

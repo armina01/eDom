@@ -20,8 +20,7 @@ namespace DomZaStaraLicaApi.Endpoints.FileEndpoint.DodajFile
         [HttpPost("upload")]
         public async override Task<IActionResult> Obradi(IFormFile file)
         {
-            
-
+           
                 if (file == null || file.Length == 0)
                 {
                     return BadRequest("Invalid file");
@@ -33,14 +32,14 @@ namespace DomZaStaraLicaApi.Endpoints.FileEndpoint.DodajFile
                     var fileEntity = new Data.Models.MyFile
                     {
                         MojFile = ms.ToArray(),
-                        ImeFile=file.FileName
+                        ImeFile = file.FileName
                     };
 
                     _applicationDbContext.MyFiles.Add(fileEntity);
                     await _applicationDbContext.SaveChangesAsync();
-                     return Ok(new { FileId = fileEntity.FileId });
+                    return Ok(new { FileId = fileEntity.FileId });
                 }
-
+           
                
             
         }

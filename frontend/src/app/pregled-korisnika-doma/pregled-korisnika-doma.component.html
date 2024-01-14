@@ -1,3 +1,9 @@
+<div *ngIf="jeNjegovatelj === true">
+  <app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
+</div>
+<div *ngIf="jeNutricionista === true">
+  <app-nav-bar-nutricionista></app-nav-bar-nutricionista>
+</div>
 <h1>Pregled svih korisnika doma</h1>
 <h5>Pretraga</h5><input [(ngModel)]="pretragaNaziv">
 
