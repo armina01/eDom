@@ -1,39 +1,26 @@
-
-<h2>Pregled aktivnih napomena</h2>
-
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <th>Opis</th>
-    <th>Datum postavke</th>
-    <th>Status</th>
-    <th>Vrsta napomene</th>
-    <th>Zaposlenik</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let item of aktivneNapomene">
-    <td>{{ item.opis }}</td>
-    <td>{{ item.datumPostavke | date }}</td>
-    <td *ngIf="item.isAktivna; else neaktivna">Aktivna</td>
-    <ng-template #neaktivna><td>Neaktivna</td></ng-template>
-    <td>
-      <span *ngFor="let vrsta of vrsteNapomena">
-          <ng-container *ngIf="vrsta.vrstaNapomeneId===item.vrstaNapomeneId">
-            {{ vrsta.opis}}
-          </ng-container>
-        </span>
-    </td>
-    <td>
-      <span *ngFor="let zaposlenik of zaposlenici">
-          <ng-container *ngIf="zaposlenik.zaposlenikId===item.zaposlenikId">
-            {{ zaposlenik.imePrezime}}
-          </ng-container>
-        </span>
-    </td>
-    <td *ngIf="item.prioritet===true" [ngStyle]="{'background-color': item.prioritet ? 'red' : 'inherit'}">
-      Bitna napomena !
-    </td>
-  </tr>
-  </tbody>
-</table>
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">
+        <i class="bi bi-clipboard-check"></i> Pregled aktivnih napomena
+      </h2>
+    </div>
+    <div class="card-body">
+      <div *ngFor="let item of aktivneNapomene; let i = index" class="mb-3" [ngClass]="{'bg-lavender': i % 2 === 0, 'bg-light-lavender': i % 2 !== 0}">
+        <div class="card">
+          <div class="card-body">
+            <p class="card-title"><strong>Opis:</strong> {{ item.opis }}</p>
+            <p class="card-title"><strong>Datum postavke:</strong> {{ item.datumPostavke | date: 'medium' }}</p>
+            <p class="card-title"><strong>Status:</strong> {{ item.isAktivna ? 'Aktivna' : 'Neaktivna' }}</p>
+            <p class="card-title"><strong>Vrsta napomene:</strong> {{ item.vrstaNapomeneId }}</p>
+            <p class="card-title"><strong>Zaposlenik:</strong> {{ item.zaposlenikId }}</p>
+            <div *ngIf="item.prioritet === true" class="d-flex align-items-center text-danger">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>
+              <strong>Važno!</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

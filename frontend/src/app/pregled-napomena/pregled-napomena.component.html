@@ -1,43 +1,34 @@
-<h2>Pregled napomena za korisnika doma!</h2>
 
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <th>Opis</th>
-    <th>Datum postavke</th>
-    <th>Status</th>
-    <th>Vrsta napomene</th>
-    <th>Zaposlenik</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let item of odabraneNapomene">
-    <td>{{ item.opis }}</td>
-    <td>{{ item.datumPostavke | date }}</td>
-    <td *ngIf="item.isAktivna; else neaktivna">Aktivna</td>
-    <ng-template #neaktivna><td>Neaktivna</td></ng-template>
-    <td>
-      <span *ngFor="let vrsta of vrsteNapomena">
-          <ng-container *ngIf="vrsta.vrstaNapomeneId===item.vrstaNapomeneId">
-            {{ vrsta.opis}}
-          </ng-container>
-        </span>
-    </td>
-    <td>
-      <span *ngFor="let zaposlenik of zaposlenici">
-          <ng-container *ngIf="zaposlenik.zaposlenikId===item.zaposlenikId">
-            {{ zaposlenik.imePrezime}}
-          </ng-container>
-        </span>
-    </td>
-    <td><button type="submit"  class="btn btn-primary" (click)="Obrisi(item)">Izbriši napomenu</button></td>
-    <td><button type="submit"  class="btn btn-primary" (click)="Odaberi(item)">Update napomenu</button></td>
-    <td *ngIf="item.prioritet===true" [ngStyle]="{'background-color': item.prioritet ? 'red' : 'inherit'}">
-            Bitna napomena !
-    </td>
-  </tr>
-  </tbody>
-</table>
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">
+        <i class="bi bi-clipboard-check"></i> Pregled aktivnih napomena
+      </h2>
+    </div>
+    <div class="card-body">
+      <div *ngFor="let item of odabraneNapomene; let i = index" class="mb-3" [ngClass]="{'bg-lavender': i % 2 === 0, 'bg-light-lavender': i % 2 !== 0}">
+        <div class="card">
+          <div class="card-body">
+            <p class="card-title"><strong>Opis:</strong> {{ item.opis }}</p>
+            <p class="card-title"><strong>Datum postavke:</strong> {{ item.datumPostavke | date: 'medium' }}</p>
+            <p class="card-title"><strong>Status:</strong> {{ item.isAktivna ? 'Aktivna' : 'Neaktivna' }}</p>
+            <p class="card-title"><strong>Vrsta napomene:</strong> {{ item.vrstaNapomeneId }}</p>
+            <p class="card-title"><strong>Zaposlenik:</strong> {{ item.zaposlenikId }}</p>
+            <div *ngIf="item.prioritet === true" class="d-flex align-items-center text-danger">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>
+              <strong>Važno!</strong>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary" style="margin-right: 15px" (click)="Odaberi(item)">Update napomenu</button>
+              <button type="submit" class="btn btn-danger" style="margin-right: 15px" (click)="Obrisi(item)">Izbriši napomenu</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div *ngIf="OdabranaNapomena">
 
@@ -49,7 +40,6 @@
           <button type="button" (click)="OdabranaNapomena=null" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-
           <div>
             <label class="form-label"> NapomenaId: </label>
             <input class="form-control"  [(ngModel)]="OdabranaNapomena.napomenaId" disabled>
@@ -76,8 +66,6 @@
             <label class="form-label">Zaposlenik</label>
             <input class="form-control"  [(ngModel)]="OdabranaNapomena.zaposlenikId">
           </div>
-
-
           <div class="modal-footer">
             <button type="button" (click)="OdabranaNapomena=null" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" (click)="Update()" class="btn btn-primary">Save changes</button>

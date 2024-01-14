@@ -1,4 +1,4 @@
-<h1>Pregled svih korisnika doma</h1>
+<!--<h1>Pregled svih korisnika doma</h1>
 <h5>Pretraga</h5><input [(ngModel)]="pretragaNaziv">
 
 <div *ngIf="odabraniKorisnik!=null">
@@ -60,3 +60,58 @@
   </tr>
   </tbody>
 </table>
+-->
+<div class="container mt-4">
+  <!-- Glavna kartica -->
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h1>Pregled svih korisnika doma</h1>
+    </div>
+    <div class="card-body">
+      <!-- Pretraga -->
+      <div class="mb-3">
+        <h5>Pretraga</h5>
+        <input class="form-control" [(ngModel)]="pretragaNaziv" placeholder="Unesite tekst za pretragu">
+      </div>
+
+      <!-- Kartice za pojedine korisnike -->
+      <div *ngFor="let item of getFiltriraniKorisnici()">
+        <div class="card mb-3">
+          <div class="card-body">
+            <i class="bi bi-person me-2"></i><h5 class="card-title font-weight-bold mb-3">{{ item.imePrezime }}</h5>
+            <p class="card-text">
+              <i class="bi bi-calendar me-2"></i> <strong>JMBG:</strong> {{ item.jmbg }}<br>
+              <i class="bi bi-door-open me-2"></i> <strong>Datum rođenja:</strong> {{ item.datumRodjenja | date }}<br>
+              <i class="bi bi-house-door me-2"></i> <strong>Broj sobe:</strong> {{ item.brojSobe }}<br>
+              <i class="bi bi-geo-alt me-2"></i> <strong>Opština:</strong> {{ item.opstinaNaziv }}<br>
+              <i class="bi bi-code me-2"></i> <strong>Poštanski broj:</strong> {{ item.opstinaBroj }}
+            </p>
+            <div class="mt-3">
+              <button class="btn btn-sm btn-danger me-2" (click)="ObrisiKorisnika(item)">
+                <i class="bi bi-trash"></i> Izbriši korisnika
+              </button>
+              <button class="btn btn-sm btn-warning me-2" (click)="OdaberiKorisnika(item)">
+                <i class="bi bi-pencil"></i> Update korisnika
+              </button>
+              <button class="btn btn-sm btn-info me-2" (click)="PrikaziNapomene(item)">
+                <i class="bi bi-sticky"></i> Prikaži napomene
+              </button>
+              <button class="btn btn-sm btn-primary me-2" (click)="PrikaziAktivneNapomene(item)">
+                <i class="bi bi-sticky"></i> Aktivne napomene
+              </button>
+              <button class="btn btn-sm btn-success me-2" (click)="PregledZadataka(item)">
+                <i class="bi bi-list-check"></i> Pregledaj zadatke
+              </button>
+              <button class="btn btn-sm btn-secondary me-2" (click)="PregledSedmicnihZadataka(item)">
+                <i class="bi bi-calendar-check"></i> Pregledaj sedmične zadatke
+              </button>
+              <button class="btn btn-sm btn-dark" (click)="PregledArhiveZadataka(item)">
+                <i class="bi bi-archive"></i> Pregledaj arhivu zadataka
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

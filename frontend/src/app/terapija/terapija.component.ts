@@ -42,6 +42,7 @@ export class TerapijaComponent implements OnInit {
   public filtriraniLijekovi: LijekGetAllResponseLijek[] = [];
   public odabraniLijekovi:LijekGetAllResponseLijek[] = [];
   public odabraniLijekoviDialog:LijekGetAllResponseLijek[] = [];
+  public prikaziOdabaneLijekoveLabel:boolean=false;
 
 
   constructor(public httpClient: HttpClient, private dialog: MatDialog, public router: Router) {
@@ -237,7 +238,7 @@ export class TerapijaComponent implements OnInit {
 
 
   DodajListuLijekova(lijek: LijekGetAllResponseLijek) {
-
+    this.prikaziOdabaneLijekoveLabel=true;
     let lijekId = this.lijekovi.find(x => x.naziv===lijek.naziv)?.lijekId;
     if (lijekId != undefined)
       this.Listalijekova.push(lijekId);
