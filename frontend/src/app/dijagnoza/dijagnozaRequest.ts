@@ -4,4 +4,5 @@ export interface DijagnozaRequest{
   datumDijagnoze: Date
   zaposlenikId: number
   korisnikDomaID: number
+  nalazFile: File | null;
 }

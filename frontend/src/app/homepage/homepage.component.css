@@ -1,0 +1,11 @@
+.bg-image {
+  background-color: #4CAF50; /* Zelena boja kao primer */
+  height: 100vh;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+

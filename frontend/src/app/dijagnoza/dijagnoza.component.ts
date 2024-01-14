@@ -28,6 +28,12 @@ export class DijagnozaComponent implements  OnInit{
   pretragaPoKorisniku: number=0;
   filtriraneDijagnoze:DijagnozaGetAllResponseDijagnoza[]=[];
   public odabranaDijagnoza: DijagnozaGetAllResponseDijagnoza | null = null;
+  public showConfirmationDialog:boolean=false;
+
+  fileSelected = false;
+  selectedFile: File | null = null;
+
+
   constructor(public httpClient: HttpClient, private dialog: MatDialog) {
   }
     ngOnInit(): void {
@@ -43,8 +49,8 @@ export class DijagnozaComponent implements  OnInit{
     opis: "",
     datumDijagnoze: new Date(),
     zaposlenikId: 0,
-    korisnikDomaID: 0
-
+    korisnikDomaID: 0,
+    nalazFile:this.selectedFile
 
   }
 
@@ -65,11 +71,30 @@ export class DijagnozaComponent implements  OnInit{
   }
 
   Dodaj() {
-    let url=MyConfig.adresa_servera + "/dijagnoza/dodaj";
+
     console.log(this.dijagnozaRequest);
-    this.httpClient.post(url, this.dijagnozaRequest).subscribe(x=>{
+    const formData: FormData = new FormData();
+    formData.append('nazivBolesti', this.dijagnozaRequest.nazivBolesti);
+    formData.append('opis', this.dijagnozaRequest.opis);
+    formData.append('datumDijagnoze', this.dijagnozaRequest.datumDijagnoze.toString());
+    formData.append('zaposlenikId', this.dijagnozaRequest.zaposlenikId.toString());
+    formData.append('korisnikDomaID', this.dijagnozaRequest.korisnikDomaID.toString());
+
+    if (this.dijagnozaRequest.nalazFile) {
+      formData.append('file', this.dijagnozaRequest.nalazFile);
+    }
+    let url=MyConfig.adresa_servera + "/dijagnoza/dodaj";
+    this.httpClient.post(url, formData).subscribe(x=>{
       console.log("Dijagnoza dodana za korisnikId= "+ this.dijagnozaRequest.korisnikDomaID)
     });
+    this.showConfirmationDialog=true;
+    this.setAutoHide();
+  }
+
+  setAutoHide() {
+    setTimeout(() => {
+      this.showConfirmationDialog = false;
+    }, 3000);
   }
 
   GetAllDijagnoze() {
@@ -87,7 +112,7 @@ export class DijagnozaComponent implements  OnInit{
 
 
   Obrisi(item: DijagnozaGetAllResponseDijagnoza) {
-    const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
+    const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati dijagnozu?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         let url: string = MyConfig.adresa_servera + `/dijagnoza/obrisi`;
@@ -100,7 +125,7 @@ export class DijagnozaComponent implements  OnInit{
             console.error('Error:', error);
 
             if (error.status === 500) {
-              alert('Nije moguće izbrisati ovaj korisnički nalog');
+              alert('Nije moguće izbrisati ovu dijagnozu');
               console.error('Handle 500 error here');
             } else {
               // Handle other errors
@@ -136,6 +161,43 @@ export class DijagnozaComponent implements  OnInit{
     this.httpClient.post(url, this.odabranaDijagnoza).subscribe(request => {
       console.log("Dijagnoza updateovana ", request)
     })
+  }
+
+  onFileSelected($event: Event) {
+    if (event && event.target) {
+      const inputElement = event.target as HTMLInputElement;
+      if (inputElement.files && inputElement.files.length > 0) {
+        this.dijagnozaRequest.nalazFile = inputElement.files[0];
+        this.fileSelected = true;
+      }
+    }
+  }
+
+  downloadFile(dijagnozaId: number) {
+    const url = `${MyConfig.adresa_servera}/dijagnoza/downloadFile/${dijagnozaId}`;
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.download = `Dijagnoza_${dijagnozaId}.dat`;
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+  }
+
+  //dugme uklonjeno za potrebe hci-a postaviti opet gdje bude potrebno
+  deleteFile(dijagnozaId: number) {
+    const url = `${MyConfig.adresa_servera}/dijagnoza/deleteFile/${dijagnozaId}`;
+    this.httpClient.delete(url, { responseType: 'text' }).subscribe(
+      () => {
+        console.log('Fajl uspešno obrisan.');
+
+      },
+      (error) => {
+        console.error('Greška prilikom brisanja fajla:', error);
+      }
+    );
   }
 }
 

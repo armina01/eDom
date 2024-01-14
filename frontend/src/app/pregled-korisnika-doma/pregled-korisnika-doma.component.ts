@@ -15,6 +15,7 @@ import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejg
 import {MyAuthService} from "../Services/MyAuthService";
 import {NavBarNutricionistaComponent} from "../nav-bar-nutricionista/nav-bar-nutricionista.component";
 
+
 @Component({
   selector: 'app-pregled-korisnika-doma',
   standalone: true,
@@ -26,6 +27,9 @@ import {NavBarNutricionistaComponent} from "../nav-bar-nutricionista/nav-bar-nut
 export class PregledKorisnikaDomaComponent implements  OnInit{
   constructor(public httpClient:HttpClient, private dialog: MatDialog,public router: Router
   , private _myAuthService:MyAuthService) {
+
+  constructor(public httpClient:HttpClient, private dialog: MatDialog, public router: Router) {
+
   }
 
   public korisnikUpdateRequest: KorisnikDomaUpdateRequest ={
@@ -123,6 +127,16 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     );
   }
 
+
+  PrikaziNapomene(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/pregledNapomena', item.korisnikDomaID]);
+
+  }
+
+  PrikaziAktivneNapomene(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/pregledAktivnihNapomena', item.korisnikDomaID]);
+  }
+
   PregledZadataka(item: KorisnikDomaGetAllResponseKorisnik) {
     this.router.navigate(['/pregleddnevnihzadataka', item.korisnikDomaID]);
   }
@@ -133,9 +147,12 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
 
   PregledArhiveZadataka(item: KorisnikDomaGetAllResponseKorisnik) {
     this.router.navigate(['/pregledarhivezadataka', item.korisnikDomaID]);
+
   }
 
   DodajPlanIshrane(item: KorisnikDomaGetAllResponseKorisnik) {
     this.router.navigate(['/dodajplanishrane', item.korisnikDomaID]);
   }
+}
+
 }

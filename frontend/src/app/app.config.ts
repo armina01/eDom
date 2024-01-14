@@ -11,7 +11,18 @@ import {CustomErrorHandler, customErrorHandlerFactory, MY_ERROR_HANDLER_TOKEN} f
 import {NjegovateljiService} from "./Services/NjegovateljService";
 import {AutorizacijaGuard} from "./Helper/autorizacija-guard.service";
 
+
 export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes), provideAnimations()
+   ,{ provide: HTTP_INTERCEPTORS, useClass: MyAuthInterceptor, multi: true },
+    {provide: HttpHandler,
+      useClass: MyAuthInterceptor,
+      multi: true,},
+       { provide: MY_AUTH_SERVICE_TOKEN, useClass: MyAuthService },
+
+        HttpClient
+   ]
+
   providers: [
     MyAuthService,
       provideRouter(routes),

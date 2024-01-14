@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DomZaStaraLicaApi.Data
 {
-    public class ApplicationDbContext: DbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<KorisnikDoma> KorisnikDoma { get; set; }
 
@@ -16,14 +16,17 @@ namespace DomZaStaraLicaApi.Data
         public DbSet<Doktor> Doktor { get; set; }
         public DbSet<Nutricionista> Nutricionista { get; set; }
         public DbSet<Fizioterapeut> Fizioterapeut { get; set; }
-
         public DbSet<AuthToken> AuthToken { get; set; }
         public DbSet<VrstaZadatka> VrstaZadatka { get; set; }
         public DbSet<IntervalZadatka> IntervalZadatka { get; set; }
         public DbSet<Zadatak> Zadatak { get; set; }
-
-
         public DbSet<Dijagnoza> Dijagnoza { get; set; }
+        public DbSet<CLijek> Lijek { get; set; }
+        public DbSet<Terapija> Terapija { get; set; }
+        public DbSet<TerapijaLijek> TerapijaLijek { get; set; }
+        public DbSet<Napomena> Napomena { get; set; }
+        public DbSet<VrstaNapomene> VrstaNapomene { get; set; }
+
         public DbSet<PlanIshrane> PlanIshrane { get; set; }
         public DbSet<MyFile> MyFiles { get; set; }
 
@@ -38,5 +41,6 @@ namespace DomZaStaraLicaApi.Data
                 .HasIndex(e => e.KorisnickoIme)
                 .IsUnique();
         }
+
     }
 }
