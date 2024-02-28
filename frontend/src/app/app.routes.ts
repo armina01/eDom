@@ -56,7 +56,7 @@ export const routes: Routes = [
   {path:'pregledarhivezadataka/:id',component:PregledArhiveZadatakaComponent},
   {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent},
   {path:'nutricionista/o-meni',component:PregledPodatakaNutricionistaComponent},
-  {path:'doktor/o-meni',component:PregledPodatakaDoktorComponent}
+  {path:'doktor/o-meni',component:PregledPodatakaDoktorComponent},
 
   {path:'home',component:HomepageComponent,canActivate: [AutorizacijaGuard]},
   {path:'pregleddnevnihzadataka/:id',component:GetZadaciComponent,canActivate: [AutorizacijaGuard]},

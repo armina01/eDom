@@ -111,18 +111,27 @@ export class DodajZadatkeComponent {
         if (selectedKorisnici.length===0)
         {
           this.showErrorNemaKorisnika=true;
-        }
-        selectedKorisnici.forEach(korisnik=> {
+        }else {
+          selectedKorisnici.forEach(korisnik => {
 
               this.AddZadatak(korisnik);
+            this.showConfirmationDialog = true;
+            this.showErrorNemaKorisnika=false;
+            this.setAutoHide();
             }
-        );
+          );
+        }
         this.showErrorNijeIzabrano=false;
         this.showErrorObojeIzabrano=false;
-          this.showConfirmationDialog = true;
+
         this.dodajOpstiZadatak.status=false;
       }
     }
+  }
+  setAutoHide() {
+    setTimeout(() => {
+      this.showConfirmationDialog = false;
+    }, 3000);
   }
   getZaposlenik():GetAllNjegovateljaResponseNjegovatelj | null {
     let korisnik = window.localStorage.getItem("korisnik")??"";

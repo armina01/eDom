@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomZaStaraLicaApi.Data.Models
 {
-    [Table("MyFiles")]
+    
     public class MyFile
     {
         [Key]

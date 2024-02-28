@@ -1,7 +1,11 @@
 .bg-image {
-  background-color: #4CAF50; /* Zelena boja kao primer */
+  background-image: url('../../assets/dom.jpg');
+  background-size: cover; /* Adjust as needed */
+  background-repeat: no-repeat;
+  background-position: center center;
   height: 100vh;
-  color: white;
+  color: black;
+  font-weight: 800;
   display: flex;
   flex-direction: column;
   justify-content: center;

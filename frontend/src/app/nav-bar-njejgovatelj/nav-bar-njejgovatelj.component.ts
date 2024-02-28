@@ -29,6 +29,6 @@ export class NavBarNjejgovateljComponent {
   }
 
   PregledOMeni() {
-    this.router.navigate(['/njegovatelj/0-meni']);
+    this.router.navigate(['/njegovatelj/o-meni']);
   }
 }

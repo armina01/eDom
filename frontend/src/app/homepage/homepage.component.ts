@@ -32,4 +32,8 @@ export class HomepageComponent {
   ngOnInit() {
 
   }
+
+  IdiNaLogin() {
+    this.router.navigate(["/login"]);
+  }
 }

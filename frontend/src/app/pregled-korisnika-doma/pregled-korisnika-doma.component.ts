@@ -16,6 +16,7 @@ import {MyAuthService} from "../Services/MyAuthService";
 import {NavBarNutricionistaComponent} from "../nav-bar-nutricionista/nav-bar-nutricionista.component";
 
 
+
 @Component({
   selector: 'app-pregled-korisnika-doma',
   standalone: true,
@@ -26,11 +27,7 @@ import {NavBarNutricionistaComponent} from "../nav-bar-nutricionista/nav-bar-nut
 })
 export class PregledKorisnikaDomaComponent implements  OnInit{
   constructor(public httpClient:HttpClient, private dialog: MatDialog,public router: Router
-  , private _myAuthService:MyAuthService) {
-
-  constructor(public httpClient:HttpClient, private dialog: MatDialog, public router: Router) {
-
-  }
+  , private _myAuthService:MyAuthService) {}
 
   public korisnikUpdateRequest: KorisnikDomaUpdateRequest ={
     korisnikDomaID:0,
@@ -48,12 +45,16 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   forma: any;
   jeNjegovatelj=false;
   jeNutricionista=false;
+  jeDoktor=false;
   ngOnInit(): void {
     if(this._myAuthService.jeNjegovatelj())
     {
       this.jeNjegovatelj=true;
     }else if (this._myAuthService.jeNutricionista()) {
       this.jeNutricionista=true;
+    }else if(this._myAuthService.jeDoktor())
+    {
+      this.jeDoktor=true;
     }
     let url =MyConfig.adresa_servera +`/korisnikDoma-getAll`
     this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x:KorisnikDomaGetAllResponse)=>{
@@ -153,6 +154,8 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   DodajPlanIshrane(item: KorisnikDomaGetAllResponseKorisnik) {
     this.router.navigate(['/dodajplanishrane', item.korisnikDomaID]);
   }
-}
 
+
+  protected readonly MyConfig = MyConfig;
+  jeAdmin: any;
 }

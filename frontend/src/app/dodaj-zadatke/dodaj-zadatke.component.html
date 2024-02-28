@@ -134,11 +134,15 @@
     Dodaj zadatak
   </Button>
 </div>
-<div *ngIf="showConfirmationDialog" class="confirmation-dialog">
-  <div class="center-content">
-    <i class="far fa-check-circle"></i>
-    <p>Uspješno ste dodali zadatak</p>
+<div *ngIf="showConfirmationDialog" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="confirmationDialogLabel" aria-modal="true" style="display: block;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-success text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-check-circle"></i> Uspješno ste dodali dijagnozu
+        </h5>
+      </div>
+    </div>
   </div>
-  <button (click)="showConfirmationDialog = false">Cancel</button>
-</div>
+
 

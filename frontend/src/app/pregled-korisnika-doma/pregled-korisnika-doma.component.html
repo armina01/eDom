@@ -4,7 +4,7 @@
 <div *ngIf="jeNutricionista === true">
   <app-nav-bar-nutricionista></app-nav-bar-nutricionista>
 </div>
-<h1>Pregled svih korisnika doma</h1>
+<!--<h1>Pregled svih korisnika doma</h1>
 <h5>Pretraga</h5><input [(ngModel)]="pretragaNaziv">
 
 <div *ngIf="odabraniKorisnik!=null">
@@ -35,7 +35,7 @@
 
 </div>
 
-<!--<table class="table table-striped">
+<table class="table table-striped">
   <thead>
   <tr>
     <th>ImePrezime</th>
@@ -73,7 +73,7 @@
 <div class="container mt-4">
   <!-- Glavna kartica -->
   <div class="card">
-    <div class="card-header bg-primary text-white">
+    <div class="card-header  text-white">
       <h1>Pregled svih korisnika doma</h1>
     </div>
     <div class="card-body">
@@ -93,42 +93,44 @@
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="slikaKorisnika">
                       <td>
-                        <img class="profilna-slika" src="{{MyConfig.adresa_servera}}/korisnikDoma/getSlika?id={{item.korisnikDomaID}}&random={{item.random}}">
-                      </td>
+                        <img src="assets/MicrosoftTeams-image (8).png"/> </td>
                     </div>
                     <div class="podaciKorisnika">
-                      <i class="bi bi-person me-2"></i>
                       <h5 class="card-title font-weight-bold mb-3 imeKorisnika">{{ item.imePrezime }}</h5>
                     </div>
                   </div>
                   <p class="card-text">
-                    <i class="bi bi-calendar me-2"></i> <strong>JMBG:</strong> {{ item.jmbg }}<br>
+
+                    <i class="bi bi-calendar me-2"></i> <strong>JMBG:</strong>{{ item.jmbg }} <br>
                     <i class="bi bi-door-open me-2"></i> <strong>Datum rođenja:</strong> {{ item.datumRodjenja | date }}<br>
                     <i class="bi bi-house-door me-2"></i> <strong>Broj sobe:</strong> {{ item.brojSobe }}<br>
                     <i class="bi bi-geo-alt me-2"></i> <strong>Opština:</strong> {{ item.opstinaNaziv }}<br>
                     <i class="bi bi-code me-2"></i> <strong>Poštanski broj:</strong> {{ item.opstinaBroj }}
                   </p>
                   <div class="mt-3">
-                    <button class="btn btn-sm btn-danger me-2" (click)="ObrisiKorisnika(item)">
+                    <button class="btn btn-sm btn-danger me-2" *ngIf="jeAdmin" (click)="ObrisiKorisnika(item)">
                       <i class="bi bi-trash"></i> Izbriši korisnika
                     </button>
-                    <button class="btn btn-sm btn-warning me-2" (click)="OdaberiKorisnika(item)">
+                    <button class="btn btn-sm btn-warning me-2" *ngIf="jeAdmin" (click)="OdaberiKorisnika(item)">
                       <i class="bi bi-pencil"></i> Update korisnika
                     </button>
-                    <button class="btn btn-sm btn-info me-2" (click)="PrikaziNapomene(item)">
+                    <button class="btn btn-sm btn-info me-2" *ngIf="jeNutricionista || jeNjegovatelj" (click)="PrikaziNapomene(item)">
                       <i class="bi bi-sticky"></i> Prikaži napomene
                     </button>
-                    <button class="btn btn-sm btn-primary me-2" (click)="PrikaziAktivneNapomene(item)">
+                    <button class="btn btn-sm btn-primary me-2" *ngIf="jeNutricionista || jeNjegovatelj"(click)="PrikaziAktivneNapomene(item)">
                       <i class="bi bi-sticky"></i> Aktivne napomene
                     </button>
-                    <button class="btn btn-sm btn-success me-2" (click)="PregledZadataka(item)">
+                    <button class="btn btn-sm btn-success me-2"  *ngIf="jeNjegovatelj" (click)="PregledZadataka(item)">
                       <i class="bi bi-list-check"></i> Pregledaj zadatke
                     </button>
-                    <button class="btn btn-sm btn-secondary me-2" (click)="PregledSedmicnihZadataka(item)">
+                    <button class="btn btn-sm btn-secondary me-2" *ngIf="jeNjegovatelj" (click)="PregledSedmicnihZadataka(item)">
                       <i class="bi bi-calendar-check"></i> Pregledaj sedmične zadatke
                     </button>
-                    <button class="btn btn-sm btn-dark" (click)="PregledArhiveZadataka(item)">
+                    <button class="btn btn-sm btn-dark" *ngIf="jeNjegovatelj" (click)="PregledArhiveZadataka(item)">
                       <i class="bi bi-archive"></i> Pregledaj arhivu zadataka
+                    </button>
+                    <button class="btn btn-sm btn-dark" *ngIf="jeNutricionista" (click)="DodajPlanIshrane(item)">
+                      <i class="bi bi-archive" (click)="DodajPlanIshrane(item)"></i> Pregledaj plan ishrane
                     </button>
                   </div>
                 </div>

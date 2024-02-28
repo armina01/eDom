@@ -71,7 +71,7 @@ export class LogInComponent {
             item=>item.nalogId===korisnikNalogId)
           this.myAuthService.setLogiraniKorisnik(x.logInInformacija.autentifikacijaToken,_korisnik);
 
-        this.router.navigate(["/home"])
+        this.router.navigate(["/pregledKorisnikaDoma"])
       }
     },
       (error) => {
@@ -81,10 +81,13 @@ export class LogInComponent {
   GetAllKorisnickiNalog() {
     let url: string = MyConfig.adresa_servera + `/get-all-KorisnickiNalog`;
     this.httpClient.get<GetAllKorisnickiNalogResponse>(url).subscribe(
+
       response => {
+        console.log(response.korisnickiNalozi);
         this._korisnickiNalog = response.korisnickiNalozi.find(nalog =>
           nalog.korisnickoIme === this.logInRequest.korisnickoIme
         );
+        console.log(this._korisnickiNalog)
         if (this._korisnickiNalog) {
           this.logInRequest.jeAdmin = this._korisnickiNalog.jeAdmin;
           this.logInRequest.jeNutricionista = this._korisnickiNalog.jeNutricionista;

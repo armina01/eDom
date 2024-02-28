@@ -1,6 +1,5 @@
 
-.bg-image {
-  background-image: url('assets/background-image.jpg'); /* Postavite putanju do vaše pozadinske slike */
+.bg-image { /* Postavite putanju do vaše pozadinske slike */
   background-size: cover;
   background-position: center center;
   height: 100vh;
