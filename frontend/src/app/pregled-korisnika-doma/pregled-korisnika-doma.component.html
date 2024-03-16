@@ -4,71 +4,26 @@
 <div *ngIf="jeNutricionista === true">
   <app-nav-bar-nutricionista></app-nav-bar-nutricionista>
 </div>
-<!--<h1>Pregled svih korisnika doma</h1>
-<h5>Pretraga</h5><input [(ngModel)]="pretragaNaziv">
+<div>
 
-<div *ngIf="odabraniKorisnik!=null">
 
-    <div>
-      <label>Ime i prezime</label>
-      <input type="text" name="imePrezime" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.imePrezime">
-    </div>
-    <div>
-      <label>JMBG</label>
-      <input type="text" name="jmbg" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.jmbg">
-    </div>
-    <div>
-      <label>Datum rodjenja</label>
-      <input type="date" name="datumRodjenja" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.datumRodjenja">
-    </div>
-    <div>
-      <label>Broj sobe</label>
-      <input type="number" name="brojSobe" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.brojSobe">
-    </div>
-    <div>
-      <label>Opština</label>
-      <select [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.opstinaID">
-        <option name="opstina" *ngFor="let option of options" [value]="option.opstinaID">{{ option.nazivOpstine }}</option>
-      </select>
-    </div>
-    <button type="submit" class="btn btn-primary mb-2" (click)="UpdateKorisnika()">Update</button>
-
+  <!-- Glavna kartica  <i class="fa fa-bell" [ngClass]="{'notification-icon': true, 'new-notification': hasNewNotification}" (click)="markNotificationAsRead()"></i>-->
 </div>
-
-<table class="table table-striped">
+<div >
+<table *ngIf="obavijetUkljucena" class="table table-striped">
   <thead>
   <tr>
-    <th>ImePrezime</th>
-    <th>JMBG</th>
-    <th>Datum rodjenja</th>
-    <th>Broj sobe</th>
-    <th>Naziv opštine</th>
-    <th>Poštanski broj</th>
+    <th>Obavijesti</th>
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let item of getFiltriraniKorisnici()">
-    <td>{{ item.imePrezime }}</td>
-    <td>{{ item.jmbg}}</td>
-    <td>{{ item.datumRodjenja | date }}</td>
-    <td>{{ item.brojSobe }}</td>
-    <td>{{ item.opstinaNaziv}}</td>
-    <td>{{ item.opstinaBroj}}</td>
-    <td><button type="submit"  class="btn btn-primary" (click)="ObrisiKorisnika(item)">Izbriši korisnika</button></td>
-    <td><button type="submit"  class="btn btn-primary" (click)="OdaberiKorisnika(item)">Update korisnika</button></td>
-
-    <td><button type="submit"  class="btn btn-primary" (click)="PrikaziNapomene(item)">Prikaži napomene</button></td>
-    <td><button type="submit"  class="btn btn-primary" (click)="PrikaziAktivneNapomene(item)">Prikaži aktivne napomene</button></td>
-      <td><button type="submit"  class="btn btn-primary" (click)="PregledZadataka(item)">PregledajZadatke</button></td>
-      <td><button type="submit"  class="btn btn-primary" (click)="PregledSedmicnihZadataka(item)">Pregledaj sedmicne zadatke</button></td>
-      <td><button type="submit"  class="btn btn-primary" (click)="PregledArhiveZadataka(item)">Pregledaj arhivu zadataka</button></td>
-
-      <td><button type="submit"  class="btn btn-primary" (click)="DodajPlanIshrane(item)">Plan ishrane</button></td>
-
+  <tr *ngFor="let item of obavijesti">
+    <td>{{ item.poruka }}</td>
   </tr>
   </tbody>
 </table>
--->
+</div>
+<div id="notifications"></div>
 
 <div class="container mt-4">
   <!-- Glavna kartica -->

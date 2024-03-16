@@ -1,24 +1,32 @@
 <header>
   <nav class="navbar">
     <div class="logo">
-      <img src="https://png.pngtree.com/png-vector/20221025/ourmid/pngtree-elderly-care-services-hand-drawn-cartoon-flat-illustration-with-caregiver-png-image_6371595.png" alt="Nursing Home Caregivers Logo">
+      <fa-icon [icon]="faBell" [ngClass]="{ 'text-danger': hasNewNotification }" (click)="markNotificationAsRead()"></fa-icon>
+      <div class="dropdown-content" *ngIf="obavijetUkljucena">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>Obavijesti</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of obavijesti">
+            <td>{{ item.poruka }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <ul class="nav-links">
-      <li><a  (click)="IdiPocetna()">Početna</a></li>
-      <li><a  (click)="IdiPregledKorisnika()">Pacijenti</a></li>
-      <li class="Zadaci" ><a (click)="IdiDodajZadatke()"> Dodaj Zadatke</a>
-        <!-- <div class="dropdown-content">
-          <a href="#option1">Pregled zadataka</a>
-          <a href="#option2">Option 2</a>
-          -- Add more options as needed
-        </div>--></li>
+      <li><a (click)="IdiPocetna()">Početna</a></li>
+      <li><a (click)="IdiPregledKorisnika()">Pacijenti</a></li>
+      <li class="Zadaci"><a (click)="IdiDodajZadatke()"> Dodaj Zadatke</a></li>
       <li class="Napomene"><a >Napomene</a></li>
     </ul>
 
     <div class="profile" (click)="PregledOMeni()">
-      <span class="far fa-user" ></span>
+      <span class="far fa-user"></span>
     </div>
   </nav>
 
 </header>
-<br><br>

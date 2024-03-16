@@ -273,6 +273,23 @@ namespace DomZaStaraLicaApi.Migrations
                     b.ToTable("Napomena");
                 });
 
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.NotifikacijaZadatak", b =>
+                {
+                    b.Property<int>("NotifikacijaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotifikacijaId"));
+
+                    b.Property<string>("Poruka")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("NotifikacijaId");
+
+                    b.ToTable("NotifikacijaZadatak");
+                });
+
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Opstina", b =>
                 {
                     b.Property<int>("OpstinaID")

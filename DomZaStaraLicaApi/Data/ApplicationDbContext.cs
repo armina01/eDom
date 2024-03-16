@@ -29,7 +29,7 @@ namespace DomZaStaraLicaApi.Data
 
         public DbSet<PlanIshrane> PlanIshrane { get; set; }
         public DbSet<MyFile> MyFiles { get; set; }
-
+        public DbSet<NotifikacijaZadatak> NotifikacijaZadatak { get; set; }
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {

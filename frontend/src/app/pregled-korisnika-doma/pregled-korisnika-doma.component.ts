@@ -14,20 +14,25 @@ import {Router} from "@angular/router";
 import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
 import {MyAuthService} from "../Services/MyAuthService";
 import {NavBarNutricionistaComponent} from "../nav-bar-nutricionista/nav-bar-nutricionista.component";
-
+import {SignalRService} from "../Services/signalR.service";
+import {NotifikacijaResponse, NotifikacijaResponseNotifikacija} from "../Services/notifikacijaRequest";
+import {faBell, faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 
 @Component({
   selector: 'app-pregled-korisnika-doma',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarNjejgovateljComponent,NavBarNutricionistaComponent],
-  providers:[MyAuthService],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarNjejgovateljComponent, NavBarNutricionistaComponent, FaIconComponent,FontAwesomeModule],
+  providers:[MyAuthService,SignalRService],
   templateUrl: './pregled-korisnika-doma.component.html',
   styleUrl: './pregled-korisnika-doma.component.css'
 })
 export class PregledKorisnikaDomaComponent implements  OnInit{
+
   constructor(public httpClient:HttpClient, private dialog: MatDialog,public router: Router
-  , private _myAuthService:MyAuthService) {}
+  , private _myAuthService:MyAuthService, private signalRService: SignalRService) {}
 
   public korisnikUpdateRequest: KorisnikDomaUpdateRequest ={
     korisnikDomaID:0,
@@ -38,6 +43,8 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     opstinaID:0
 
   }
+  public hasNewNotification: boolean = false;
+  obavijetUkljucena:boolean=false;
   pretragaNaziv="";
   korisnici:KorisnikDomaGetAllResponseKorisnik[]=[];
   public odabraniKorisnik: KorisnikDomaUpdateRequest | null=null;
@@ -47,6 +54,11 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   jeNutricionista=false;
   jeDoktor=false;
   ngOnInit(): void {
+    this.signalRService.otvori_ws_konekciju()
+    this.GetNotifications();
+      this.signalRService.notificationsUpdated.subscribe(() => {
+          this.hasNewNotification = true; // Set flag to true when a new notification is received
+      });
     if(this._myAuthService.jeNjegovatelj())
     {
       this.jeNjegovatelj=true;
@@ -64,6 +76,18 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   getFiltriraniKorisnici() {
     return this.korisnici.filter(x=>(x.imePrezime.toLowerCase()).startsWith(this.pretragaNaziv.toLowerCase()))
   }
+
+    public obavijesti: any;
+    GetNotifications(): void {
+        this.signalRService.GetAllNotifikacija().subscribe(
+            (notifications) => {
+                this.obavijesti = notifications.notifikacije;
+            },
+            (error) => {
+                console.error('Error fetching notifications:', error);
+            }
+        );
+    }
 
   ObrisiKorisnika(data: KorisnikDomaGetAllResponseKorisnik) {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati opštinu?');
@@ -158,4 +182,7 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
 
   protected readonly MyConfig = MyConfig;
   jeAdmin: any;
+    protected readonly faEye = faEye;
+    protected readonly faEyeSlash = faEyeSlash;
+    protected readonly faBell = faBell;
 }

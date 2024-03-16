@@ -5,7 +5,7 @@
 namespace DomZaStaraLicaApi.Migrations
 {
     /// <inheritdoc />
-    public partial class novaMigracija : Migration
+    public partial class Notifikacija : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

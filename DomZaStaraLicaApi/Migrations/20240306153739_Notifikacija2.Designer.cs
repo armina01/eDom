@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240114182230_novaMigracija")]
-    partial class novaMigracija
+    [Migration("20240306153739_Notifikacija2")]
+    partial class Notifikacija2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -274,6 +274,23 @@ namespace DomZaStaraLicaApi.Migrations
                     b.HasIndex("ZaposlenikId");
 
                     b.ToTable("Napomena");
+                });
+
+            modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.NotifikacijaZadatak", b =>
+                {
+                    b.Property<int>("NotifikacijaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotifikacijaId"));
+
+                    b.Property<string>("Poruka")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("NotifikacijaId");
+
+                    b.ToTable("NotifikacijaZadatak");
                 });
 
             modelBuilder.Entity("DomZaStaraLicaApi.Data.Models.Opstina", b =>

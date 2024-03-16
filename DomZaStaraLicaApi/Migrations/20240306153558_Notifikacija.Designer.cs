@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomZaStaraLicaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240114190539_novaMigracija3")]
-    partial class novaMigracija3
+    [Migration("20240306153558_Notifikacija")]
+    partial class Notifikacija
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
