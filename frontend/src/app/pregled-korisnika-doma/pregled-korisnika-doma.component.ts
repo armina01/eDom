@@ -53,12 +53,8 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   jeNjegovatelj=false;
   jeNutricionista=false;
   jeDoktor=false;
+  public notification2="";
   ngOnInit(): void {
-    this.signalRService.otvori_ws_konekciju()
-    this.GetNotifications();
-      this.signalRService.notificationsUpdated.subscribe(() => {
-          this.hasNewNotification = true; // Set flag to true when a new notification is received
-      });
     if(this._myAuthService.jeNjegovatelj())
     {
       this.jeNjegovatelj=true;
@@ -78,16 +74,7 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   }
 
     public obavijesti: any;
-    GetNotifications(): void {
-        this.signalRService.GetAllNotifikacija().subscribe(
-            (notifications) => {
-                this.obavijesti = notifications.notifikacije;
-            },
-            (error) => {
-                console.error('Error fetching notifications:', error);
-            }
-        );
-    }
+
 
   ObrisiKorisnika(data: KorisnikDomaGetAllResponseKorisnik) {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati opštinu?');

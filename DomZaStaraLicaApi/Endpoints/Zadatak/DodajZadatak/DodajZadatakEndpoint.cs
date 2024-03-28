@@ -35,12 +35,17 @@ namespace DomZaStaraLicaApi.Endpoints.Zadatak.DodajZaposlenika
                 KorisnikDomaId=request.KorisnikDomaId
                 
             };
-            var imeKorisnika = _applicationDbContext.KorisnikDoma.Find(request.KorisnikDomaId);
-            
+            var imeKorisnika = _applicationDbContext.KorisnikDoma.Find(request.KorisnikDomaId); var notificationData = new
+            {
+                message = "zadatak dodan " + newZadatak.Opis + " za korisnika " + imeKorisnika.ImePrezime,
+                userId = request.ZaposlenikPostavioId 
+            };
+
+            await _hubContext.Clients.All.SendAsync("dodan_novi_zadatak", notificationData);
             _applicationDbContext.Zadatak.Add(newZadatak);
 
             await _applicationDbContext.SaveChangesAsync();
-            await _hubContext.Clients.All.SendAsync("dodan_novi_zadatak", "zadatak dodan " + newZadatak.Opis + " za korisnika " + imeKorisnika.ImePrezime);
+            
             return new DodajZadatakRespose
             {
                 ZadatakId=newZadatak.ZadatakId,
