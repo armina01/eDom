@@ -58,25 +58,7 @@ export class LogInComponent {
   public lozinkaNeTacna=false;
   signIn() {
     this.GetAllKorisnickiNalog();
-    let url=MyConfig.adresa_servera+`/login`;
-    this.httpClient.post<AuthLogInResponse>(url, this.logInRequest).subscribe((x)=>{
 
-      if (!x.logInInformacija.isLogiran){
-            this.lozinkaNeTacna=true;
-      }
-      else{
-        let korisnikNalogId=x.logInInformacija.autentifikacijaToken.korisnickiNalogId
-        console.log(korisnikNalogId)
-        let _korisnik=this.korisnik.find(
-            item=>item.nalogId===korisnikNalogId)
-          this.myAuthService.setLogiraniKorisnik(x.logInInformacija.autentifikacijaToken,_korisnik);
-
-        this.router.navigate(["/pregledKorisnikaDoma"])
-      }
-    },
-      (error) => {
-        this.lozinkaNeTacna=true;
-      });
   }
   GetAllKorisnickiNalog() {
     let url: string = MyConfig.adresa_servera + `/get-all-KorisnickiNalog`;
@@ -94,6 +76,29 @@ export class LogInComponent {
           this.logInRequest.jeDoktor = this._korisnickiNalog.jeDoktor;
           this.logInRequest.jeNjegovatelj = this._korisnickiNalog.jeNjegovatelj;
           this.logInRequest.jeFizioterapeut = this._korisnickiNalog.jeFizioterapeut;
+          let url=MyConfig.adresa_servera+`/login`;
+          this.httpClient.post<AuthLogInResponse>(url, this.logInRequest).subscribe((x)=>{
+
+              if (!x.logInInformacija.isLogiran){
+                this.lozinkaNeTacna=true;
+              }
+              else{
+                let korisnikNalogId=x.logInInformacija.autentifikacijaToken.korisnickiNalogId
+                console.log(korisnikNalogId)
+                let _korisnik=this.korisnik.find(
+                  item=>item.nalogId===korisnikNalogId)
+                this.myAuthService.setLogiraniKorisnik(x.logInInformacija.autentifikacijaToken,_korisnik);
+                if(!this._korisnickiNalog?.jeAdmin) {
+                  this.router.navigate(["/pregledKorisnikaDoma"])
+                }
+                else{
+                  this.router.navigate(["/admin-home"])
+                }
+              }
+            },
+            (error) => {
+              this.lozinkaNeTacna=true;
+            });
         }
       }
     );

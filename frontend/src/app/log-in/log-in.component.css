@@ -1,6 +1,20 @@
 /* CSS */
+.bg-image {
+  background-image: url('../../assets/dom.jpg');
+  background-size: cover; /* Adjust as needed */
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 100vh;
+  color: black;
+  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 .modern-login-form {
-  max-width: 400px;
+  width: 400px;
   margin: 0 auto;
   padding: 20px;
   background-color: #fff;

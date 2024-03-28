@@ -11,4 +11,5 @@ export interface GetAllKorisnickiNalogResponseKorisnickiNalog {
     jeFizioterapeut: boolean;
     jeNutricionista: boolean;
     jeDoktor: boolean;
+    email:string;
 }

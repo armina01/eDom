@@ -1,7 +1,7 @@
 <header>
   <nav class="navbar">
     <div class="logo">
-      <fa-icon [icon]="faBell" [ngClass]="{ 'text-danger': hasNewNotification }" (click)="markNotificationAsRead()"></fa-icon>
+      <fa-icon [icon]="faBell" [ngClass]="{ 'text-danger': hasNewNotification }" [size]="'2x'" (click)="markNotificationAsRead()"></fa-icon>
       <div class="dropdown-content" *ngIf="obavijetUkljucena">
         <table class="table table-striped">
           <thead>
@@ -17,8 +17,8 @@
         </table>
       </div>
     </div>
-    <ul class="nav-links">
-      <li><a (click)="IdiPocetna()">Početna</a></li>
+    <ul class="nav-links ">
+      <li><a (click)="IdiPocetna()">Odjavi se</a></li>
       <li><a (click)="IdiPregledKorisnika()">Pacijenti</a></li>
       <li class="Zadaci"><a (click)="IdiDodajZadatke()"> Dodaj Zadatke</a></li>
       <li class="Napomene"><a >Napomene</a></li>

@@ -26,6 +26,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.UpdateKorisnickiNalog
             nalog.JeNjegovatelj=request.JeNjegovatelj;
             nalog.JeNutricionista=request.JeNutricionista;
             nalog.JeFizioterapeut = request.JeFizioterapeut;
+            nalog.Email=request.Email;
             await _applicationDbContext.SaveChangesAsync();
             return new UpdateKorisnickiNalogResponse
             { KorisnikId = nalog.NalogId };

@@ -1,49 +1,109 @@
-
-<label for="comboBox2">Izaberite poslovnu poziciju:</label>
-<select id="comboBox2"  [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.poslovnaPozicijaId" >
-    <option *ngFor="let option of poslovnaPozicija" [ngValue]="option.poslovnaPozicijaId">{{ option.poslovnaPozicijaId }}-{{ option.opisPosla }}</option>
-</select>
-<form>
-    <div class="row">
-        <div class="col">
-            <label>Ime i prezime</label>
-            <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.imePrezime" >
-        </div>
-        <div class="col">
-            <label>JMBG</label>
-            <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.jmbg"
-                   (input)="validateInput(dodajNutricionistu.jmbg)">
-            <p *ngIf="isValid" style="color: green;">Valid Input</p>
-            <p *ngIf="!isValid" style="color: red;">Invalid Input</p>
-        </div>
+<app-nav-bar-admin></app-nav-bar-admin>
+<div *ngIf="showFirstForm" class="container mt-4">
+  <h3>Dodaj nutricionistu</h3>
+  <form>
+    <div class="form-group">
+      <label for="comboBox2">Izaberite poslovnu poziciju:</label>
+      <select id="comboBox2" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.poslovnaPozicijaId">
+        <option *ngFor="let option of poslovnaPozicija" [ngValue]="option.poslovnaPozicijaId">{{ option.poslovnaPozicijaId }} - {{ option.opisPosla }}</option>
+      </select>
     </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label>Ime i prezime</label>
+        <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.imePrezime">
+      </div>
+      <div class="form-group col-md-6">
+        <label>JMBG</label>
+        <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.jmbg" (input)="validateInput(dodajNutricionistu.jmbg)">
+        <p *ngIf="isValid" class="text-success">Valid Input</p>
+        <p *ngIf="!isValid" class="text-danger">Invalid Input</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="birthday">Datum rodjenja:</label>
+      <input type="date" id="birthday" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.datumRodjenja">
+    </div>
+    <div class="form-group">
+      <label for="hiredate">Datum zaposlenja:</label>
+      <input type="date" id="hiredate" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.datumZaposlenja">
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label>Oblast nutricionizma</label>
+        <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.oblastNutricionizma">
+      </div>
+      <div class="form-group col-md-6">
+        <label>Nutricionisticki centar</label>
+        <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.nutricionistickiCentar">
+      </div>
+    </div>
+    <div *ngIf="showConfirmationDialog" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="confirmationDialogLabel" aria-modal="true" style="display: block;">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-success text-white">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="bi bi-check-circle"></i> Uspješno upravljenje nutricionistom
+            </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div><label style="color: red;" *ngIf="showError">Niste ispunili sva polja!</label></div>
+    <div id="Buttons" class="text-center">
+      <button type="submit" class="btn btn-primary"  style="background-color: #1d361e; border:0px" (click)="DodajNutricionistu()"><i class="fas fa-plus"></i>Dodaj</button>
+      <button type="submit" class="btn btn-primary" style="background-color: #1d361e; border:0px" (click)="PregledajNutricioniste()"><i class="fas fa-eye"></i>Prikazi sve</button>
+      <button type="submit" class="btn btn-primary" style="background-color: #1d361e; border:0px" (click)="UpdateNutricionistu()"><i class="fas fa-sync"></i>Update</button>
+    </div>
+  </form>
+</div>
+  <div *ngIf="showConfirmationDialog" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="confirmationDialogLabel" aria-modal="true" style="display: block;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-success text-white">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="bi bi-check-circle"></i> Uspješno upravljenje nutricionistom
+          </h5>
+        </div>
+      </div>
+    </div>
+
+  </div>
+<form *ngIf="!showFirstForm">
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label >Korisnicko ime</label>
+          <input type="email" class="form-control" placeholder="Unesite korisnicko ime"
+                 [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.korisnickoIme">
+        </div>
+        <div class="form-group">
+          <label >Email</label>
+          <input type="email" class="form-control" placeholder="Unesite email" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.email">
+        </div>
+        <div class="form-group">
+          <label >Lozinka</label>
+          <input type="password" class="form-control" placeholder="Unesite lozinku" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.lozinka">
+        </div>
+      </div>
+
+    </div>
+    <label *ngIf="prikaziErrorNalog">Korisnicki podaci su vec koristeni</label>
+    <button type="submit" class="btn btn-primary mt-3" (click)="AddKorisnickiNalog()">Submit</button>
+  </div>
+
 </form>
-<label for="birthday">Datum rodjenja:</label>
-<input type="date" id="birthday" placeholder=value [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.datumRodjenja" >
-<label for="birthday">Datum zaposlenja:</label>
-<input type="date" id="hiredate" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.datumZaposlenja" >
-<div class="col">
-    <label>Oblast nutricionizma</label>
-    <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.oblastNutricionizma"  >
-</div>
-<div class="col">
-    <label>Nutricionisticki centar</label>
-    <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajNutricionistu.nutricionistickiCentar"  >
-</div>
-<div><label style="color: red;" *ngIf="showError===1">Niste ispunili sva polja!</label></div>
-<button type="submit" class="btn btn-primary" (click)="DodajNutricionistu()">Dodaj</button>
-<button type="submit" class="btn btn-primary" (click)="GetAllNutricionisti()">Prikazi sve</button>
-<button type="submit" class="btn btn-primary" (click)="UpdateNutricionistu()">Update</button>
-<table class="table table-striped">
+<table class="table table-striped" *ngIf="prikaziTabelu" >
     <thead>
     <tr>
-        <th>Korisnicko Ime</th>
-        <th>Doktor</th>
-        <th>Fizioterapeut</th>
-        <th>Njegovatelj</th>
-        <th>Nutricionista</th>
-        <th>Obrisi korisnika</th>
-        <th>Obrisi korisnika</th>
+        <th>Ime nutricioniste</th>
+        <th>Datum rodjenja</th>
+        <th>Datum zaposlenja</th>
+        <th>JMBG</th>
+        <th>Oblast nutricionizma</th>
+        <th>Nutricionisticki centar</th>
         <th>Obrisi korisnika</th>
         <th>Update korisnika</th>
     </tr>
