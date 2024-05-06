@@ -6,6 +6,7 @@ using DomZaStaraLicaApi.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace DomZaStaraLicaApi.Endpoints.Zadatak.DodajZaposlenika
 {
@@ -40,6 +41,7 @@ namespace DomZaStaraLicaApi.Endpoints.Zadatak.DodajZaposlenika
             _applicationDbContext.Zadatak.Add(newZadatak);
 
             await _applicationDbContext.SaveChangesAsync();
+
             await _hubContext.Clients.All.SendAsync("dodan_novi_zadatak", "zadatak dodan " + newZadatak.Opis + " za korisnika " + imeKorisnika.ImePrezime);
             return new DodajZadatakRespose
             {

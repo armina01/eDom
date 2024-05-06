@@ -16,6 +16,7 @@ import {
   GetAllKorisnickiNalogResponse,
   GetAllKorisnickiNalogResponseKorisnickiNalog
 } from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
+import {SignalRService} from "../Services/signalR.service";
 
 @Component({
   selector: 'app-log-in',
@@ -27,7 +28,7 @@ import {
 })
 export class LogInComponent {
 
-  constructor(public httpClient:HttpClient, private router: Router, private myAuthService:MyAuthService,
+  constructor(public httpClient:HttpClient, private router: Router, private myAuthService:MyAuthService,private signalRService: SignalRService
              ) { }
 
   ngOnInit(){
@@ -35,6 +36,7 @@ export class LogInComponent {
         response => {
           this.korisnik = response;
         });
+    //this.signalRService.otvori_ws_konekciju();
   }
   GetAllzaposlenici(): Observable<GetAllZaposlenikResponseZaposlenik[]> {
     let url: string = MyConfig.adresa_servera + `/getAllZaposlenici`;
@@ -53,12 +55,16 @@ export class LogInComponent {
     jeDoktor:false,
     jeFizioterapeut:false,
     jeNjegovatelj:false,
-    jeNutricionista:false
+    jeNutricionista:false,
+    SignalRConnectionID:""
   }
   public lozinkaNeTacna=false;
   signIn() {
     this.GetAllKorisnickiNalog();
     let url=MyConfig.adresa_servera+`/login`;
+
+    this.logInRequest.SignalRConnectionID=SignalRService.ConnectionId;
+
     this.httpClient.post<AuthLogInResponse>(url, this.logInRequest).subscribe((x)=>{
 
       if (!x.logInInformacija.isLogiran){
@@ -77,6 +83,7 @@ export class LogInComponent {
       (error) => {
         this.lozinkaNeTacna=true;
       });
+    this.signalRService.otvori_ws_konekciju();
   }
   GetAllKorisnickiNalog() {
     let url: string = MyConfig.adresa_servera + `/get-all-KorisnickiNalog`;

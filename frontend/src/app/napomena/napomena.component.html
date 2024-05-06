@@ -65,13 +65,13 @@
           <label for="opis" class="form-label">
             <i class="bi bi-file-text"></i> Opis
           </label>
-          <input type="text" id="opis" name="opis" class="form-control" [(ngModel)]="napomenaDodajRequest.opis">
+          <input type="text" id="opis" name="opis" class="form-control" [(ngModel)]="napomenaDodajRequest.opis" [ngModelOptions]="{standalone:true}" required>
           <div *ngIf="!napomenaDodajRequest.opis" class="text-danger small">
             * Obavezno polje
           </div>
         </div>
         <div class="mb-3 form-check">
-          <input id="prioritet" type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="napomenaDodajRequest.prioritet">
+          <input id="prioritet" type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="napomenaDodajRequest.prioritet" [ngModelOptions]="{standalone:true}" required>
           <label for="prioritet" class="form-check-label">
             <i class="bi bi-exclamation-circle"></i> Prioritet
           </label>
@@ -80,10 +80,10 @@
           <label for="datumPostavke" class="form-label">
             <i class="bi bi-calendar"></i> Datum postavke
           </label>
-          <input type="date" id="datumPostavke" name="datumPostavke" class="form-control" [(ngModel)]="napomenaDodajRequest.datumPostavke">
+          <input type="date" id="datumPostavke" name="datumPostavke" class="form-control" [(ngModel)]="napomenaDodajRequest.datumPostavke" [ngModelOptions]="{standalone:true}" required>
         </div>
         <div class="mb-3 form-check">
-          <input id="isAktivna" type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="napomenaDodajRequest.isAktivna">
+          <input id="isAktivna" type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="napomenaDodajRequest.isAktivna" [ngModelOptions]="{standalone:true}" required>
           <label for="isAktivna" class="form-check-label">
             <i class="bi bi-exclamation-circle"></i> Aktivna
           </label>
@@ -92,13 +92,13 @@
           <label for="zaposlenikId" class="form-label">
             <i class="bi bi-person"></i> Zaposlenik ID
           </label>
-          <input type="number" id="zaposlenikId" name="zaposlenikId" class="form-control" [(ngModel)]="napomenaDodajRequest.zaposlenikId">
+          <input type="number" id="zaposlenikId" name="zaposlenikId" class="form-control" [(ngModel)]="napomenaDodajRequest.zaposlenikId" [ngModelOptions]="{standalone:true}" required>
         </div>
         <div class="mb-3">
           <label for="cmbVrstaNapomene" class="form-label">
             <i class="bi bi-list"></i> Izaberite vrstu napomene:
           </label>
-          <select id="cmbVrstaNapomene" class="form-select" [(ngModel)]="napomenaDodajRequest.vrstaNapomeneId">
+          <select id="cmbVrstaNapomene" class="form-select" [(ngModel)]="napomenaDodajRequest.vrstaNapomeneId" [ngModelOptions]="{standalone:true}" required>
             <option *ngFor="let option of vrsteNapomena" [ngValue]="option.vrstaNapomeneId">{{ option.opis }}</option>
           </select>
         </div>

@@ -9,5 +9,7 @@
         public bool JeFizioterapeut { get; set; }
         public bool JeNutricionista { get; set; }
         public bool JeDoktor { get; set; }
+
+        public string SignalRConnectionID { get; set; }
     }
 }

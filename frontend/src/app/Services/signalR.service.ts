@@ -10,7 +10,9 @@ import { Observable } from "rxjs";
 })
 
 export class SignalRService {
+
     public notificationsUpdated: EventEmitter<void> = new EventEmitter<void>();
+    public static ConnectionId:string | null;
 
     constructor(private httpClient: HttpClient) {}
     public notifications = "";
@@ -30,9 +32,16 @@ export class SignalRService {
             });
         });
 
+      connection.on("dodana_nova_napomena", (napomena) => {
+        alert("Dodana je nova napomena: " + napomena);
+      });
+
         connection
             .start()
             .then(() => {
+
+              SignalRService.ConnectionId=connection.connectionId;
+
                 console.log("konekcija otvorena " + connection.connectionId);
             });
     }

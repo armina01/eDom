@@ -34,9 +34,9 @@ import {DodajVisePlanovaComponent} from "./dodaj-vise-planova/dodaj-vise-planova
 
 export const routes: Routes = [
   {path: 'header', component: HeaderComponent},
-  {path: 'pregledKorisnikaDoma', component: PregledKorisnikaDomaComponent,canActivate: [AutorizacijaGuard]},
+  {path: 'pregledKorisnikaDoma', component: PregledKorisnikaDomaComponent, canActivate: [AutorizacijaGuard]},
   {path: 'opstina', component:OpstinaComponent,canActivate: [AutorizacijaGuard]},
-  {path: 'korisnkDoma', component:KorisnikComponent,canActivate: [AutorizacijaGuard]},
+  {path: 'korisnkDoma', component:KorisnikComponent},
   {path: 'korisnickiNalog', component:KorisnickiNalogComponent,canActivate: [AutorizacijaGuard]},
   {path: 'poslovnaPozicija', component:PoslovnaPozicijaComponent,canActivate: [AutorizacijaGuard]},
   {path:'njegovatelj',component:NjegovateljComponent,canActivate: [AutorizacijaGuard]},
@@ -60,7 +60,7 @@ export const routes: Routes = [
 
   {path:'home',component:HomepageComponent,canActivate: [AutorizacijaGuard]},
   {path:'pregleddnevnihzadataka/:id',component:GetZadaciComponent,canActivate: [AutorizacijaGuard]},
-  {path:'dodajZadatke',component:DodajZadatkeComponent,canActivate: [AutorizacijaGuard]},
+
   {path:'pregledsedmicnihzadataka/:id',component:PregledSedmicnihZadatakaComponent,canActivate: [AutorizacijaGuard]},
   {path:'pregledarhivezadataka/:id',component:PregledArhiveZadatakaComponent,canActivate: [AutorizacijaGuard]},
   {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent,canActivate: [AutorizacijaGuard]},
