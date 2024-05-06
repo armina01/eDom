@@ -14,6 +14,7 @@ import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/h
 import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
 import {MyAuthService} from "./Services/MyAuthService";
 import {FormsModule} from "@angular/forms";
+import{NutricionistaComponent} from "./nutricionista/nutricionista.component";
 import {TerapijaComponent} from "./terapija/terapija.component";
 import {LijekComponent} from "./lijek/lijek.component";
 import {NapomenaComponent} from "./napomena/napomena.component";
@@ -57,7 +58,7 @@ export const routes: Routes = [
   {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent},
   {path:'nutricionista/o-meni',component:PregledPodatakaNutricionistaComponent},
   {path:'doktor/o-meni',component:PregledPodatakaDoktorComponent},
-
+  {path: 'nutricionista',component:NutricionistaComponent},
   {path:'home',component:HomepageComponent,canActivate: [AutorizacijaGuard]},
   {path:'pregleddnevnihzadataka/:id',component:GetZadaciComponent,canActivate: [AutorizacijaGuard]},
 

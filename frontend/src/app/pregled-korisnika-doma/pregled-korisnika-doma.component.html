@@ -1,4 +1,4 @@
-<div *ngIf="jeNjegovatelj === true">
+<div *ngIf="jeNjegovatelj === true || jeDoktor===true">
   <app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
 </div>
 <div *ngIf="jeNutricionista === true">
@@ -23,7 +23,7 @@
   </tbody>
 </table>
 </div>
-<div id="notifications"></div>
+<div [innerHTML]="notification2"></div>
 
 <div class="container mt-4">
   <!-- Glavna kartica -->
