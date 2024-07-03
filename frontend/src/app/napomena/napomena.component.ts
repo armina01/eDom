@@ -11,11 +11,14 @@ import {
 } from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
 import {VrstaNapomeneGetAllResponse, VrstaNapomeneGetAllResponseVrstaNapomene} from "./vrstaNapomeneGetAllResponse";
 import {OdabraniKorisnikDoma} from "./odabraniKorisnikDoma";
+import {KorisnikDomaService} from "../Services/KorisnikDomaService";
+import {NapomenaService} from "../Services/NapomenaService";
 
 @Component({
   selector: 'app-napomena',
   standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  providers:[KorisnikDomaService, NapomenaService],
   templateUrl: './napomena.component.html',
   styleUrl: './napomena.component.css'
 })
@@ -28,7 +31,7 @@ export class NapomenaComponent implements OnInit{
       this.getVrsteNapomene();
       this.getAllKorisnici();
     }
-    constructor(public httpClient: HttpClient,private dialog: MatDialog) {
+    constructor(public httpClient: HttpClient,private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService, private napomenaService: NapomenaService) {
     }
 
     public napomenaDodajRequest:NapomenaDodajRequest={
@@ -42,16 +45,14 @@ export class NapomenaComponent implements OnInit{
     }
 
   getAllKorisnici() {
-    let url = MyConfig.adresa_servera + `/korisnikDoma-getAll`
-    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x: KorisnikDomaGetAllResponse) => {
+    this.korisnikDomaService.GetAllKorisnici().subscribe((x: KorisnikDomaGetAllResponse) => {
       this.korisniciDoma = x.korisnici;
       this.PrikaziKorisnikeDoma();
     })
   }
 
   getVrsteNapomene() {
-    let url = MyConfig.adresa_servera + `/vrstaNapomene/getAll`
-    this.httpClient.get<VrstaNapomeneGetAllResponse>(url).subscribe((x: VrstaNapomeneGetAllResponse) => {
+    this.napomenaService.GetVrsteNapomena().subscribe(x=>{
       this.vrsteNapomena=x.vrsteNapomena;
     })
   }
@@ -79,9 +80,9 @@ export class NapomenaComponent implements OnInit{
     let url=MyConfig.adresa_servera + `/napomena/dodaj`;
     this.napomenaDodajRequest.korisnikDomaID = korisnik.korisnikDomaID;
     console.log(this.napomenaDodajRequest);
-    this.httpClient.post(url, this.napomenaDodajRequest).subscribe(response=>{
+    this.napomenaService.DodajNapomenu(this.napomenaDodajRequest).subscribe(x=>{
       console.log("Napomena uspjesno dodana");
-    });
+    })
     korisnik.selected=false;
   }
 

@@ -12,11 +12,17 @@ import {DoktorGetAllResponse, DoktorGetAllResponseDoktor} from "../doktor/doktor
 import {DijagnozaGetAllResponse, DijagnozaGetAllResponseDijagnoza} from "./dijagnozaGetAllResponse";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
+import {KorisnikDomaService} from "../Services/KorisnikDomaService";
+import {MyAuthService} from "../Services/MyAuthService";
+import {SignalRService} from "../Services/signalR.service";
+import {DoktorService} from "../Services/DoktorService";
+import {DijagnozaService} from "../Services/DijagnozaService";
 
 @Component({
   selector: 'app-dijagnoza',
   standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  providers:[KorisnikDomaService, DoktorService, DijagnozaService],
   templateUrl: './dijagnoza.component.html',
   styleUrl: './dijagnoza.component.css'
 })
@@ -34,13 +40,14 @@ export class DijagnozaComponent implements  OnInit{
   selectedFile: File | null = null;
 
 
-  constructor(public httpClient: HttpClient, private dialog: MatDialog) {
+  constructor(public httpClient: HttpClient, private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService, private doktorService: DoktorService, private dijagnozaService: DijagnozaService) {
   }
     ngOnInit(): void {
 
       this.GetAllDoktore();
       this.GetAllKorisnike();
       this.GetAllDijagnoze();
+
 
     }
 
@@ -56,18 +63,18 @@ export class DijagnozaComponent implements  OnInit{
 
   GetAllKorisnike()
   {
-    let url =MyConfig.adresa_servera +`/korisnikDoma-getAll`
-    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x:KorisnikDomaGetAllResponse)=>{
-      this.korisniciDoma = x.korisnici;
-    })
+    this.korisnikDomaService.GetAllKorisnici().subscribe((data)=>{
+      console.log(data);
+      this.korisniciDoma=data.korisnici;
+    });
   }
 
   GetAllDoktore()
   {
-    let url: string = MyConfig.adresa_servera + `/doktor-getAll`;
-    this.httpClient.get<DoktorGetAllResponse>(url).subscribe(x => {
-      this.doktori = x.doktori;
-    })
+    this.doktorService.GetAllDoktori().subscribe((data)=>{
+      console.log(data);
+      this.doktori=data.doktori;
+    });
   }
 
   Dodaj() {
@@ -83,12 +90,12 @@ export class DijagnozaComponent implements  OnInit{
     if (this.dijagnozaRequest.nalazFile) {
       formData.append('file', this.dijagnozaRequest.nalazFile);
     }
-    let url=MyConfig.adresa_servera + "/dijagnoza/dodaj";
-    this.httpClient.post(url, formData).subscribe(x=>{
+    this.dijagnozaService.DodajDijagozu(formData).subscribe(x=>{
       console.log("Dijagnoza dodana za korisnikId= "+ this.dijagnozaRequest.korisnikDomaID)
     });
     this.showConfirmationDialog=true;
     this.setAutoHide();
+
   }
 
   setAutoHide() {
@@ -98,10 +105,9 @@ export class DijagnozaComponent implements  OnInit{
   }
 
   GetAllDijagnoze() {
-    let url: string = MyConfig.adresa_servera + `/dijagnoza/getAll`;
-    this.httpClient.get<DijagnozaGetAllResponse>(url).subscribe(x => {
-      this.dijagnoze= x.dijagnoze;
-    })
+    this.dijagnozaService.GetAllDijagnoze().subscribe(x=>{
+      this.dijagnoze=x.dijagnoze;
+    });
   }
 
   getFiltriraneDijagnoze() {
@@ -115,9 +121,7 @@ export class DijagnozaComponent implements  OnInit{
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati dijagnozu?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/dijagnoza/obrisi`;
-        const params = new HttpParams().set('dijagnozaId', item.dijagnozaId);
-        this.httpClient.delete(url, {params}).subscribe(
+        this.dijagnozaService.IzbrisiDijagnozu(item).subscribe(
           response => () => {
             console.log("Deleted item")
           },
@@ -156,11 +160,15 @@ export class DijagnozaComponent implements  OnInit{
   }
 
   Update() {
-    let url: string = MyConfig.adresa_servera + `/dijagnoza/update`;
+    //let url: string = MyConfig.adresa_servera + `/dijagnoza/update`;
     console.log(this.odabranaDijagnoza)
-    this.httpClient.post(url, this.odabranaDijagnoza).subscribe(request => {
-      console.log("Dijagnoza updateovana ", request)
-    })
+    //this.httpClient.post(url, this.odabranaDijagnoza).subscribe(request => {
+      //console.log("Dijagnoza updateovana ", request)
+    //})
+
+    this.dijagnozaService.UpdateDijagnozu(this.odabranaDijagnoza).subscribe(x=>{
+      console.log("Dijagnoza updateovana ")
+    });
   }
 
   onFileSelected($event: Event) {

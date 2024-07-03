@@ -13,17 +13,19 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DoktorGetAllResponse, DoktorGetAllResponseDoktor} from "./doktorGetAllResponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {DoktorUpdateRequest} from "./doktorUpdateRequest";
+import {DoktorService} from "../Services/DoktorService";
 
 @Component({
   selector: 'app-doktor',
   standalone: true,
     imports: [CommonModule, FormsModule,HttpClientModule],
+    providers: [DoktorService],
   templateUrl: './doktor.component.html',
   styleUrl: './doktor.component.css'
 })
 export class DoktorComponent implements OnInit{
 
-    constructor(public httpClient: HttpClient,private dialog: MatDialog) {
+    constructor(public httpClient: HttpClient,private dialog: MatDialog, private doktorService: DoktorService) {
     }
 
     ngOnInit(): void {
@@ -71,19 +73,25 @@ export class DoktorComponent implements OnInit{
 
 
     Dodaj() {
-      let url=MyConfig.adresa_servera + `/Doktor-dodaj`;
-      console.log(this.doktorRequest);
-        this.httpClient.post(url, this.doktorRequest).subscribe(response=>{
-          console.log("Doktor uspjesno dodan");
-        });
+      //let url=MyConfig.adresa_servera + `/Doktor-dodaj`;
+      //console.log(this.doktorRequest);
+        //this.httpClient.post(url, this.doktorRequest).subscribe(response=>{
+          //console.log("Doktor uspjesno dodan");
+        //});
+
+      this.doktorService.DodajDoktora(this.doktorRequest).subscribe((request:any) => {
+        console.log("Korisnicki nalog dodan za ", request)
+      });
+
     }
 
 
     GetAllDoktori() {
-        let url: string = MyConfig.adresa_servera + `/doktor-getAll`;
-        this.httpClient.get<DoktorGetAllResponse>(url).subscribe(x => {
-            this.allDoktori = x.doktori;
-        })
+
+       this.doktorService.GetAllDoktori().subscribe(x=>{
+         this.allDoktori = x.doktori;
+       })
+
     }
 
     getAllDoktori() {
@@ -93,11 +101,9 @@ export class DoktorComponent implements OnInit{
       const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
       dialogRef.afterClosed().subscribe(res => {
         if (res) {
-          let url: string = MyConfig.adresa_servera + `/doktor-obrisi`;
-          const params = new HttpParams().set('ZaposlenikId', item.zaposlenikId);
-          this.httpClient.delete(url, {params}).subscribe(
+          this.doktorService.IzbrisiDoktora(item).subscribe(
             response => () => {
-              console.log("Deleted item")
+              this.getAllDoktori(); // ili samo ispisat da je uspjesno izgrisano
             },
             (error: any) => {
               console.error('Error:', error);
@@ -143,11 +149,11 @@ export class DoktorComponent implements OnInit{
     this.updateDoktorRequest.nazivKlinike=this.doktorRequest.nazivKlinike
     this.updateDoktorRequest.poslovnaPozicijaId=this.doktorRequest.poslovnaPozicijaId
 
-    let url: string = MyConfig.adresa_servera + `/doktor-update`;
+
     console.log(this.updateDoktorRequest)
-    this.httpClient.post(url, this.updateDoktorRequest).subscribe(request => {
-      console.log("Doktor updateovan ", request)
-    })
+    this.doktorService.UpdateDoktora(this.updateDoktorRequest).subscribe(x=>{
+      console.log("Uspjesno updateovan korisnik")
+    });
   }
 
 

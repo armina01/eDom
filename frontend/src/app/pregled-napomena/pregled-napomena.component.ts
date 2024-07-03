@@ -12,11 +12,13 @@ import {
 import {ZaposlenikGetAllRsponse, ZaposlenikGetAllRsponseZaposlenik} from "./zaposlenikGetAllRsponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {NapomenaService} from "../Services/NapomenaService";
 
 @Component({
   selector: 'app-pregled-napomena',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  providers: [NapomenaService],
   templateUrl: './pregled-napomena.component.html',
   styleUrl: './pregled-napomena.component.css'
 })
@@ -40,7 +42,7 @@ export class PregledNapomenaComponent implements OnInit{
       this.GetAllZaposlenike();
 
     }
-    constructor(public httpClient:HttpClient, private dialog: MatDialog, public route: ActivatedRoute) {
+    constructor(public httpClient:HttpClient, private dialog: MatDialog, public route: ActivatedRoute, private napomenaService: NapomenaService) {
     }
     public napomenaUpdateRequest:NapomenaGetAllResponseNapomena={
       napomenaId:0,
@@ -54,8 +56,7 @@ export class PregledNapomenaComponent implements OnInit{
     }
 
   getVrsteNapomene() {
-    let url = MyConfig.adresa_servera + `/vrstaNapomene/getAll`
-    this.httpClient.get<VrstaNapomeneGetAllResponse>(url).subscribe((x: VrstaNapomeneGetAllResponse) => {
+    this.napomenaService.GetVrsteNapomena().subscribe(x=>{
       this.vrsteNapomena=x.vrsteNapomena;
     })
   }
@@ -68,22 +69,23 @@ export class PregledNapomenaComponent implements OnInit{
   }
   public GetAllNpomene()
   {
-    let url =MyConfig.adresa_servera +`/napomena/getAll`
-    this.httpClient.get<NapomenaGetAllResponse>(url).subscribe((x:NapomenaGetAllResponse)=>{
+    //this.httpClient.get<NapomenaGetAllResponse>(url).subscribe((x:NapomenaGetAllResponse)=>{
+      //this.napomeneAll = x.napomene;
+      //this.odabraneNapomene=this.napomeneAll.filter(x=>x.korisnikDomaID===this.korisnikId);
+      //console.log(this.odabraneNapomene);
+    //})
+    this.napomenaService.GetAllNapomene().subscribe(x=>{
       this.napomeneAll = x.napomene;
       this.odabraneNapomene=this.napomeneAll.filter(x=>x.korisnikDomaID===this.korisnikId);
       console.log(this.odabraneNapomene);
-
-    })
+    });
   }
 
   Obrisi(item: NapomenaGetAllResponseNapomena) {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati napomenu?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/napomena/obrisi`;
-        const params = new HttpParams().set('napomenaId', item.napomenaId);
-        this.httpClient.delete(url, {params}).subscribe(
+        this.napomenaService.IzbrisiNapomenu(item).subscribe(
           response => () => {
             console.log("Deleted item")
           },
@@ -138,9 +140,8 @@ export class PregledNapomenaComponent implements OnInit{
         vrstaNapomeneId:this.OdabranaNapomena.vrstaNapomeneId
       };
     }
-    let url: string = MyConfig.adresa_servera + `/napomena/update`;
     console.log(this.napomenaUpdateRequest)
-    this.httpClient.post(url, this.napomenaUpdateRequest).subscribe(request => {
+    this.napomenaService.UpdateNapomenu(this.napomenaUpdateRequest).subscribe(request => {
       console.log("Napomena updateovana ", request)
     })
     this.OdabranaNapomena=null;

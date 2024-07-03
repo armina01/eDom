@@ -10,11 +10,13 @@ import {
   VrstaNapomeneGetAllResponse,
   VrstaNapomeneGetAllResponseVrstaNapomene
 } from "../napomena/vrstaNapomeneGetAllResponse";
+import {NapomenaService} from "../Services/NapomenaService";
 
 @Component({
   selector: 'app-pregled-aktivnih-napomena',
   standalone: true,
   imports: [CommonModule],
+  providers: [NapomenaService],
   templateUrl: './pregled-aktivnih-napomena.component.html',
   styleUrl: './pregled-aktivnih-napomena.component.css'
 })
@@ -31,15 +33,14 @@ export class PregledAktivnihNapomenaComponent implements OnInit{
         this.getVrsteNapomene();
         this.GetAllZaposlenike();
     }
-   constructor(public httpClient:HttpClient, public route: ActivatedRoute) {
+   constructor(public httpClient:HttpClient, public route: ActivatedRoute, private napomenaService: NapomenaService) {
      this.route.params.subscribe(params => {
        this.korisnikId = +params['id'];
      });
    }
 
   public GetAllNapomene() {
-    let url = MyConfig.adresa_servera + `/napomena/getAll`
-    this.httpClient.get<NapomenaGetAllResponse>(url).subscribe((x: NapomenaGetAllResponse) => {
+    this.napomenaService.GetAllNapomene().subscribe((x: NapomenaGetAllResponse) => {
       this.napomeneAll = x.napomene;
       this.odabraneNapomene = this.napomeneAll.filter(x => x.korisnikDomaID === this.korisnikId);
       console.log(this.odabraneNapomene);
@@ -48,10 +49,9 @@ export class PregledAktivnihNapomenaComponent implements OnInit{
     })
   }
   getVrsteNapomene() {
-    let url = MyConfig.adresa_servera + `/vrstaNapomene/getAll`
-    this.httpClient.get<VrstaNapomeneGetAllResponse>(url).subscribe((x: VrstaNapomeneGetAllResponse) => {
-      this.vrsteNapomena=x.vrsteNapomena;
-    })
+      this.napomenaService.GetVrsteNapomena().subscribe(x=>{
+        this.vrsteNapomena=x.vrsteNapomena;
+      })
   }
   GetAllZaposlenike()
   {

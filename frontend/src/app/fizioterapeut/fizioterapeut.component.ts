@@ -15,6 +15,7 @@ import {
 } from "./fizioterapeutGetAll";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {FizioterapeutUpdateRequest} from "./fizioterapeutUpdateRequest";
+import {FizioterapeutService} from "../Services/FizioterapeutService";
 
 
 
@@ -22,6 +23,7 @@ import {FizioterapeutUpdateRequest} from "./fizioterapeutUpdateRequest";
   selector: 'app-fizioterapeut',
   standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    providers: [FizioterapeutService],
   templateUrl: './fizioterapeut.component.html',
   styleUrl: './fizioterapeut.component.css'
 })
@@ -30,7 +32,7 @@ export class FizioterapeutComponent implements OnInit {
   public poslovnePozicije: GetAllPoslovnaPozicijaResponsePoslovnaPozicija[]=[];
   public allFizioterapeuti: FizioterapeutGetAllResponseFizioterapeut[]=[];
 
-  constructor(public httpClient: HttpClient,private dialog: MatDialog) {
+  constructor(public httpClient: HttpClient,private dialog: MatDialog, private fizioterapeutService: FizioterapeutService) {
 
   }
 
@@ -69,10 +71,8 @@ export class FizioterapeutComponent implements OnInit {
 
 
   Dodaj() {
-    let url=MyConfig.adresa_servera + `/Fizioterapeut-dodaj`;
-    console.log(this.fizioterapeutRequest);
-    this.httpClient.post(url, this.fizioterapeutRequest).subscribe(response=>{
-      console.log("Fizioterapeut uspjesno dodan");
+    this.fizioterapeutService.DodajFizioterapeuta(this.fizioterapeutRequest).subscribe(x=>{
+      console.log("Uspjesno dodan")
     });
     this.OcistiFormu();
   }
@@ -86,9 +86,8 @@ export class FizioterapeutComponent implements OnInit {
     this.fizioterapeutRequest.poslovnaPozicijaId=0
   }
   GetAllFizioterapeuti() {
-    let url: string = MyConfig.adresa_servera + `/fizioterapeut-getAll`;
-    this.httpClient.get<FizioterapeutGetAllResponse>(url).subscribe(x => {
-      this.allFizioterapeuti= x.fizioterapeuti
+    this.fizioterapeutService.GetAllFizioterapeuti().subscribe(x=>{
+      this.allFizioterapeuti = x.fizioterapeuti;
     })
   }
 
@@ -103,11 +102,9 @@ export class FizioterapeutComponent implements OnInit {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/Fizioterapeut-obrisi`;
-        const params = new HttpParams().set('ZaposlenikId', item.zaposlenikId);
-        this.httpClient.delete(url, {params}).subscribe(
+        this.fizioterapeutService.IzbrisiFizioterapeuta(item).subscribe(
           response => () => {
-            console.log("Deleted item")
+            console.log("Uspjesno obrisan korisnik")
           },
           (error: any) => {
             console.error('Error:', error);
@@ -148,11 +145,9 @@ export class FizioterapeutComponent implements OnInit {
         this.fizioterapeutUpdateRequest.oblastFizijatrije=this.fizioterapeutRequest.oblastFizijatrije
         this.fizioterapeutUpdateRequest.poslovnaPozicijaId=this.fizioterapeutRequest.poslovnaPozicijaId
 
-        let url: string = MyConfig.adresa_servera + `/Fizioterapeut-update`;
-        console.log(this.fizioterapeutUpdateRequest)
-        this.httpClient.post(url, this.fizioterapeutUpdateRequest).subscribe(request => {
-            console.log("Fizioterapeut updateovan ", request)
-        })
+       this.fizioterapeutService.UpdateFizioterapeuta(this.fizioterapeutUpdateRequest).subscribe(x=>{
+         console.log("Uspjesno obrisan")
+       });
         this.OcistiFormu();
 
     }
