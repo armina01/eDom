@@ -1,58 +1,148 @@
-<h2>Dodavanje fizioterapeuta</h2>
 
-<form #FizioterapeutForma="ngForm" >
-  <div>
-    <label>Ime i prezime</label>
-    <input type="text" name="imePrezime" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.imePrezime">
+<div style="width: 80%; margin: 0 auto;">
+  <!-- Definicija tabova -->
+  <ul class="nav nav-tabs" id="fizioterapeutiTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="dodaj-tab" data-bs-toggle="tab" href="#dodaj" role="tab" aria-controls="dodaj" aria-selected="true">
+        Dodaj fizioterapeuta
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="pregled-tab" data-bs-toggle="tab" href="#pregled" role="tab" aria-controls="pregled" aria-selected="false">
+        Pretraga
+      </a>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="myTabContent" style="margin-top: 20px;">
+    <!-- Tab za dodavanje fizioterapeuta -->
+    <div class="tab-pane fade show active" id="dodaj" role="tabpanel" aria-labelledby="dodaj-tab">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h3>Dodavanje fizioterapeuta</h3>
+        </div>
+        <div class="card-body">
+          <form #FizioterapeutForma="ngForm">
+            <div class="mb-3">
+              <label class="form-label">Ime i prezime</label>
+              <input type="text" name="imePrezime" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.imePrezime">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">JMBG</label>
+              <input type="text" name="jmbg" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.jmbg">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Datum rođenja</label>
+              <input type="date" name="datumRodjenja" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.datumRodjenja">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Datum zaposlenja</label>
+              <input type="date" name="datumZaposlenja" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.datumZaposlenja">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Oblast fizijatrije</label>
+              <input type="text" name="oblastFizijatrije" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.oblastFizijatrije">
+            </div>
+            <div class="mb-3">
+              <label for="cmbPozicija" class="form-label">Izaberite poslovnu poziciju:</label>
+              <select id="cmbPozicija" class="form-select" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.poslovnaPozicijaId">
+                <option *ngFor="let option of poslovnePozicije" [ngValue]="option.poslovnaPozicijaId">{{ option.nazivPozicije }}</option>
+              </select>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <button type="submit" class="btn btn-success" (click)="Dodaj()">
+                <i class="fas fa-plus-circle"></i> Dodaj
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab za pregled i update fizioterapeuta -->
+    <div class="tab-pane fade" id="pregled" role="tabpanel" aria-labelledby="pregled-tab">
+      <div class="card">
+        <div class="card-header bg-secondary text-white">
+          <h3>Pregled i ažuriranje fizioterapeuta</h3>
+        </div>
+        <div class="card-body">
+          <button class="btn btn-primary mb-4" (click)="Prikazi()">
+            <i class="fas fa-eye"></i> Prikaži
+          </button>
+          <table *ngIf="prikaziTabelu" class="table table-hover table-bordered table-secondary">
+            <thead>
+            <tr>
+              <th>Ime i prezime</th>
+              <th>Datum rođenja</th>
+              <th>Datum zaposlenja</th>
+              <th>JMBG</th>
+              <th>Oblast fizijatrije</th>
+              <th>Akcije</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of getAllFizioterapeuti()">
+              <td>{{ item.imePrezime }}</td>
+              <td>{{ item.datumRodjenja }}</td>
+              <td>{{ item.datumZaposlenja }}</td>
+              <td>{{ item.jmbg }}</td>
+              <td>{{ item.oblastFizijatrije }}</td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="IzbrisiFizioterapeuta(item)">
+                  <i class="fas fa-trash-alt"></i> Izbriši
+                </button>
+                <button type="button" class="btn btn-warning btn-sm" (click)="Odaberi(item)">
+                  <i class="fas fa-edit"></i> Update
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>
-    <label>JMBG</label>
-    <input type="text" name="jmbg" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.jmbg">
+</div>
+
+<form #updateForm="ngForm" name="fizioterapeutUpdForm">
+  <div *ngIf="odabraniFizioterapeut">
+    <div class="modal fade show" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-modal="true" role="dialog" style="display: block;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLiveLabel">Update fizioterapeuta</h1>
+            <button type="button" (click)="odabraniFizioterapeut = null" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="ImePrezime" class="form-label">Ime i prezime:</label>
+              <input id="ImePrezime" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniFizioterapeut.imePrezime">
+            </div>
+            <div class="mb-3">
+              <label for="Jmbg" class="form-label">JMBG:</label>
+              <input id="Jmbg" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniFizioterapeut.jmbg">
+            </div>
+            <div class="mb-3">
+              <label for="datumRodjenja" class="form-label">Datum rodjenja:</label>
+              <input id="datumRodjenja" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniFizioterapeut.datumRodjenja">
+            </div>
+            <div class="mb-3">
+              <label for="datumZaposlenja" class="form-label">Datum zaposlenja:</label>
+              <input id="datumZaposlenja" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniFizioterapeut.datumZaposlenja">
+            </div>
+            <div class="mb-3">
+              <label for="oblastFizijatrije" class="form-label">Oblast fizijatrije:</label>
+              <input id="oblastFizijatrije" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniFizioterapeut.oblastFizijatrije">
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" (click)="odabraniFizioterapeut = null" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" (click)="Update()" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>
-    <label>Datum rodjenja</label>
-    <input type="date" name="datumRodjenja" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.datumRodjenja">
-  </div>
-  <div>
-    <label>Datum zaposlenja</label>
-    <input type="date" name="datumZaposlenja" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.datumZaposlenja">
-  </div>
-  <div>
-    <label>Oblast fizijatrije</label>
-    <input type="text" name="oblastMedicine" [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.oblastFizijatrije">
-  </div>
-  <div>
-    <label for="cmbPozicija">Izaberite poslovnu poziciju:</label>
-    <select id="cmbPozicija"  [ngModelOptions]="{standalone: true}" [(ngModel)]="fizioterapeutRequest.poslovnaPozicijaId">
-      <option *ngFor="let option of poslovnePozicije" [ngValue]="option.poslovnaPozicijaId">{{ option.nazivPozicije }}</option>
-    </select>
-  </div>
-  <button type="submit" class="btn btn-primary mb-2" (click)="Dodaj()">Dodaj</button>
-  <button type="submit" class="btn btn-primary mb-2" (click)="Prikazi()">Prikaži</button>
-  <button type="submit" class="btn btn-primary mb-2" (click)="Update()">Update</button>
 </form>
-
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <th>ImePrezime</th>
-    <th>Datum rodjenja</th>
-    <th>Datum zaposlenja</th>
-    <th>JMBG</th>
-    <th>Naziv klinike</th>
-    <th>Oblast medicine</th>
-    <th>Specijalizacija</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let item of getAllFizioterapeuti()">
-    <td>{{ item.imePrezime }}</td>
-    <td>{{ item.datumRodjenja }}</td>
-    <td>{{ item.datumZaposlenja }}</td>
-    <td>{{ item.jmbg }}</td>
-    <td>{{ item.oblastFizijatrije}}</td>
-    <td><button type="submit"  class="btn btn-primary" style="background-color: red;" (click)="IzbrisiFizioterapeuta(item)" >Izbriši</button></td>
-    <td><button type="submit"  class="btn btn-primary" (click)="Odaberi(item)" >Update</button></td>
-  </tr>
-  </tbody>
-</table>

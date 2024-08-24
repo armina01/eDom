@@ -37,6 +37,8 @@ export class DoktorComponent implements OnInit{
 
     poslovnePozicije:GetAllPoslovnaPozicijaResponsePoslovnaPozicija[]=[];
     allDoktori:DoktorGetAllResponseDoktor[]=[];
+    public odabraniDoktor:DoktorGetAllResponseDoktor | null=null;
+    public prikaziTabelu:boolean=false;
 
     public doktorRequest: DoktorRequest = {
     imePrezime: "",
@@ -126,32 +128,26 @@ export class DoktorComponent implements OnInit{
     });
   };
     Odaberi(item: DoktorGetAllResponseDoktor) {
-      this.doktorRequest.imePrezime=item.imePrezime
-      this.doktorRequest.jmbg=item.jmbg
-      this.doktorRequest.datumRodjenja=item.datumRodjenja
-      this.doktorRequest.datumZaposlenja=item.datumZaposlenja
-      this.doktorRequest.specijalizacija=item.specijalizacija
-      this.doktorRequest.oblastMedicine=item.oblastMedicine
-      this.doktorRequest.nazivKlinike=item.nazivKlinike
-      this.doktorRequest.poslovnaPozicijaId=item.poslovnaPozicijaId
-      this.updateDoktorRequest.zaposlenikId=item.zaposlenikId
 
+      this.odabraniDoktor = {
+        imePrezime:item.imePrezime,
+        jmbg:item.jmbg,
+        datumRodjenja:item.datumRodjenja,
+        datumZaposlenja:item.datumZaposlenja,
+        specijalizacija:item.specijalizacija,
+        oblastMedicine:item.oblastMedicine,
+        nazivKlinike:item.nazivKlinike,
+        poslovnaPozicijaId:item.poslovnaPozicijaId,
+        zaposlenikId:item.zaposlenikId,
+        nalogId:item.nalogId
+
+      } ;
 
     }
 
   Update() {
-    this.updateDoktorRequest.imePrezime=this.doktorRequest.imePrezime
-    this.updateDoktorRequest.jmbg=this.doktorRequest.jmbg
-    this.updateDoktorRequest.datumRodjenja=this.doktorRequest.datumRodjenja
-    this.updateDoktorRequest.datumZaposlenja=this.doktorRequest.datumZaposlenja
-    this.updateDoktorRequest.specijalizacija=this.doktorRequest.specijalizacija
-    this.updateDoktorRequest.oblastMedicine=this.doktorRequest.oblastMedicine
-    this.updateDoktorRequest.nazivKlinike=this.doktorRequest.nazivKlinike
-    this.updateDoktorRequest.poslovnaPozicijaId=this.doktorRequest.poslovnaPozicijaId
-
-
-    console.log(this.updateDoktorRequest)
-    this.doktorService.UpdateDoktora(this.updateDoktorRequest).subscribe(x=>{
+    console.log(this.odabraniDoktor)
+    this.doktorService.UpdateDoktora(this.odabraniDoktor).subscribe(x=>{
       console.log("Uspjesno updateovan korisnik")
     });
   }
@@ -159,5 +155,6 @@ export class DoktorComponent implements OnInit{
 
   Prikazi() {
     this.GetAllDoktori();
+    this.prikaziTabelu=true;
   }
 }

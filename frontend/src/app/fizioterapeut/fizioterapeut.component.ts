@@ -31,6 +31,8 @@ export class FizioterapeutComponent implements OnInit {
 
   public poslovnePozicije: GetAllPoslovnaPozicijaResponsePoslovnaPozicija[]=[];
   public allFizioterapeuti: FizioterapeutGetAllResponseFizioterapeut[]=[];
+  public odabraniFizioterapeut: FizioterapeutGetAllResponseFizioterapeut | null = null;
+  public prikaziTabelu:boolean=false;
 
   constructor(public httpClient: HttpClient,private dialog: MatDialog, private fizioterapeutService: FizioterapeutService) {
 
@@ -96,6 +98,7 @@ export class FizioterapeutComponent implements OnInit {
   }
   Prikazi() {
      this.GetAllFizioterapeuti();
+     this.prikaziTabelu=true;
   }
 
   IzbrisiFizioterapeuta(item: FizioterapeutGetAllResponseFizioterapeut) {
@@ -127,25 +130,22 @@ export class FizioterapeutComponent implements OnInit {
         });
     };
   Odaberi(item: FizioterapeutGetAllResponseFizioterapeut) {
-      this.fizioterapeutRequest.imePrezime=item.imePrezime
-      this.fizioterapeutRequest.jmbg=item.jmbg
-      this.fizioterapeutRequest.datumRodjenja=item.datumRodjenja
-      this.fizioterapeutRequest.datumZaposlenja=item.datumZaposlenja
-      this.fizioterapeutRequest.oblastFizijatrije=item.oblastFizijatrije
-      this.fizioterapeutRequest.poslovnaPozicijaId=item.poslovnaPozicijaId
-      this.fizioterapeutUpdateRequest.zaposlenikId=item.zaposlenikId
 
+    this.odabraniFizioterapeut = {
+      imePrezime:item.imePrezime,
+      jmbg:item.jmbg,
+      datumRodjenja:item.datumRodjenja,
+      datumZaposlenja:item.datumZaposlenja,
+      poslovnaPozicijaId:item.poslovnaPozicijaId,
+      zaposlenikId:item.zaposlenikId,
+      oblastFizijatrije:item.oblastFizijatrije,
+      nalogId:item.nalogId
+
+    } ;
   }
 
     Update() {
-        this.fizioterapeutUpdateRequest.imePrezime=this.fizioterapeutRequest.imePrezime
-        this.fizioterapeutUpdateRequest.jmbg=this.fizioterapeutRequest.jmbg
-        this.fizioterapeutUpdateRequest.datumRodjenja=this.fizioterapeutRequest.datumRodjenja
-        this.fizioterapeutUpdateRequest.datumZaposlenja=this.fizioterapeutRequest.datumZaposlenja
-        this.fizioterapeutUpdateRequest.oblastFizijatrije=this.fizioterapeutRequest.oblastFizijatrije
-        this.fizioterapeutUpdateRequest.poslovnaPozicijaId=this.fizioterapeutRequest.poslovnaPozicijaId
-
-       this.fizioterapeutService.UpdateFizioterapeuta(this.fizioterapeutUpdateRequest).subscribe(x=>{
+       this.fizioterapeutService.UpdateFizioterapeuta(this.odabraniFizioterapeut).subscribe(x=>{
          console.log("Uspjesno obrisan")
        });
         this.OcistiFormu();

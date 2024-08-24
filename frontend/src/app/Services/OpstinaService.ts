@@ -33,6 +33,9 @@ export class OpstinaServiceService {
     return this.httpClient.delete(url, {params})
   }
 
-
+  UpdateOpstinu(item:any){
+    let url: string = MyConfig.adresa_servera + `/opstina-update`;
+    return this.httpClient.post(url,item);
+  }
 
 }

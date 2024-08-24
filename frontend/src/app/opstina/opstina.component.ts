@@ -20,7 +20,8 @@ import {OpstinaServiceService} from "../Services/OpstinaService";
 })
 export class OpstinaComponent {
   opstine: OpsinaGetAllResponseOpstina[]=[];
-
+  public prikaziOpstine:boolean=false;
+  public odabranaOpstina: OpsinaGetAllResponseOpstina | null=null;
 
   constructor(public httpClient:HttpClient, private dialog: MatDialog, private opstinaService: OpstinaServiceService) {
 
@@ -33,6 +34,7 @@ export class OpstinaComponent {
   }
 
   GetAllOpstine() {
+    this.prikaziOpstine=true;
     this.opstinaService.GetAllOpstine().subscribe((x:OpstinaGetAllResponse)=> {
       this.opstine = x.opstine;
     })
@@ -70,6 +72,20 @@ export class OpstinaComponent {
     });
   };
 
+  Odaberi(item: OpsinaGetAllResponseOpstina) {
+   this.odabranaOpstina={
+     nazivOpstine:item.nazivOpstine,
+     opstinaID:item.opstinaID,
+     postanskiBroj:item.postanskiBroj
+   };
+  }
+
+  Update() {
+    this.opstinaService.UpdateOpstinu(this.odabranaOpstina).subscribe(x=>{
+      console.log("Uspjesno updateovan")
+    });
+
+  }
 }
 
 
