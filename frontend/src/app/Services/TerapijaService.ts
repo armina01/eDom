@@ -27,7 +27,7 @@ export class TerapijaService {
   }
   DodajTerapiju(data:any){
     let url: string = MyConfig.adresa_servera + `/terapijaLijek/dodaj`;
-    return this.httpClient.post(url, data);
+    return this.httpClient.post(url, data,  { responseType: 'text' });
   }
   UpdateTerapiju(terapijaUpdateRequest:any){
     let url: string = MyConfig.adresa_servera + `/terapijaLijek/update`;

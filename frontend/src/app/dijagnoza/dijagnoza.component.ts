@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {DijagnozaRequest} from "./dijagnozaRequest";
 import {
@@ -38,16 +38,32 @@ export class DijagnozaComponent implements  OnInit{
 
   fileSelected = false;
   selectedFile: File | null = null;
+  dijagnozaForm: FormGroup;
+  updateForm:FormGroup;
 
 
-  constructor(public httpClient: HttpClient, private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService, private doktorService: DoktorService, private dijagnozaService: DijagnozaService) {
+  constructor(public httpClient: HttpClient, private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService, private doktorService: DoktorService, private dijagnozaService: DijagnozaService, private fb: FormBuilder) {
+    this.dijagnozaForm = this.fb.group({
+      nazivBolesti: ['', Validators.required],
+      opis: ['', Validators.required],
+      datumDijagnoze: ['', Validators.required],
+      file: [''],  // Optional
+      korisnikDomaID: ['', Validators.required],
+      zaposlenikId: ['', Validators.required],
+    });
+
+    this.updateForm = this.fb.group({
+      nazivBolesti: ['', Validators.required], // string
+      opis: ['', Validators.required], // string
+      datumDijagnoze: ['', Validators.required],
+
+    });
   }
     ngOnInit(): void {
 
       this.GetAllDoktore();
       this.GetAllKorisnike();
       this.GetAllDijagnoze();
-
 
     }
 
@@ -79,22 +95,28 @@ export class DijagnozaComponent implements  OnInit{
 
   Dodaj() {
 
-    console.log(this.dijagnozaRequest);
-    const formData: FormData = new FormData();
-    formData.append('nazivBolesti', this.dijagnozaRequest.nazivBolesti);
-    formData.append('opis', this.dijagnozaRequest.opis);
-    formData.append('datumDijagnoze', this.dijagnozaRequest.datumDijagnoze.toString());
-    formData.append('zaposlenikId', this.dijagnozaRequest.zaposlenikId.toString());
-    formData.append('korisnikDomaID', this.dijagnozaRequest.korisnikDomaID.toString());
+    if (this.dijagnozaForm.valid) {
+      console.log(this.dijagnozaForm.value);
 
-    if (this.dijagnozaRequest.nalazFile) {
-      formData.append('file', this.dijagnozaRequest.nalazFile);
+      const formData: FormData = new FormData();
+      formData.append('nazivBolesti', this.dijagnozaForm.get('nazivBolesti')!.value);
+      formData.append('opis', this.dijagnozaForm.get('opis')!.value);
+      formData.append('datumDijagnoze', this.dijagnozaForm.get('datumDijagnoze')!.value.toString());
+      formData.append('zaposlenikId', this.dijagnozaForm.get('zaposlenikId')!.value.toString());
+      formData.append('korisnikDomaID', this.dijagnozaForm.get('korisnikDomaID')!.value.toString());
+
+      const nalazFile = this.dijagnozaForm.get('file')!.value;
+      if (nalazFile) {
+        formData.append('file', nalazFile);
+      }
+
+      this.dijagnozaService.DodajDijagozu(formData).subscribe(x => {
+        console.log("Dijagnoza dodana za korisnikId= " + this.dijagnozaForm.get('korisnikDomaID')!.value);
+      });
+
+      this.showConfirmationDialog = true;
+      this.setAutoHide();
     }
-    this.dijagnozaService.DodajDijagozu(formData).subscribe(x=>{
-      console.log("Dijagnoza dodana za korisnikId= "+ this.dijagnozaRequest.korisnikDomaID)
-    });
-    this.showConfirmationDialog=true;
-    this.setAutoHide();
 
   }
 
@@ -148,27 +170,42 @@ export class DijagnozaComponent implements  OnInit{
 
 
   Odaberi(item: DijagnozaGetAllResponseDijagnoza) {
-    this.odabranaDijagnoza = {
-      dijagnozaId:item.dijagnozaId,
-      nazivBolesti:item.nazivBolesti,
-      opis:item.opis,
-      datumDijagnoze:item.datumDijagnoze,
-      korisnikDomaID:item.korisnikDomaID,
-      zaposlenikId:item.zaposlenikId
 
-    } ;
+    this.odabranaDijagnoza = item;
+
+    this.updateForm.patchValue({
+      nazivBolesti: this.odabranaDijagnoza.nazivBolesti,
+      opis: this.odabranaDijagnoza.opis,
+      datumDijagnoze: this.odabranaDijagnoza.datumDijagnoze,
+
+    });
+
   }
 
   Update() {
-    //let url: string = MyConfig.adresa_servera + `/dijagnoza/update`;
-    console.log(this.odabranaDijagnoza)
-    //this.httpClient.post(url, this.odabranaDijagnoza).subscribe(request => {
-      //console.log("Dijagnoza updateovana ", request)
-    //})
+    if (this.updateForm.invalid) {
+      this.updateForm.markAllAsTouched();
+      return;
+    }
 
-    this.dijagnozaService.UpdateDijagnozu(this.odabranaDijagnoza).subscribe(x=>{
-      console.log("Dijagnoza updateovana ")
-    });
+    // Check if there's a selected diagnosis
+    if (this.odabranaDijagnoza !== null) {
+      // Capture the updated diagnosis data from the form
+      this.odabranaDijagnoza.nazivBolesti = this.updateForm.get('nazivBolesti')?.value || '';
+      this.odabranaDijagnoza.opis = this.updateForm.get('opis')?.value || '';
+      this.odabranaDijagnoza.datumDijagnoze = this.updateForm.get('datumDijagnoze')?.value || '';
+
+
+      // Call the service to update the diagnosis
+      this.dijagnozaService.UpdateDijagnozu(this.odabranaDijagnoza).subscribe(
+        response => {
+          console.log("Uspješno ažurirana dijagnoza");
+        },
+        error => {
+          console.error("Greška prilikom ažuriranja dijagnoze", error);
+        }
+      );
+    }
   }
 
   onFileSelected($event: Event) {

@@ -1,7 +1,4 @@
-
-
 <div style="width: 80%; margin: 0 auto;">
-  <!-- Definicija tabova -->
   <ul class="nav nav-tabs" id="korisniciTabs" role="tablist">
     <li class="nav-item" role="presentation">
       <a class="nav-link active" id="dodaj-tab" data-bs-toggle="tab" href="#dodaj" role="tab" aria-controls="dodaj" aria-selected="true">
@@ -16,52 +13,74 @@
   </ul>
 
   <div class="tab-content" id="myTabContent" style="margin-top: 20px;">
-    <!-- Tab za dodavanje korisnika -->
     <div class="tab-pane fade show active" id="dodaj" role="tabpanel" aria-labelledby="dodaj-tab">
       <div class="card mb-4">
         <div class="card-header bg-primary text-white">
           <h3>Dodavanje zaposlenika</h3>
         </div>
         <div class="card-body">
-          <form #DoktorForma="ngForm">
+          <form [formGroup]="doktorForm" (ngSubmit)="Dodaj()">
             <div class="mb-3">
               <label class="form-label">Ime i prezime</label>
-              <input type="text" name="imePrezime" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="doktorRequest.imePrezime">
+              <input type="text" formControlName="imePrezime" class="form-control">
+              <div *ngIf="doktorForm.get('imePrezime')?.invalid && doktorForm.get('imePrezime')?.touched" class="text-danger">
+                Ime i prezime je obavezno.
+              </div>
             </div>
             <div class="mb-3">
               <label class="form-label">JMBG</label>
-              <input type="text" name="jmbg" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="doktorRequest.jmbg">
+              <input type="text" formControlName="jmbg" class="form-control">
+              <div *ngIf="doktorForm.get('jmbg')?.invalid && doktorForm.get('jmbg')?.touched" class="text-danger">
+                JMBG mora imati tačno 13 cifara.
+              </div>
             </div>
             <div class="mb-3">
               <label class="form-label">Datum rođenja</label>
-              <input type="date" name="datumRodjenja" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="doktorRequest.datumRodjenja">
+              <input type="date" formControlName="datumRodjenja" class="form-control">
+              <div *ngIf="doktorForm.get('datumRodjenja')?.invalid && doktorForm.get('datumRodjenja')?.touched" class="text-danger">
+                Datum rođenja je obavezan.
+              </div>
             </div>
             <div class="mb-3">
               <label class="form-label">Datum zaposlenja</label>
-              <input type="date" name="datumZaposlenja" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="doktorRequest.datumZaposlenja">
+              <input type="date" formControlName="datumZaposlenja" class="form-control">
+              <div *ngIf="doktorForm.get('datumZaposlenja')?.invalid && doktorForm.get('datumZaposlenja')?.touched" class="text-danger">
+                Datum zaposlenja je obavezan.
+              </div>
             </div>
             <div class="mb-3">
               <label class="form-label">Naziv klinike</label>
-              <input type="text" name="nazivKlinike" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="doktorRequest.nazivKlinike">
+              <input type="text" formControlName="nazivKlinike" class="form-control">
+              <div *ngIf="doktorForm.get('nazivKlinike')?.invalid && doktorForm.get('nazivKlinike')?.touched" class="text-danger">
+                Naziv klinike je obavezan.
+              </div>
             </div>
             <div class="mb-3">
               <label class="form-label">Oblast medicine</label>
-              <input type="text" name="oblastMedicine" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="doktorRequest.oblastMedicine">
+              <input type="text" formControlName="oblastMedicine" class="form-control">
+              <div *ngIf="doktorForm.get('oblastMedicine')?.invalid && doktorForm.get('oblastMedicine')?.touched" class="text-danger">
+                Oblast medicine je obavezna.
+              </div>
             </div>
             <div class="mb-3">
               <label class="form-label">Specijalizacija</label>
-              <input type="text" name="specijalizacija" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="doktorRequest.specijalizacija">
+              <input type="text" formControlName="specijalizacija" class="form-control">
+              <div *ngIf="doktorForm.get('specijalizacija')?.invalid && doktorForm.get('specijalizacija')?.touched" class="text-danger">
+                Specijalizacija je obavezna.
+              </div>
             </div>
-
             <div class="mb-3">
               <label for="cmbPozicija" class="form-label">Izaberite poslovnu poziciju:</label>
-              <select id="cmbPozicija" class="form-select" [ngModelOptions]="{standalone: true}" [(ngModel)]="doktorRequest.poslovnaPozicijaId">
+              <select id="cmbPozicija" formControlName="poslovnaPozicijaId" class="form-select">
                 <option *ngFor="let option of poslovnePozicije" [ngValue]="option.poslovnaPozicijaId">{{ option.nazivPozicije }}</option>
               </select>
+              <div *ngIf="doktorForm.get('poslovnaPozicijaId')?.invalid && doktorForm.get('poslovnaPozicijaId')?.touched" class="text-danger">
+                Poslovna pozicija je obavezna.
+              </div>
             </div>
 
             <div class="d-flex justify-content-between">
-              <button type="submit" class="btn btn-success" (click)="Dodaj()">
+              <button type="submit" class="btn btn-success" [disabled]="doktorForm.invalid">
                 <i class="fas fa-plus-circle"></i> Dodaj
               </button>
             </div>
@@ -69,6 +88,8 @@
         </div>
       </div>
     </div>
+  </div>
+
 
     <!-- Tab za pregled i update korisnika -->
     <div class="tab-pane fade" id="pregled" role="tabpanel" aria-labelledby="pregled-tab">
@@ -116,12 +137,9 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
 
 
-<form #updateForm="ngForm"  name="doktorUpdForm">
-  <div *ngIf="odabraniDoktor">
+  <form [formGroup]="updateForm" *ngIf="odabraniDoktor" name="doktorUpdForm">
     <div class="modal fade show" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-modal="true" role="dialog" style="display: block;">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -130,44 +148,72 @@
             <button type="button" (click)="odabraniDoktor = null" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-
             <div class="mb-3">
               <label for="ImePrezime" class="form-label">Ime i prezime:</label>
-              <input id="ImePrezime" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDoktor.imePrezime">
+              <input id="ImePrezime" formControlName="imePrezime" class="form-control" />
+              <div *ngIf="updateForm.controls['imePrezime'].invalid && updateForm.controls['imePrezime'].touched" class="text-danger">
+                Ime i prezime je obavezno.
+              </div>
             </div>
-
             <div class="mb-3">
               <label for="Jmbg" class="form-label">JMBG:</label>
-              <input id="Jmbg" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDoktor.jmbg">
+              <input id="Jmbg" formControlName="jmbg" class="form-control" />
+              <div *ngIf="updateForm.controls['jmbg'].invalid && updateForm.controls['jmbg'].touched" class="text-danger">
+                JMBG mora imati tačno 13 karaktera.
+              </div>
             </div>
-
             <div class="mb-3">
               <label for="datumRodjenja" class="form-label">Datum rodjenja:</label>
-              <input id="datumRodjenja" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDoktor.datumRodjenja">
+              <input id="datumRodjenja" formControlName="datumRodjenja" class="form-control" />
+              <div *ngIf="updateForm.controls['datumRodjenja'].invalid && updateForm.controls['datumRodjenja'].touched" class="text-danger">
+                Datum rođenja je obavezan.
+              </div>
             </div>
-
             <div class="mb-3">
               <label for="datumZaposlenja" class="form-label">Datum zaposlenja:</label>
-              <input id="datumZaposlenja" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDoktor.datumZaposlenja">
+              <input id="datumZaposlenja" formControlName="datumZaposlenja" class="form-control" />
+              <div *ngIf="updateForm.controls['datumZaposlenja'].invalid && updateForm.controls['datumZaposlenja'].touched" class="text-danger">
+                Datum zaposlenja je obavezan.
+              </div>
             </div>
-
             <div class="mb-3">
               <label for="nazivKlinike" class="form-label">Naziv klinike:</label>
-              <input id="nazivKlinike" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDoktor.nazivKlinike">
+              <input id="nazivKlinike" formControlName="nazivKlinike" class="form-control" />
+              <div *ngIf="updateForm.controls['nazivKlinike'].invalid && updateForm.controls['nazivKlinike'].touched" class="text-danger">
+                Naziv klinike je obavezan.
+              </div>
             </div>
-
             <div class="mb-3">
               <label for="oblastMedicine" class="form-label">Oblast medicine:</label>
-              <input id="oblastMedicine" class="form-control" [ngModelOptions]="{standalone: true}"[(ngModel)]="odabraniDoktor.oblastMedicine">
+              <input id="oblastMedicine" formControlName="oblastMedicine" class="form-control" />
+              <div *ngIf="updateForm.controls['oblastMedicine'].invalid && updateForm.controls['oblastMedicine'].touched" class="text-danger">
+                Oblast medicine je obavezna.
+              </div>
             </div>
 
-            <div class="modal-footer">
-              <button type="button" (click)="odabraniDoktor = null" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" (click)="Update()" class="btn btn-primary">Save changes</button>
+          <div class="mb-3">
+            <label for="specijalizacija" class="form-label">Specijalizacija:</label>
+            <input id="specijalizacija" formControlName="specijalizacija" class="form-control" />
+            <div *ngIf="updateForm.controls['specijalizacija'].invalid && updateForm.controls['specijalizacija'].touched" class="text-danger">
+              Specijalizacija je obavezna.
             </div>
+          </div>
+          <div class="mb-3">
+            <label for="pozicija" class="form-label">Izaberite poslovnu poziciju:</label>
+            <select id="pozicija" formControlName="poslovnaPozicijaId" class="form-select">
+              <option *ngFor="let option of poslovnePozicije" [ngValue]="option.poslovnaPozicijaId">{{ option.nazivPozicije }}</option>
+            </select>
+            <div *ngIf="updateForm.controls['poslovnaPozicijaId'].invalid && updateForm.controls['poslovnaPozicijaId'].touched" class="text-danger">
+              Poslovna pozicija je obavezna.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" (click)="odabraniDoktor = null" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" (click)="Update()" class="btn btn-primary" [disabled]="updateForm.invalid">Save changes</button>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</form>
+    </div>
+  </form>
+</div>

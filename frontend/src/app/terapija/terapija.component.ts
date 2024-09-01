@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormControl, FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
 import {TerapijaDodajRequest} from "./terapijaDodajRequest";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
@@ -22,6 +22,7 @@ import {KorisnikDomaService} from "../Services/KorisnikDomaService";
 import {DoktorService} from "../Services/DoktorService";
 import {TerapijaService} from "../Services/TerapijaService";
 import {LijekService} from "../Services/LijekService";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 
@@ -50,7 +51,9 @@ export class TerapijaComponent implements OnInit {
   public prikaziOdabaneLijekoveLabel:boolean=false;
 
 
-  constructor(public httpClient: HttpClient, private dialog: MatDialog, public router: Router, private korisnikDomaService: KorisnikDomaService, private doktorService: DoktorService, private terapijaService: TerapijaService, private lijekService:LijekService) {
+
+
+  constructor(public httpClient: HttpClient, private dialog: MatDialog, public router: Router, private korisnikDomaService: KorisnikDomaService, private doktorService: DoktorService, private terapijaService: TerapijaService, private lijekService:LijekService, private fb: FormBuilder) {
 
   }
 
@@ -85,11 +88,18 @@ export class TerapijaComponent implements OnInit {
     uputstvo: ""
   }
 
-  Dodaj() {
-    this.terapijaService.DodajTerapiju(this.terapijaRequest).subscribe(response => {
-      console.log("Terapija uspjesno dodana");
-    });
+  Dodaj(terapijaForm: NgForm): void {
+    if (terapijaForm.valid) {
+      this.terapijaRequest.lijekovi = this.Listalijekova;
 
+      this.terapijaService.DodajTerapiju(this.terapijaRequest).subscribe(response => {
+        alert('Terapija uspješno dodana');
+      }, error => {
+        console.error("Došlo je do greške prilikom dodavanja terapije", error);
+      });
+    } else {
+      terapijaForm.control.markAllAsTouched();
+    }
   }
 
   GetAllLijekovi() {

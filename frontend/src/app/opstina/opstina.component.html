@@ -17,16 +17,22 @@
     <!-- Tab za dodavanje opštine -->
     <div class="tab-pane fade show active" id="dodaj" role="tabpanel" aria-labelledby="dodaj-tab">
       <div class="card p-3">
-        <form #opstinaForma="ngForm" (ngSubmit)="Dodaj(opstinaForma.value)">
-          <div class="form-group">
+        <form [formGroup]="opstinaForm" (ngSubmit)="Dodaj()">
+          <div class="form-group mb-3">
             <label for="nazivOpstine">Naziv opštine</label>
-            <input id="nazivOpstine" type="text" name="nazivOpstine" ngModel class="form-control">
+            <input id="nazivOpstine" type="text" formControlName="nazivOpstine" class="form-control">
+            <div *ngIf="opstinaForm.get('nazivOpstine')?.invalid && opstinaForm.get('nazivOpstine')?.touched" class="text-danger">
+              Naziv opštine je obavezan.
+            </div>
           </div>
-          <div class="form-group">
+          <div class="form-group mb-3">
             <label for="postanskiBroj">Poštanski broj</label>
-            <input id="postanskiBroj" type="number" name="postanskiBroj" ngModel class="form-control">
+            <input id="postanskiBroj" type="number" formControlName="postanskiBroj" class="form-control">
+            <div *ngIf="opstinaForm.get('postanskiBroj')?.invalid && opstinaForm.get('postanskiBroj')?.touched" class="text-danger">
+              Poštanski broj je obavezan i mora imati tačno 5 cifara.
+            </div>
           </div>
-          <button type="submit" class="btn btn-success mt-3">
+          <button type="submit" class="btn btn-success mt-3" [disabled]="opstinaForm.invalid">
             <i class="fas fa-plus-circle"></i> Dodaj opštinu
           </button>
         </form>

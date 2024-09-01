@@ -1,36 +1,58 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MyConfig} from "../my-config";
 import {HttpClient, HttpClientModule, HttpParams} from "@angular/common/http";
 import {OpstinaGetAllResponse, OpsinaGetAllResponseOpstina} from "./opstina-getAll";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {OpstinaServiceService} from "../Services/OpstinaService";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 
 
 
 @Component({
   selector: 'app-opstina',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, ReactiveFormsModule],
   providers: [OpstinaServiceService],
   templateUrl: './opstina.component.html',
   styleUrl: './opstina.component.css'
 })
-export class OpstinaComponent {
+export class OpstinaComponent implements OnInit{
   opstine: OpsinaGetAllResponseOpstina[]=[];
   public prikaziOpstine:boolean=false;
   public odabranaOpstina: OpsinaGetAllResponseOpstina | null=null;
+  opstinaForm: FormGroup;
+  constructor(public httpClient:HttpClient, private dialog: MatDialog, private opstinaService: OpstinaServiceService, private fb: FormBuilder) {
 
-  constructor(public httpClient:HttpClient, private dialog: MatDialog, private opstinaService: OpstinaServiceService) {
+    this.opstinaForm = this.fb.group({
+      nazivOpstine: ['', Validators.required],
+      postanskiBroj: ['', [Validators.required, Validators.pattern('^[0-9]{13}$')]],
 
+    });
 
   }
 
-  Dodaj(opstina: {nazivOpstine:string, postanskiBroj:number}) {
-    this.opstinaService.DodajOpstinu(opstina).subscribe((res)=>
-      console.log("Opština dodana"))
+  ngOnInit(): void {
+    this.opstinaForm = this.fb.group({
+      nazivOpstine: ['', Validators.required],
+      postanskiBroj: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]]
+    });
+    }
+
+
+
+  Dodaj(): void {
+    if (this.opstinaForm.valid) {
+      const formValue = this.opstinaForm.value;
+      this.opstinaService.DodajOpstinu(formValue).subscribe((res)=>
+        alert("Opština dodana"))
+    } else {
+      this.opstinaForm.markAllAsTouched();
+      alert('Forma nije validna.');
+    }
   }
 
   GetAllOpstine() {
