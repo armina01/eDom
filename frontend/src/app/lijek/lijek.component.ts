@@ -7,6 +7,7 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {LijekService} from "../Services/LijekService";
+import {AlertService} from "../Services/AlertService";
 
 @Component({
   selector: 'app-lijek',
@@ -24,7 +25,7 @@ export class LijekComponent implements OnInit{
         this.GetAllLijekovi();
     }
 
-    constructor(public httpClient: HttpClient,private dialog: MatDialog, private lijekService:LijekService) {
+    constructor(public httpClient: HttpClient,private dialog: MatDialog, private lijekService:LijekService, private myAlert:AlertService) {
     }
 
 
@@ -40,14 +41,16 @@ export class LijekComponent implements OnInit{
       if (res) {
         this.lijekService.IzbrisiLijek(item).subscribe(
           response => () => {
-            console.log("Deleted item")
+            this.myAlert.showSuccess("Uspješno obrisan lijek")
+            setTimeout(() => {
+              this.ngOnInit();
+            }, 3000);
           },
           (error: any) => {
             console.error('Error:', error);
 
             if (error.status === 500) {
-              alert('Nije moguće izbrisati ovaj lijek');
-              console.error('Handle 500 error here');
+              console.log('Nije moguće izbrisati ovaj lijek');
             } else {
               // Handle other errors
               alert('An error occurred.');
@@ -64,10 +67,13 @@ export class LijekComponent implements OnInit{
   };
   Update() {
     this.lijekService.UpdateLijek(this.odabraniLijek).subscribe(request => {
-      console.log("Lijek updateovan ", request)
+      this.myAlert.showSuccess("Lijek uspješno ažuriran")
     })
 
     this.odabraniLijek=null;
+    setTimeout(() => {
+      this.ngOnInit();
+    }, 3000);
   }
 
   Odaberi(lijek: LijekGetAllResponseLijek) {

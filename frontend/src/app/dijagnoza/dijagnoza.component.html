@@ -23,12 +23,17 @@
           </div>
           <div class="mb-3">
             <label for="datumDijagnoze1" class="form-label">Datum uspostavljanja dijagnoze:</label>
-            <input id="datumDijagnoze1" type="date" formControlName="datumDijagnoze" class="form-control" />
+            <input id="datumDijagnoze1" formControlName="datumDijagnoze" class="form-control" />
             <div *ngIf="updateForm.controls['datumDijagnoze'].invalid && updateForm.controls['datumDijagnoze'].touched" class="text-danger">
               Datum uspostavljanja dijagnoze je obavezan.
             </div>
           </div>
-
+          <div class="mb-3">
+            <label for="file1" class="form-label"><i class="bi bi-file-earmark-text"></i> Nalaz korisnika</label>
+            <div>
+              <input type="file" id="file1" (change)="onFileSelected($event)" class="form-control" />
+            </div>
+          </div>
           <div class="modal-footer">
             <button type="button" (click)="odabranaDijagnoza = null" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" (click)="Update()" class="btn btn-primary" [disabled]="updateForm.invalid">Save changes</button>
@@ -114,7 +119,7 @@
                 <button type="submit" class="btn btn-success mb-2" [disabled]="dijagnozaForm.invalid" style="background-color: #28a745;">
                   <i class="bi bi-plus-circle"></i> Dodaj
                 </button>
-                <!-- Dijalog -->
+                <!-- Dijalog
                 <div *ngIf="showConfirmationDialog" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="confirmationDialogLabel" aria-modal="true" style="display: block;">
                   <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content bg-success text-white">
@@ -125,7 +130,7 @@
                       </div>
                     </div>
                   </div>
-                </div>
+                </div>  -->
               </div>
             </form>
           </div>
@@ -167,11 +172,14 @@
                       <button class="btn btn-light border border-primary" style="margin-right: 15px;" (click)="downloadFile(item.dijagnozaId)">
                         <i class="bi bi-download"></i> Preuzmi nalaz
                       </button>
-                      <button type="submit" class="btn btn-primary" style="background-color: red; margin-right: 15px;" (click)="Obrisi(item)">
-                        <i class="bi bi-x"></i> Izbriši dijagnozu
+                      <button type="submit" class="btn btn-primary" style="background-color: red; margin-right: 15px;" (click)="deleteFile(item.dijagnozaId)">
+                        <i class="bi bi-x"></i> Izbriši nalaz
                       </button>
                       <button type="submit" class="btn btn-primary" style="background-color: blue; margin-right: 15px;" (click)="Odaberi(item)">
                         <i class="bi bi-pencil"></i> Update dijagnozu
+                      </button>
+                      <button type="submit" class="btn btn-primary" style="background-color: red; margin-right: 15px;" (click)="Obrisi(item)">
+                        <i class="bi bi-x"></i> Izbriši dijagnozu
                       </button>
                     </div>
                   </div>

@@ -8,6 +8,7 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {OpstinaServiceService} from "../Services/OpstinaService";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {AlertService} from "../Services/AlertService";
 
 
 
@@ -25,7 +26,8 @@ export class OpstinaComponent implements OnInit{
   public prikaziOpstine:boolean=false;
   public odabranaOpstina: OpsinaGetAllResponseOpstina | null=null;
   opstinaForm: FormGroup;
-  constructor(public httpClient:HttpClient, private dialog: MatDialog, private opstinaService: OpstinaServiceService, private fb: FormBuilder) {
+
+  constructor(public httpClient:HttpClient, private dialog: MatDialog, private opstinaService: OpstinaServiceService, private fb: FormBuilder, private myAlert:AlertService) {
 
     this.opstinaForm = this.fb.group({
       nazivOpstine: ['', Validators.required],
@@ -48,10 +50,10 @@ export class OpstinaComponent implements OnInit{
     if (this.opstinaForm.valid) {
       const formValue = this.opstinaForm.value;
       this.opstinaService.DodajOpstinu(formValue).subscribe((res)=>
-        alert("Opština dodana"))
+        this.myAlert.showSuccess("Opština ušpjesno dodana"));
     } else {
       this.opstinaForm.markAllAsTouched();
-      alert('Forma nije validna.');
+      this.myAlert.showError("Forma nije validna");
     }
   }
 
@@ -72,13 +74,13 @@ export class OpstinaComponent implements OnInit{
       if (res) {
         this.opstinaService.IzbrisiOpstinu(data).subscribe(
           response => () => {
-            console.log("Deleted item")
+            this.myAlert.showSuccess("Opština uspješno obrisana")
           },
           (error: any) => {
             console.error('Error:', error);
 
             if (error.status === 500) {
-              alert('Nije moguće izbrisati opštinu');
+              this.myAlert.showError('Nije moguće izbrisati opštinu');
               console.error('Handle 500 error here');
             } else {
               // Handle other errors
@@ -104,7 +106,8 @@ export class OpstinaComponent implements OnInit{
 
   Update() {
     this.opstinaService.UpdateOpstinu(this.odabranaOpstina).subscribe(x=>{
-      console.log("Uspjesno updateovan")
+      this.myAlert.showSuccess("Opština uspješno ažurirana")
+      this.odabranaOpstina=null;
     });
 
   }

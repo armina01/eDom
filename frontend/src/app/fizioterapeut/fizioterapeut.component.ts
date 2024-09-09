@@ -17,6 +17,7 @@ import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component
 import {FizioterapeutUpdateRequest} from "./fizioterapeutUpdateRequest";
 import {FizioterapeutService} from "../Services/FizioterapeutService";
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {AlertService} from "../Services/AlertService";
 
 
 
@@ -39,7 +40,7 @@ export class FizioterapeutComponent implements OnInit {
   public prikaziTabelu:boolean=false;
 
 
-  constructor(public httpClient: HttpClient,private dialog: MatDialog, private fizioterapeutService: FizioterapeutService, private fb: FormBuilder) {
+  constructor(public httpClient: HttpClient,private dialog: MatDialog, private fizioterapeutService: FizioterapeutService, private fb: FormBuilder, private myAlert:AlertService) {
 
     this.fizioterapeutForm = this.fb.group({
       imePrezime: ['', Validators.required],
@@ -47,7 +48,7 @@ export class FizioterapeutComponent implements OnInit {
       datumRodjenja: ['', Validators.required],
       datumZaposlenja: ['', Validators.required],
       oblastFizijatrije: ['', Validators.required],
-      poslovnaPozicijaId: [0, Validators.required]
+      poslovnaPozicijaId: ['', Validators.required]
     });
 
     this.updateForm = this.fb.group({
@@ -56,7 +57,7 @@ export class FizioterapeutComponent implements OnInit {
       datumRodjenja: ['', Validators.required],
       datumZaposlenja: ['', Validators.required],
       oblastFizijatrije: ['', Validators.required],
-      poslovnaPozicijaId: [0, Validators.required]
+      poslovnaPozicijaId: ['', Validators.required]
     });
   }
 
@@ -96,15 +97,13 @@ export class FizioterapeutComponent implements OnInit {
 
 
   Dodaj() {
-    //this.fizioterapeutService.DodajFizioterapeuta(this.fizioterapeutRequest).subscribe(x=>{
-      //console.log("Uspjesno dodan")
-   // });
+
     if (this.fizioterapeutForm.valid) {
       this.fizioterapeutService.DodajFizioterapeuta(this.fizioterapeutForm.value).subscribe((request: any) => {
-        console.log("Korisnicki nalog dodan za ", request);
+        this.myAlert.showSuccess("Uspjesšno dodan fizioterapeut");
       });
     } else {
-      console.log("Forma nije validna");
+      this.myAlert.showError("Podaci za unos nisu validni");
     }
     this.OcistiFormu();
   }
@@ -137,13 +136,13 @@ export class FizioterapeutComponent implements OnInit {
       if (res) {
         this.fizioterapeutService.IzbrisiFizioterapeuta(item).subscribe(
           response => () => {
-            console.log("Uspjesno obrisan korisnik")
+            this.myAlert.showSuccess("Uspješno obrisan fizioterapeut")
           },
           (error: any) => {
             console.error('Error:', error);
 
             if (error.status === 500) {
-              alert('Nije moguće izbrisati ovaj korisnički nalog');
+              this.myAlert.showError('Nije moguće izbrisati ovaj korisnički nalog');
               console.error('Handle 500 error here');
             } else {
               // Handle other errors
@@ -190,11 +189,12 @@ export class FizioterapeutComponent implements OnInit {
 
         this.fizioterapeutService.UpdateFizioterapeuta(this.odabraniFizioterapeut).subscribe(
           response => {
-            console.log("Uspješno ažuriran fizioterapeut");
+            this.myAlert.showSuccess("Uspješno ažuriran fizioterapeut");
             this.OcistiFormu();
+            this.odabraniFizioterapeut=null;
           },
           error => {
-            console.error("Greška prilikom ažuriranja fizioterapeuta", error);
+            this.myAlert.showError("Greška prilikom ažuriranja fizioterapeuta");
           }
         );
       }

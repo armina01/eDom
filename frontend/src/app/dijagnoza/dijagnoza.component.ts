@@ -17,6 +17,8 @@ import {MyAuthService} from "../Services/MyAuthService";
 import {SignalRService} from "../Services/signalR.service";
 import {DoktorService} from "../Services/DoktorService";
 import {DijagnozaService} from "../Services/DijagnozaService";
+import {DijagnozaUpdateRequest} from "./DijagnozaUpdateRequest";
+import {AlertService} from "../Services/AlertService";
 
 @Component({
   selector: 'app-dijagnoza',
@@ -42,12 +44,11 @@ export class DijagnozaComponent implements  OnInit{
   updateForm:FormGroup;
 
 
-  constructor(public httpClient: HttpClient, private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService, private doktorService: DoktorService, private dijagnozaService: DijagnozaService, private fb: FormBuilder) {
+  constructor(public httpClient: HttpClient, private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService, private doktorService: DoktorService, private dijagnozaService: DijagnozaService, private fb: FormBuilder, private myAlert:AlertService) {
     this.dijagnozaForm = this.fb.group({
       nazivBolesti: ['', Validators.required],
       opis: ['', Validators.required],
       datumDijagnoze: ['', Validators.required],
-      file: [''],  // Optional
       korisnikDomaID: ['', Validators.required],
       zaposlenikId: ['', Validators.required],
     });
@@ -76,6 +77,14 @@ export class DijagnozaComponent implements  OnInit{
     nalazFile:this.selectedFile
 
   }
+  public dijagnozaUpdateRequest: DijagnozaUpdateRequest={
+    nazivBolesti: "",
+    opis: "",
+    datumDijagnoze: new Date(),
+    zaposlenikId: 0,
+    korisnikDomaID: 0,
+    nalazFile:this.selectedFile
+  }
 
   GetAllKorisnike()
   {
@@ -96,7 +105,6 @@ export class DijagnozaComponent implements  OnInit{
   Dodaj() {
 
     if (this.dijagnozaForm.valid) {
-      console.log(this.dijagnozaForm.value);
 
       const formData: FormData = new FormData();
       formData.append('nazivBolesti', this.dijagnozaForm.get('nazivBolesti')!.value);
@@ -105,17 +113,19 @@ export class DijagnozaComponent implements  OnInit{
       formData.append('zaposlenikId', this.dijagnozaForm.get('zaposlenikId')!.value.toString());
       formData.append('korisnikDomaID', this.dijagnozaForm.get('korisnikDomaID')!.value.toString());
 
-      const nalazFile = this.dijagnozaForm.get('file')!.value;
-      if (nalazFile) {
-        formData.append('file', nalazFile);
+      if (this.dijagnozaRequest.nalazFile) {
+        formData.append('file', this.dijagnozaRequest.nalazFile);
       }
 
       this.dijagnozaService.DodajDijagozu(formData).subscribe(x => {
-        console.log("Dijagnoza dodana za korisnikId= " + this.dijagnozaForm.get('korisnikDomaID')!.value);
+        this.myAlert.showSuccess("Uspješno dodana dijagnoza");
       });
 
-      this.showConfirmationDialog = true;
-      this.setAutoHide();
+      setTimeout(() => {
+        this.GetAllDijagnoze();
+      }, 3000);
+      //this.showConfirmationDialog = true;
+      //this.setAutoHide();
     }
 
   }
@@ -136,6 +146,7 @@ export class DijagnozaComponent implements  OnInit{
     this.filtriraneDijagnoze = this.dijagnoze.filter(x => x.korisnikDomaID == this.pretragaPoKorisniku);
 
     return this.filtriraneDijagnoze;
+
   }
 
 
@@ -145,13 +156,13 @@ export class DijagnozaComponent implements  OnInit{
       if (res) {
         this.dijagnozaService.IzbrisiDijagnozu(item).subscribe(
           response => () => {
-            console.log("Deleted item")
+            this.myAlert.showSuccess("Uspješno obrisana dijagnoza")
           },
           (error: any) => {
             console.error('Error:', error);
 
             if (error.status === 500) {
-              alert('Nije moguće izbrisati ovu dijagnozu');
+              this.myAlert.showError('Nije moguće izbrisati ovu dijagnozu');
               console.error('Handle 500 error here');
             } else {
               // Handle other errors
@@ -176,7 +187,7 @@ export class DijagnozaComponent implements  OnInit{
     this.updateForm.patchValue({
       nazivBolesti: this.odabranaDijagnoza.nazivBolesti,
       opis: this.odabranaDijagnoza.opis,
-      datumDijagnoze: this.odabranaDijagnoza.datumDijagnoze,
+      datumDijagnoze:this.odabranaDijagnoza.datumDijagnoze
 
     });
 
@@ -188,21 +199,27 @@ export class DijagnozaComponent implements  OnInit{
       return;
     }
 
-    // Check if there's a selected diagnosis
     if (this.odabranaDijagnoza !== null) {
-      // Capture the updated diagnosis data from the form
-      this.odabranaDijagnoza.nazivBolesti = this.updateForm.get('nazivBolesti')?.value || '';
-      this.odabranaDijagnoza.opis = this.updateForm.get('opis')?.value || '';
-      this.odabranaDijagnoza.datumDijagnoze = this.updateForm.get('datumDijagnoze')?.value || '';
 
+      const formData: FormData = new FormData();
+      formData.append('dijagnozaId', this.odabranaDijagnoza.dijagnozaId.toString());
+      formData.append('nazivBolesti', this.updateForm.get('nazivBolesti')!.value);
+      formData.append('opis', this.updateForm.get('opis')!.value);
+      formData.append('datumDijagnoze', this.updateForm.get('datumDijagnoze')!.value.toString());
+      formData.append('zaposlenikId', this.odabranaDijagnoza.zaposlenikId.toString());
+      formData.append('korisnikDomaID', this.odabranaDijagnoza.korisnikDomaID.toString());
 
-      // Call the service to update the diagnosis
-      this.dijagnozaService.UpdateDijagnozu(this.odabranaDijagnoza).subscribe(
+      if (this.dijagnozaRequest.nalazFile) {
+        formData.append('file', this.dijagnozaRequest.nalazFile);
+      }
+
+      this.dijagnozaService.UpdateDijagnozu(formData).subscribe(
         response => {
-          console.log("Uspješno ažurirana dijagnoza");
+          this.myAlert.showSuccess("Uspješno ažurirana dijagnoza");
+          this.odabranaDijagnoza=null;
         },
         error => {
-          console.error("Greška prilikom ažuriranja dijagnoze", error);
+          this.myAlert.showError("Greška prilikom ažuriranja dijagnoze"); //umjesto console.error
         }
       );
     }
@@ -236,11 +253,11 @@ export class DijagnozaComponent implements  OnInit{
     const url = `${MyConfig.adresa_servera}/dijagnoza/deleteFile/${dijagnozaId}`;
     this.httpClient.delete(url, { responseType: 'text' }).subscribe(
       () => {
-        console.log('Fajl uspešno obrisan.');
+        this.myAlert.showSuccess('Fajl uspešno obrisan.');
 
       },
       (error) => {
-        console.error('Greška prilikom brisanja fajla:', error);
+        this.myAlert.showError('Greška prilikom brisanja fajla:');
       }
     );
   }

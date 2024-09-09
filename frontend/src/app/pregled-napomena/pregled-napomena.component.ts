@@ -13,6 +13,7 @@ import {ZaposlenikGetAllRsponse, ZaposlenikGetAllRsponseZaposlenik} from "./zapo
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NapomenaService} from "../Services/NapomenaService";
+import {AlertService} from "../Services/AlertService";
 
 @Component({
   selector: 'app-pregled-napomena',
@@ -42,7 +43,7 @@ export class PregledNapomenaComponent implements OnInit{
       this.GetAllZaposlenike();
 
     }
-    constructor(public httpClient:HttpClient, private dialog: MatDialog, public route: ActivatedRoute, private napomenaService: NapomenaService) {
+    constructor(public httpClient:HttpClient, private dialog: MatDialog, public route: ActivatedRoute, private napomenaService: NapomenaService, private myAlert:AlertService) {
     }
     public napomenaUpdateRequest:NapomenaGetAllResponseNapomena={
       napomenaId:0,
@@ -69,11 +70,6 @@ export class PregledNapomenaComponent implements OnInit{
   }
   public GetAllNpomene()
   {
-    //this.httpClient.get<NapomenaGetAllResponse>(url).subscribe((x:NapomenaGetAllResponse)=>{
-      //this.napomeneAll = x.napomene;
-      //this.odabraneNapomene=this.napomeneAll.filter(x=>x.korisnikDomaID===this.korisnikId);
-      //console.log(this.odabraneNapomene);
-    //})
     this.napomenaService.GetAllNapomene().subscribe(x=>{
       this.napomeneAll = x.napomene;
       this.odabraneNapomene=this.napomeneAll.filter(x=>x.korisnikDomaID===this.korisnikId);
@@ -101,7 +97,9 @@ export class PregledNapomenaComponent implements OnInit{
             }
           })
       }
-      this.ngOnInit();
+      setTimeout(() => {
+        this.ngOnInit();
+      }, 3000);
     });
   }
 
@@ -142,12 +140,23 @@ export class PregledNapomenaComponent implements OnInit{
     }
     console.log(this.napomenaUpdateRequest)
     this.napomenaService.UpdateNapomenu(this.napomenaUpdateRequest).subscribe(request => {
-      console.log("Napomena updateovana ", request)
+      this.myAlert.showSuccess("Napomena uspješno ažurirana")
     })
     this.OdabranaNapomena=null;
     setTimeout(() => {
       this.ngOnInit();
-    }, 5000);
+    }, 3000);
   }
+
+  getNazivVrste(item: NapomenaGetAllResponseNapomena) {
+    const vrstaNapomene = this.vrsteNapomena.find(n => n.vrstaNapomeneId === item.vrstaNapomeneId);
+    return vrstaNapomene ? vrstaNapomene.opis : undefined;
+  }
+
+  getImeZaposlenika(zaposlenikId: number) {
+    const zaposlenik = this.zaposlenici.find(n => n.zaposlenikId===zaposlenikId);
+    return zaposlenik ? zaposlenik.imePrezime : undefined;
+  }
+
 
 }

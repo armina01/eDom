@@ -29,7 +29,7 @@ export class OpstinaServiceService {
   }
   IzbrisiOpstinu(item:any){
     let url: string = MyConfig.adresa_servera + `/opstina-obrisi`;
-    const params = new HttpParams().set('OpstinaID', item.OpstinaID);
+    const params = new HttpParams().set('OpstinaID', item.opstinaID);
     return this.httpClient.delete(url, {params})
   }
 

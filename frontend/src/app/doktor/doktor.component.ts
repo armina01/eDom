@@ -15,6 +15,7 @@ import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component
 import {DoktorUpdateRequest} from "./doktorUpdateRequest";
 import {DoktorService} from "../Services/DoktorService";
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {AlertService} from "../Services/AlertService";
 
 @Component({
   selector: 'app-doktor',
@@ -28,7 +29,7 @@ export class DoktorComponent implements OnInit{
 
     doktorForm: FormGroup;
     updateForm: FormGroup;
-    constructor(private fb: FormBuilder, public httpClient: HttpClient,private dialog: MatDialog, private doktorService: DoktorService) {
+    constructor(private fb: FormBuilder, public httpClient: HttpClient,private dialog: MatDialog, private doktorService: DoktorService, private myAlert:AlertService) {
       this.doktorForm = this.fb.group({
         imePrezime: ['', Validators.required],
         jmbg: ['', [Validators.required, Validators.pattern('^[0-9]{13}$')]],
@@ -100,16 +101,12 @@ export class DoktorComponent implements OnInit{
 
     Dodaj() {
 
-      //this.doktorService.DodajDoktora(this.doktorRequest).subscribe((request:any) => {
-        //console.log("Korisnicki nalog dodan za ", request)
-      //});
-
       if (this.doktorForm.valid) {
         this.doktorService.DodajDoktora(this.doktorForm.value).subscribe((request: any) => {
-          console.log("Korisnicki nalog dodan za ", request);
+          this.myAlert.showSuccess("Doktor uspješno dodan");
         });
       } else {
-        console.log("Forma nije validna");
+        this.myAlert.showError("Podaci za unos nisu validni");
       }
 
     }
@@ -133,12 +130,13 @@ export class DoktorComponent implements OnInit{
           this.doktorService.IzbrisiDoktora(item).subscribe(
             response => () => {
               this.getAllDoktori(); // ili samo ispisat da je uspjesno izgrisano
+              this.myAlert.showSuccess("Uspješno obrisan doktor");
             },
             (error: any) => {
               console.error('Error:', error);
 
               if (error.status === 500) {
-                alert('Nije moguće izbrisati ovaj korisnički nalog');
+                this.myAlert.showError('Nije moguće izbrisati ovaj korisnički nalog');
                 console.error('Handle 500 error here');
               } else {
                 // Handle other errors
@@ -158,7 +156,6 @@ export class DoktorComponent implements OnInit{
 
       this.odabraniDoktor = item;
 
-
       this.updateForm.patchValue({
         imePrezime: this.odabraniDoktor.imePrezime,
         jmbg: this.odabraniDoktor.jmbg,
@@ -173,10 +170,6 @@ export class DoktorComponent implements OnInit{
     }
 
   Update() {
-    //console.log(this.odabraniDoktor)
-    //this.doktorService.UpdateDoktora(this.odabraniDoktor).subscribe(x=>{
-      //console.log("Uspjesno updateovan korisnik")
-    //});
 
     if (this.updateForm.invalid) {
       this.updateForm.markAllAsTouched();
@@ -196,11 +189,12 @@ export class DoktorComponent implements OnInit{
 
       this.doktorService.UpdateDoktora(this.odabraniDoktor).subscribe(
         response => {
-          console.log("Uspješno ažuriran doktor");
+          this.myAlert.showSuccess("Uspješno ažuriran doktor");
           this.OcistiFormu();
+          this.odabraniDoktor=null;
         },
         error => {
-          console.error("Greška prilikom ažuriranja", error);
+          this.myAlert.showError("Greška prilikom ažuriranja");
         }
       );
     }

@@ -23,6 +23,7 @@ import {DoktorService} from "../Services/DoktorService";
 import {TerapijaService} from "../Services/TerapijaService";
 import {LijekService} from "../Services/LijekService";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {AlertService} from "../Services/AlertService";
 
 
 
@@ -50,11 +51,14 @@ export class TerapijaComponent implements OnInit {
   public odabraniLijekoviDialog:LijekGetAllResponseLijek[] = [];
   public prikaziOdabaneLijekoveLabel:boolean=false;
 
+  lijekForma: FormGroup;
 
 
-
-  constructor(public httpClient: HttpClient, private dialog: MatDialog, public router: Router, private korisnikDomaService: KorisnikDomaService, private doktorService: DoktorService, private terapijaService: TerapijaService, private lijekService:LijekService, private fb: FormBuilder) {
-
+  constructor(public httpClient: HttpClient, private dialog: MatDialog, public router: Router, private korisnikDomaService: KorisnikDomaService, private doktorService: DoktorService, private terapijaService: TerapijaService, private lijekService:LijekService, private fb: FormBuilder, private myAlert:AlertService, private formBuilder: FormBuilder) {
+    this.lijekForma = this.formBuilder.group({
+      naziv: ['', Validators.required],
+      uputstvo: ['', Validators.required]
+    });
   }
 
   ngOnInit(): void {
@@ -93,13 +97,17 @@ export class TerapijaComponent implements OnInit {
       this.terapijaRequest.lijekovi = this.Listalijekova;
 
       this.terapijaService.DodajTerapiju(this.terapijaRequest).subscribe(response => {
-        alert('Terapija uspješno dodana');
+        this.myAlert.showSuccess('Terapija uspješno dodana');
       }, error => {
-        console.error("Došlo je do greške prilikom dodavanja terapije", error);
+        this.myAlert.showError("Došlo je do greške prilikom dodavanja terapije");
       });
     } else {
       terapijaForm.control.markAllAsTouched();
     }
+    setTimeout(() => {
+      this.GetAllTerapijeLijekovi();
+    }, 3000);
+    this.Listalijekova=[];
   }
 
   GetAllLijekovi() {
@@ -155,19 +163,25 @@ export class TerapijaComponent implements OnInit {
       if (res) {
         this.terapijaService.IzbrisiTerapiju(item).subscribe(
           response => () => {
-            console.log("Deleted item")
+            this.myAlert.showSuccess("Uspješno obrisana terapija")
+            setTimeout(() => {
+              this.GetAllTerapijeLijekovi();
+              this.getFiltriraneTerapije();
+            }, 3000);
           },
           (error: any) => {
             console.error('Error:', error);
 
             if (error.status === 500) {
-              alert('Nije moguće izbrisati ovu terapiju');
-              console.error('Handle 500 error here');
+              this.myAlert.showError('Nije moguće izbrisati ovu terapiju');
             } else {
               // Handle other errors
               alert('An error occurred.');
             }
           })
+        setTimeout(() => {
+          this.GetAllTerapijeLijekovi();
+        }, 3000);
       }
     });
   }
@@ -216,13 +230,15 @@ export class TerapijaComponent implements OnInit {
       }
     }
     this.terapijaService.UpdateTerapiju(this.terapijaUpdateRequest).subscribe(request => {
-      console.log("Terapija updateovana ", request)
+      this.myAlert.showSuccess("Terapija uspješno ažurirana ")
     })
 
     this.odabranaTerapija=null;
+    this.Listalijekova=[];
+
     setTimeout(() => {
-      this.ngOnInit();
-    }, 5000);
+      this.GetAllTerapijeLijekovi();
+    }, 3000);
   }
 
   DodajNoviLijek() {
@@ -230,17 +246,22 @@ export class TerapijaComponent implements OnInit {
   }
 
   DodajLijek() {
-    this.lijekService.DodajLijek(this.lijekRequest).subscribe(response => {
-      console.log("Lijek uspjesno dodan");
-    });
+    if (this.lijekForma.valid) {
+      this.lijekService.DodajLijek(this.lijekForma.value).subscribe(response => {
+        this.myAlert.showSuccess("Lijek uspješno dodan");
+      });
 
-    setTimeout(() => {
-      this.ngOnInit();
-    }, 5000); // 5000 milisekundi = 5 sekundi
+      setTimeout(() => {
+        this.ngOnInit();  
+      }, 3000);
 
-    this.isKliknutoDugme = false;
+      this.isKliknutoDugme = false;
+    } else {
 
+      this.isKliknutoDugme = true;
+    }
   }
+
 
   PregledajLijekove() {
     this.router.navigate(["/lijek"])
@@ -252,7 +273,6 @@ export class TerapijaComponent implements OnInit {
     let lijekId = this.lijekovi.find(x => x.naziv===lijek.naziv)?.lijekId;
     if (lijekId != undefined)
       this.Listalijekova.push(lijekId);
-    console.log(this.Listalijekova);
     this.odabraniNazivLijeka="";
     this.odabraniNazivLijekaDialog="";
 

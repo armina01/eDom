@@ -14,6 +14,7 @@ import {OdabraniKorisnikDoma} from "./odabraniKorisnikDoma";
 import {KorisnikDomaService} from "../Services/KorisnikDomaService";
 import {NapomenaService} from "../Services/NapomenaService";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {AlertService} from "../Services/AlertService";
 
 @Component({
   selector: 'app-napomena',
@@ -36,7 +37,7 @@ export class NapomenaComponent implements OnInit{
       this.getAllKorisnici();
 
     }
-    constructor(public httpClient: HttpClient,private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService, private napomenaService: NapomenaService,private fb: FormBuilder) {
+    constructor(public httpClient: HttpClient,private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService, private napomenaService: NapomenaService,private fb: FormBuilder, private myAlert:AlertService) {
       this.napomenaForm = this.fb.group({
         opis: ['', Validators.required],
         prioritet: [false],
@@ -97,7 +98,7 @@ export class NapomenaComponent implements OnInit{
     };
     console.log(this.napomenaDodajRequest);
     this.napomenaService.DodajNapomenu(this.napomenaDodajRequest).subscribe(x => {
-      alert("Napomena uspješno dodana");
+      this.myAlert.showSuccess("Napomena uspješno dodana");
     });
     korisnik.selected = false;
   }

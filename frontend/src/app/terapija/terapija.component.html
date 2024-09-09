@@ -10,11 +10,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <label class="form-label"> ID: </label>
-            <input class="form-control"  [value]="odabranaTerapija.terapijaId" disabled>
-          </div>
-          <div>
-            <label class="form-label"> Opis: </label>
+            <label class="form-label"> Opis </label>
             <input class="form-control"  [(ngModel)]="odabranaTerapija.opis">
           </div>
           <div>
@@ -33,10 +29,10 @@
           </div>
           <div>
             <div>
-              <label>Lijekovi: </label>
+              <label> Dodani lijekovi: </label>
               <p>{{getLijekoviZaTerapiju(odabranaTerapija.terapijaId)}}</p>
             </div>
-            <label class="form-label"> Pretraga lijekova</label>
+            <label class="form-label"> Pretraga lijekova </label>
             <input type="text" name="naziv" (input)="pretraziLijekoveDialog()" placeholder="Unesite naziv lijeka" [(ngModel)]="odabraniNazivLijekaDialog">
             <table class="table table-striped" *ngIf="odabraniNazivLijekaDialog">
               <tbody>
@@ -111,7 +107,7 @@
               </div>
 
               <div class="form-group mb-3">
-                <label for="nacinPrimjene"><i class="bi bi-gear"></i> Način primjene</label>
+                <label for="nacinPrimjene"><i class="bi bi-gear"></i> Način primjene </label>
                 <input type="text" id="nacinPrimjene" class="form-control" name="nacinPrimjene" [(ngModel)]="terapijaRequest.nacinPrimjene" required>
                 <div *ngIf="!terapijaRequest.nacinPrimjene" class="text-danger small">
                   * Obavezno polje
@@ -224,29 +220,33 @@
           <h5 class="fs-5"><i class="bi bi-file-plus"></i> Dodavanje novog lijeka</h5>
         </div>
         <div class="card-body">
-          <div>
-            <label class="form-label"> Naziv: </label>
-            <input class="form-control" [(ngModel)]="lijekRequest.naziv">
-            <div *ngIf="!lijekRequest.naziv" class="text-danger small">
-              * Obavezno polje
-            </div>
-          </div>
+          <form [formGroup]="lijekForma">
 
-          <div>
-            <label class="form-label"> Uputstvo</label>
-            <input class="form-control" [(ngModel)]="lijekRequest.uputstvo">
-            <div *ngIf="!lijekRequest.uputstvo" class="text-danger small">
-              * Obavezno polje
+            <div>
+              <label class="form-label"> Naziv: </label>
+              <input class="form-control" formControlName="naziv">
+              <div *ngIf="isKliknutoDugme && lijekForma.get('naziv')?.invalid" class="text-danger small">
+                * Obavezno polje
+              </div>
             </div>
-          </div>
-          <div class="text-end mt-3">
-            <button type="button" (click)="DodajLijek()" class="btn btn-primary mr-2">
-              <i class="bi bi-plus"></i> Dodaj novi lijek
-            </button>
-            <button type="button" (click)="PregledajLijekove()" class="btn btn-secondary">
-              <i class="bi bi-list"></i> Pregled lijekova
-            </button>
-          </div>
+
+            <div>
+              <label class="form-label"> Uputstvo: </label>
+              <input class="form-control" formControlName="uputstvo">
+              <div *ngIf="isKliknutoDugme && lijekForma.get('uputstvo')?.invalid" class="text-danger small">
+                * Obavezno polje
+              </div>
+            </div>
+
+            <div class="text-end mt-3">
+              <button type="button" (click)="DodajLijek()" class="btn btn-primary mr-2">
+                <i class="bi bi-plus"></i> Dodaj novi lijek
+              </button>
+              <button type="button" (click)="PregledajLijekove()" class="btn btn-secondary">
+                <i class="bi bi-list"></i> Pregled lijekova
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
