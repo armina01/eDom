@@ -165,8 +165,6 @@ export class PregledSedmicnihZadatakaComponent {
     this.dodajOpstiZadatak.zaposlenikPostavioId=this.njegovatelj?.zaposlenikId??null;
     this.dodajOpstiZadatak.korisnikDomaId=this._korisnikDomaId;
     this.DodajZadatak(this.dodajOpstiZadatak);
-
-
   }
   public showEmpty=false;
   DodajZadatak(data:DodajZadatakRequest){
