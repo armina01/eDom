@@ -17,10 +17,10 @@ import { MyAuthService} from "../Services/MyAuthService";
 import {Router} from "@angular/router";
 import {NjegovateljiService} from "../Services/NjegovateljService";
 import {PoslovnaPozicijaService} from "../Services/PoslovnaPozicijaService";
-import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
 import {GetAllKorisnickiNalogResponseKorisnickiNalog} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
 import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
 import {NavBarAdminComponent} from "../nav-bar-admin/nav-bar-admin.component";
+import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
 
 @Component({
   selector: 'app-njegovatelj',
