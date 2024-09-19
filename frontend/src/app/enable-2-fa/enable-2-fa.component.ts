@@ -26,13 +26,15 @@ export class Enable2FAComponent {
   ) { }
   public email:string="";
   public korisnickoIme="";
+  public kljuc="";
   public korisnickiNalog:GetAllKorisnickiNalogResponseKorisnickiNalog|null=null;
   public enable2FAuthRequest: Enable2FAuthRequest ={
     nalogId:0
   }
   public sifra="";
   public Auth2FOtkljucajRequest: Auth2FOtkljucajRequest ={
-      kljuc:""
+      kljuc:"",
+      username:""
   }
   isSendingEmail: boolean = false;
   neispravniPodaci=false;
@@ -54,9 +56,6 @@ export class Enable2FAComponent {
             this.neispravnoKorisnickoIme = true;
             return throwError('An error occurred while sending mail');
           }),
-          finalize(() => {
-            this.neispravnoKorisnickoIme = true;
-          })
         ).subscribe(()=>{console.log("Uspjesno poslano")});
 
       });
@@ -67,8 +66,12 @@ export class Enable2FAComponent {
   }
   public verifikacijaNijeOkej=false;
   PotvrdiSifru() {
+      this.Auth2FOtkljucajRequest.username=this.korisnickoIme;
+    this.Auth2FOtkljucajRequest.kljuc=this.kljuc;
+      console.log(this.Auth2FOtkljucajRequest);
       this.mailService.OtkljucajAuth(this.Auth2FOtkljucajRequest).subscribe(response=>{
-        this.router.navigate(["/home"])
+        window.localStorage.setItem("my-auth-token", JSON.stringify(response));
+        this.router.navigate(["/pregledKorisnikaDoma"])
       },(error)=>{
             this.verifikacijaNijeOkej=true;
       });
