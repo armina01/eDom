@@ -38,9 +38,6 @@ button {
   color: #fff; /* White text color when checked */
 }
 
-.Naslov {
-  margin-left: 7%;
-}
 .btn-success:hover {
   background-color: #0a2a0a; /* Your custom green color on hover */
 }
@@ -134,5 +131,72 @@ button {
     font-size: 50px;
     color: #4caf50; /* Green color */
     margin-bottom: 10px;
+}
+
+.card-header{
+  background-color: #a3c4ea;
+}
+.col-md-6{
+  height: 400px;
+}
+.card {
+  /* Ensure cards take up the same width */
+  width: 100%;
+  height: 100%;
+  /* Add padding and margin for consistency */
+  padding: 20px;
+  margin-bottom: 20px;
+  /* Optional: Set a fixed height to make sure both cards are the same height */
+  min-height: 400px;
+}
+
+.card .card-body {
+  /* Ensures that content inside the cards adjusts properly */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.table-container {
+  max-height: 300px;
+  overflow-y: auto; /* Add scroll for table if content is too large */
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+}
+
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content {
+  background-color: green; /* You can tweak this to suit the design */
+}
+
+.d-flex .btn-success {
+  width: 10%;
+}
+
+.container .row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.col-md-6 {
+  /* Ensure both columns have the same height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.card-header h3 {
+  font-size: 1.5em;
 }
 

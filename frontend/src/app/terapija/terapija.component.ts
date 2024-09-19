@@ -24,13 +24,14 @@ import {TerapijaService} from "../Services/TerapijaService";
 import {LijekService} from "../Services/LijekService";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {AlertService} from "../Services/AlertService";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
 
 
 
 @Component({
   selector: 'app-terapija',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent],
     providers: [KorisnikDomaService, DoktorService, TerapijaService, LijekService],
   templateUrl: './terapija.component.html',
   styleUrl: './terapija.component.css'
@@ -52,6 +53,7 @@ export class TerapijaComponent implements OnInit {
   public prikaziOdabaneLijekoveLabel:boolean=false;
 
   lijekForma: FormGroup;
+  zaposlenikId:number=0;
 
 
   constructor(public httpClient: HttpClient, private dialog: MatDialog, public router: Router, private korisnikDomaService: KorisnikDomaService, private doktorService: DoktorService, private terapijaService: TerapijaService, private lijekService:LijekService, private fb: FormBuilder, private myAlert:AlertService, private formBuilder: FormBuilder) {
@@ -93,9 +95,15 @@ export class TerapijaComponent implements OnInit {
   }
 
   Dodaj(terapijaForm: NgForm): void {
+
+    const korisnikString = window.localStorage.getItem('korisnik');
+
+    let korisnikObjekat = korisnikString ? JSON.parse(korisnikString) : null;
+    this.zaposlenikId = korisnikObjekat ? korisnikObjekat.zaposlenikId : this.zaposlenikId;
+
     if (terapijaForm.valid) {
       this.terapijaRequest.lijekovi = this.Listalijekova;
-
+      this.terapijaRequest.doktorId=this.zaposlenikId;
       this.terapijaService.DodajTerapiju(this.terapijaRequest).subscribe(response => {
         this.myAlert.showSuccess('Terapija uspješno dodana');
       }, error => {
@@ -252,7 +260,7 @@ export class TerapijaComponent implements OnInit {
       });
 
       setTimeout(() => {
-        this.ngOnInit();  
+        this.ngOnInit();
       }, 3000);
 
       this.isKliknutoDugme = false;

@@ -1,14 +1,11 @@
-
-
+<app-nav-bar-doktor></app-nav-bar-doktor>
 <div class="container mt-4">
   <div class="d-flex justify-content-between" style="margin-bottom: 20px;">
     <!-- Prva kartica -->
     <div class="card mt-4 me-4" style="width: 48%;">
-      <div class="card-header">
-        <h5 class="card-title">
-          <i class="bi bi-file-earmark-medical"></i> Dodaj napomenu
-        </h5>
-      </div>
+        <div class="card-header">
+          <h1 class="fs-5"><i class="bi bi-file-plus"></i> Dodavanje napomene</h1>
+        </div>
       <div class="card-body">
         <form [formGroup]="napomenaForm" (ngSubmit)="Dodaj()">
           <div class="mb-3">
@@ -41,6 +38,7 @@
               <i class="bi bi-exclamation-circle"></i> Aktivna
             </label>
           </div>
+          <!--
           <div class="mb-3">
             <label for="zaposlenikId" class="form-label">
               <i class="bi bi-person"></i> Zaposlenik ID
@@ -50,6 +48,7 @@
               * Obavezno polje
             </div>
           </div>
+          -->
           <div class="mb-3">
             <label for="cmbVrstaNapomene" class="form-label">
               <i class="bi bi-list"></i> Izaberite vrstu napomene:
@@ -61,10 +60,11 @@
               * Obavezno polje
             </div>
           </div>
-          <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-plus-circle"></i> Dodaj
-            </button>
+          <div class="text-center" >
+            <Button type="submit" class="btn btn-success">
+              <i class="far fa-plus-square"></i>
+              Dodaj
+            </Button>
             <div *ngIf="upozorenje" class="text-danger small ms-3">
               * Potrebno je označiti barem jednog korisnika.
             </div>

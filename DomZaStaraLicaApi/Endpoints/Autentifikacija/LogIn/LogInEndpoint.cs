@@ -49,10 +49,11 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
             _applicationDbContext.Add(noviToken);
              await _applicationDbContext.SaveChangesAsync();
 
-            await _hubContext.Groups.AddToGroupAsync(
+          await _hubContext.Groups.AddToGroupAsync(
           request.SignalRConnectionID,
           noviToken.korisnickiNalog.KorisnickoIme
           ); 
+
             return new LogInResponse { LogInInformacija = new MyAuthInfo(noviToken) };
         }
         

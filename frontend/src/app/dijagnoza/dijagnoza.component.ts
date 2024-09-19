@@ -19,11 +19,12 @@ import {DoktorService} from "../Services/DoktorService";
 import {DijagnozaService} from "../Services/DijagnozaService";
 import {DijagnozaUpdateRequest} from "./DijagnozaUpdateRequest";
 import {AlertService} from "../Services/AlertService";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
 
 @Component({
   selector: 'app-dijagnoza',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent],
   providers:[KorisnikDomaService, DoktorService, DijagnozaService],
   templateUrl: './dijagnoza.component.html',
   styleUrl: './dijagnoza.component.css'
@@ -42,6 +43,7 @@ export class DijagnozaComponent implements  OnInit{
   selectedFile: File | null = null;
   dijagnozaForm: FormGroup;
   updateForm:FormGroup;
+  zaposlenikId:number=0;
 
 
   constructor(public httpClient: HttpClient, private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService, private doktorService: DoktorService, private dijagnozaService: DijagnozaService, private fb: FormBuilder, private myAlert:AlertService) {
@@ -50,7 +52,6 @@ export class DijagnozaComponent implements  OnInit{
       opis: ['', Validators.required],
       datumDijagnoze: ['', Validators.required],
       korisnikDomaID: ['', Validators.required],
-      zaposlenikId: ['', Validators.required],
     });
 
     this.updateForm = this.fb.group({
@@ -104,13 +105,18 @@ export class DijagnozaComponent implements  OnInit{
 
   Dodaj() {
 
+    const korisnikString = window.localStorage.getItem('korisnik');
+
+    let korisnikObjekat = korisnikString ? JSON.parse(korisnikString) : null;
+    this.zaposlenikId = korisnikObjekat ? korisnikObjekat.zaposlenikId : this.zaposlenikId;
+    console.log(this.zaposlenikId);
     if (this.dijagnozaForm.valid) {
 
       const formData: FormData = new FormData();
       formData.append('nazivBolesti', this.dijagnozaForm.get('nazivBolesti')!.value);
       formData.append('opis', this.dijagnozaForm.get('opis')!.value);
       formData.append('datumDijagnoze', this.dijagnozaForm.get('datumDijagnoze')!.value.toString());
-      formData.append('zaposlenikId', this.dijagnozaForm.get('zaposlenikId')!.value.toString());
+      formData.append('zaposlenikId', this.zaposlenikId.toString());
       formData.append('korisnikDomaID', this.dijagnozaForm.get('korisnikDomaID')!.value.toString());
 
       if (this.dijagnozaRequest.nalazFile) {
@@ -183,14 +189,20 @@ export class DijagnozaComponent implements  OnInit{
   Odaberi(item: DijagnozaGetAllResponseDijagnoza) {
 
     this.odabranaDijagnoza = item;
+    const datumDijagnoze = this.odabranaDijagnoza.datumDijagnoze;
+    const formattedDatumDijagnoze = this.formatDate(datumDijagnoze);
 
     this.updateForm.patchValue({
       nazivBolesti: this.odabranaDijagnoza.nazivBolesti,
       opis: this.odabranaDijagnoza.opis,
-      datumDijagnoze:this.odabranaDijagnoza.datumDijagnoze
+      datumDijagnoze:formattedDatumDijagnoze,
 
     });
 
+  }
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0]; // Vraća datum u formatu yyyy-MM-dd
   }
 
   Update() {
@@ -223,6 +235,10 @@ export class DijagnozaComponent implements  OnInit{
         }
       );
     }
+    this.odabranaDijagnoza=null;
+    setTimeout(() => {
+      this.GetAllDijagnoze();
+    }, 3000);
   }
 
   onFileSelected($event: Event) {

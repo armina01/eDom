@@ -1,0 +1,27 @@
+<header>
+  <nav class="navbar">
+    <div class="logo">
+      <fa-icon [icon]="faBell" [size]="'2x'"></fa-icon>
+      <!--<img src="https://png.pngtree.com/png-vector/20221025/ourmid/pngtree-elderly-care-services-hand-drawn-cartoon-flat-illustration-with-caregiver-png-image_6371595.png" alt="Nursing Home Caregivers Logo">
+    -->
+    </div>
+    <ul class="nav-links">
+      <li><a (click)="IdiPregledKorisnika()">Korisnici doma</a></li>
+      <li class="Napomena" ><a (click)="IdiDodajNapomenu()">Napomena</a>
+      <li class="Dijagnoza" ><a (click)="IdiDodajDijagnozu()">Dijagnoza</a>
+      <li class="Terapija" ><a (click)="IdiDodajTerapiju()">Terapija</a>
+      <li><a (click)="IdiPocetna()">Odjava</a></li>
+        <!-- <div class="dropdown-content">
+          <a href="#option1">Pregled zadataka</a>
+          <a href="#option2">Option 2</a>
+          -- Add more options as needed
+        </div>-->
+    </ul>
+
+    <div class="profile">
+      <span class="far fa-user"  (click)="PregledOMeni()"></span>
+    </div>
+  </nav>
+
+</header>
+<br><br>

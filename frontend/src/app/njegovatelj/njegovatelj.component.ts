@@ -172,6 +172,7 @@ export class NjegovateljComponent {
   }
   prikaziErrorNalog:boolean=false
   AddKorisnickiNalog(): void {
+console.log(this.korisnickiNalogRequest);
     this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
       console.log("Request",request)
       this.prikaziErrorNalog=false;
@@ -193,7 +194,7 @@ export class NjegovateljComponent {
   UpdateNjegovatelj() {
 
     if(jePrazno(this.njegovatelj.imePrezime) && jePrazno(this.njegovatelj.jmbg)
-        && jePrazno(this.njegovatelj.poslovnaPozicijaId) && !this.isValid ) {
+        && jePrazno(this.njegovatelj.poslovnaPozicijaId)) {
 
       this.updNjegovateljRequest.imePrezime = this.njegovatelj.imePrezime;
       this.updNjegovateljRequest.jmbg = this.njegovatelj.jmbg;

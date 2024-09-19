@@ -16,12 +16,16 @@ import {DoktorUpdateRequest} from "./doktorUpdateRequest";
 import {DoktorService} from "../Services/DoktorService";
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import {AlertService} from "../Services/AlertService";
+import {NjegovateljiService} from "../Services/NjegovateljService";
+import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
+import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
 
 @Component({
   selector: 'app-doktor',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule],
-    providers: [DoktorService],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, NavBarDoktorComponent],
+    providers: [DoktorService, KorisnickiNalogService],
   templateUrl: './doktor.component.html',
   styleUrl: './doktor.component.css'
 })
@@ -29,7 +33,8 @@ export class DoktorComponent implements OnInit{
 
     doktorForm: FormGroup;
     updateForm: FormGroup;
-    constructor(private fb: FormBuilder, public httpClient: HttpClient,private dialog: MatDialog, private doktorService: DoktorService, private myAlert:AlertService) {
+    constructor(private fb: FormBuilder, public httpClient: HttpClient,private dialog: MatDialog, private doktorService: DoktorService,
+                private myAlert:AlertService, public korisnickiNalogService : KorisnickiNalogService) {
       this.doktorForm = this.fb.group({
         imePrezime: ['', Validators.required],
         jmbg: ['', [Validators.required, Validators.pattern('^[0-9]{13}$')]],
@@ -64,6 +69,11 @@ export class DoktorComponent implements OnInit{
     allDoktori:DoktorGetAllResponseDoktor[]=[];
     public odabraniDoktor:DoktorGetAllResponseDoktor | null=null;
     public prikaziTabelu:boolean=false;
+    showFirstForm: boolean = true;
+    showError=false;
+    prikaziErrorNalog:boolean=false
+    zaposlenikUpdId:number=0;
+    zaposlenikUpdNalog:boolean=false;
 
     public doktorRequest: DoktorRequest = {
     imePrezime: "",
@@ -76,6 +86,17 @@ export class DoktorComponent implements OnInit{
     oblastMedicine: "",
     specijalizacija: ""
 
+  }
+  public korisnickiNalogRequest: KorisnickiNalogRequest = {
+    korisnickoIme: "",
+    lozinka: "",
+    email:"",
+    jeAdmin: false,
+    jeDoktor: true,
+    jeFizioterapeut: false,
+    jeNjegovatelj: false,
+    jeNutricionista: false,
+    je2FActive:true,
   }
 
   public updateDoktorRequest: DoktorUpdateRequest = {
@@ -102,8 +123,21 @@ export class DoktorComponent implements OnInit{
     Dodaj() {
 
       if (this.doktorForm.valid) {
-        this.doktorService.DodajDoktora(this.doktorForm.value).subscribe((request: any) => {
+        this.doktorRequest.imePrezime=this.doktorForm.get('imePrezime')?.value || '';
+        this.doktorRequest.jmbg=this.doktorForm.get('jmbg')?.value || '';
+        this.doktorRequest.datumRodjenja=this.doktorForm.get('datumRodjenja')?.value || '';
+        this.doktorRequest.datumZaposlenja=this.doktorForm.get('datumZaposlenja')?.value || '';
+        this.doktorRequest.poslovnaPozicijaId=this.doktorForm.get('poslovnaPozicijaId')?.value || '';
+        this.doktorRequest.specijalizacija=this.doktorForm.get('specijalizacija')?.value || '';
+        this.doktorRequest.oblastMedicine=this.doktorForm.get('oblastMedicine')?.value || '';
+        this.doktorRequest.nazivKlinike=this.doktorForm.get('nazivKlinike')?.value || '';
+
+
+        this.doktorService.DodajDoktora(this.doktorRequest).subscribe((request: any) => {
           this.myAlert.showSuccess("Doktor uspješno dodan");
+          this.showFirstForm= false;
+          this.zaposlenikUpdId=request.zaposlenikID;
+          console.log("zap id", this.zaposlenikUpdId);
         });
       } else {
         this.myAlert.showError("Podaci za unos nisu validni");
@@ -171,41 +205,95 @@ export class DoktorComponent implements OnInit{
 
   Update() {
 
-    if (this.updateForm.invalid) {
-      this.updateForm.markAllAsTouched();
-      return;
-    }
+      if(this.zaposlenikUpdNalog) {
+        this.updateDoktorRequest.zaposlenikId = this.zaposlenikUpdId;
+        this.updateDoktorRequest.imePrezime = this.doktorRequest.imePrezime;
+        this.updateDoktorRequest.jmbg = this.doktorRequest.jmbg;
+        this.updateDoktorRequest.datumRodjenja = this.doktorRequest.datumRodjenja;
+        this.updateDoktorRequest.datumZaposlenja = this.doktorRequest.datumZaposlenja;
+        this.updateDoktorRequest.nazivKlinike = this.doktorRequest.nazivKlinike;
+        this.updateDoktorRequest.oblastMedicine = this.doktorRequest.oblastMedicine;
+        this.updateDoktorRequest.specijalizacija = this.doktorRequest.specijalizacija;
+        this.updateDoktorRequest.poslovnaPozicijaId = this.doktorRequest.poslovnaPozicijaId;
 
-    if (this.odabraniDoktor !== null) {
-      this.odabraniDoktor.imePrezime = this.updateForm.get('imePrezime')?.value || '';
-      this.odabraniDoktor.jmbg = this.updateForm.get('jmbg')?.value || '';
-      this.odabraniDoktor.datumRodjenja = this.updateForm.get('datumRodjenja')?.value || '';
-      this.odabraniDoktor.datumZaposlenja = this.updateForm.get('datumZaposlenja')?.value || '';
-      this.odabraniDoktor.nazivKlinike = this.updateForm.get('nazivKlinike')?.value || '';
-      this.odabraniDoktor.oblastMedicine = this.updateForm.get('oblastMedicine')?.value || '';
-      this.odabraniDoktor.specijalizacija = this.updateForm.get('specijalizacija')?.value || '';
-      this.odabraniDoktor.poslovnaPozicijaId=this.updateForm.get('poslovnaPozicijaId')?.value || '';
+        console.log(this.updateDoktorRequest);
+        this.doktorService.UpdateDoktora(this.updateDoktorRequest).subscribe(
+          response => {
+            this.myAlert.showSuccess("Uspješno ažuriran doktor");
+            this.doktorForm.reset();
+            this.zaposlenikUpdNalog=false;
+            this.showFirstForm = true;
+            this.ngOnInit();
+          },
+          error => {
+            this.myAlert.showError("Greška prilikom ažuriranja");
+          }
+        );
 
+      }else {
 
-      this.doktorService.UpdateDoktora(this.odabraniDoktor).subscribe(
-        response => {
-          this.myAlert.showSuccess("Uspješno ažuriran doktor");
-          this.OcistiFormu();
-          this.odabraniDoktor=null;
-        },
-        error => {
-          this.myAlert.showError("Greška prilikom ažuriranja");
+        if (this.updateForm.invalid) {
+          this.updateForm.markAllAsTouched();
+          return;
         }
-      );
-    }
+
+        if (this.odabraniDoktor !== null) {
+          this.updateDoktorRequest.zaposlenikId = this.odabraniDoktor.zaposlenikId;
+          this.updateDoktorRequest.imePrezime = this.updateForm.get('imePrezime')?.value || '';
+          this.updateDoktorRequest.jmbg = this.updateForm.get('jmbg')?.value || '';
+          this.updateDoktorRequest.datumRodjenja = this.updateForm.get('datumRodjenja')?.value || '';
+          this.updateDoktorRequest.datumZaposlenja = this.updateForm.get('datumZaposlenja')?.value || '';
+          this.updateDoktorRequest.nazivKlinike = this.updateForm.get('nazivKlinike')?.value || '';
+          this.updateDoktorRequest.oblastMedicine = this.updateForm.get('oblastMedicine')?.value || '';
+          this.updateDoktorRequest.specijalizacija = this.updateForm.get('specijalizacija')?.value || '';
+          this.updateDoktorRequest.poslovnaPozicijaId = this.updateForm.get('poslovnaPozicijaId')?.value || '';
+          this.updateDoktorRequest.nalogId=this.odabraniDoktor.nalogId;
+
+          console.log("upd",this.updateDoktorRequest);
+          this.doktorService.UpdateDoktora(this.updateDoktorRequest).subscribe(
+            response => {
+              this.myAlert.showSuccess("Uspješno ažuriran doktor");
+              this.OcistiFormu();
+              this.odabraniDoktor = null;
+              this.ngOnInit();
+            },
+            error => {
+              this.myAlert.showError("Greška prilikom ažuriranja");
+            }
+          );
+        }
+      }
+
   }
 
+
+  AddKorisnickiNalog(): void {
+    console.log(this.korisnickiNalogRequest);
+    this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
+      console.log("Request",request)
+      this.prikaziErrorNalog=false;
+      this.showError=false;
+      this.updateDoktorRequest.nalogId = request.korisnikId
+      this.zaposlenikUpdNalog=true;
+      this.Update();
+
+    },(error: any) => {
+      console.error("err", error);
+      this.prikaziErrorNalog=true;
+    })
+  }
   OcistiFormu(): void {
     this.updateForm.reset();
+
   }
 
   Prikazi() {
     this.GetAllDoktori();
     this.prikaziTabelu=true;
   }
+
+
+
+
 }
+

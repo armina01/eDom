@@ -1,6 +1,9 @@
 <app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
+<div class="card">
+  <div class="card-header">
+    <h3> Pregledajte arhivu zadataka za pacijenta {{ this.korisnik?.imePrezime }}</h3>
+  </div>
 <div class="container text-center mt-4">
-  <h2>Pregledajte arhivu zadataka za pacijenta {{ this.korisnik?.imePrezime }}</h2>
   <Button (click)="PregledajArhivuSedmicnihZadataka()" class="btn btn-primary">
     <i class="fas fa-archive"></i> Arhiva sedmičnih zadataka
   </Button>
@@ -58,4 +61,5 @@
     </table>
   </div>
 
+</div>
 </div>

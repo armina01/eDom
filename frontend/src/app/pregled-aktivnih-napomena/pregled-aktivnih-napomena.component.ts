@@ -14,16 +14,27 @@ import {NapomenaService} from "../Services/NapomenaService";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {AlertService} from "../Services/AlertService";
 import {FormsModule} from "@angular/forms";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
+import {MyAuthService} from "../Services/MyAuthService";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
+import {
+  KorisnikDomaGetAllResponse,
+  KorisnikDomaGetAllResponseKorisnik
+} from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
 
 @Component({
   selector: 'app-pregled-aktivnih-napomena',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NavBarNjejgovateljComponent],
   providers: [NapomenaService],
   templateUrl: './pregled-aktivnih-napomena.component.html',
   styleUrl: './pregled-aktivnih-napomena.component.css'
 })
 export class PregledAktivnihNapomenaComponent implements OnInit{
+
+  jeNjegovatelj=false;
+  jeNutricionista=false;
+  jeDoktor=false;
 
   public napomeneAll:NapomenaGetAllResponseNapomena[]=[];
   public odabraneNapomene: NapomenaGetAllResponseNapomena[]=[];
@@ -32,16 +43,40 @@ export class PregledAktivnihNapomenaComponent implements OnInit{
   public korisnikId:number=0;
   public vrsteNapomena:VrstaNapomeneGetAllResponseVrstaNapomene[]=[];
   public OdabranaNapomena: NapomenaGetAllResponseNapomena | null=null
+  korisnik:KorisnikDomaGetAllResponseKorisnik|undefined=undefined;
     ngOnInit(): void {
+    console.log("Tokeeen",this._myAuthService.getAuthorizationToken());
         this.GetAllNapomene();
         this.getVrsteNapomene();
         this.GetAllZaposlenike();
+      if(this._myAuthService.jeNjegovatelj())
+      {
+        console.log("ovdje sam")
+        this.jeNjegovatelj=true;
+      }else if (this._myAuthService.jeNutricionista()) {
+        console.log("ovdje sam")
+        this.jeNutricionista=true;
+      }else if(this._myAuthService.jeDoktor())
+      {
+        this.jeDoktor=true;
+      }
+      console.log(this.jeNjegovatelj,this.jeDoktor, this.jeNutricionista);
+      this.PronadjiKorisnika();
     }
-   constructor(public httpClient:HttpClient, private dialog: MatDialog, public route: ActivatedRoute, private napomenaService: NapomenaService, private myAlert:AlertService) {
+   constructor(public httpClient:HttpClient, private dialog: MatDialog, public route: ActivatedRoute,
+               private napomenaService: NapomenaService, private myAlert:AlertService, private _myAuthService: MyAuthService) {
      this.route.params.subscribe(params => {
        this.korisnikId = +params['id'];
      });
    }
+
+  PronadjiKorisnika(){
+    let url =MyConfig.adresa_servera +`/korisnikDoma-getAll`
+    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x:KorisnikDomaGetAllResponse)=>{
+      this.korisnik=x.korisnici.find(x=>x.korisnikDomaID===this.korisnikId) ;
+    })
+
+  }
 
   public napomenaUpdateRequest:NapomenaGetAllResponseNapomena={
     napomenaId:0,

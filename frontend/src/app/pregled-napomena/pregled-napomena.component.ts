@@ -14,37 +14,62 @@ import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NapomenaService} from "../Services/NapomenaService";
 import {AlertService} from "../Services/AlertService";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
+import {MyAuthService} from "../Services/MyAuthService";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
+import {NavBarNutricionistaComponent} from "../nav-bar-nutricionista/nav-bar-nutricionista.component";
+import {
+  KorisnikDomaGetAllResponse,
+  KorisnikDomaGetAllResponseKorisnik
+} from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
 
 @Component({
   selector: 'app-pregled-napomena',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, NavBarDoktorComponent, NavBarNjejgovateljComponent, NavBarNutricionistaComponent],
   providers: [NapomenaService],
   templateUrl: './pregled-napomena.component.html',
   styleUrl: './pregled-napomena.component.css'
 })
 export class PregledNapomenaComponent implements OnInit{
 
+  jeDoktor=false;
+  jeNjegovatelj= false;
   public korisnikId:number=0;
   public napomeneAll:NapomenaGetAllResponseNapomena[]=[];
   public odabraneNapomene: NapomenaGetAllResponseNapomena[]=[];
   public zaposlenici:ZaposlenikGetAllRsponseZaposlenik[]=[];
   public vrsteNapomena:VrstaNapomeneGetAllResponseVrstaNapomene[]=[];
   public OdabranaNapomena: NapomenaGetAllResponseNapomena | null=null
-
+  korisnik:KorisnikDomaGetAllResponseKorisnik|undefined=undefined;
 
 
     ngOnInit(): void {
       this.route.params.subscribe(params => {
         this.korisnikId = +params['id'];
       });
+      if(this._myAuthService.jeDoktor())
+      {
+        this.jeDoktor=true;
+      }
+      if(this._myAuthService.jeNjegovatelj())
+      {
+        this.jeNjegovatelj=true;
+      }
       this.GetAllNpomene();
       this.getVrsteNapomene();
       this.GetAllZaposlenike();
+      this.PronadjiKorisnika();
+    }
+    constructor(public httpClient:HttpClient, private dialog: MatDialog, public route: ActivatedRoute, private napomenaService: NapomenaService, private myAlert:AlertService, private _myAuthService:MyAuthService) {
+    }
+  PronadjiKorisnika(){
+    let url =MyConfig.adresa_servera +`/korisnikDoma-getAll`
+    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x:KorisnikDomaGetAllResponse)=>{
+      this.korisnik=x.korisnici.find(x=>x.korisnikDomaID===this.korisnikId) ;
+    })
 
-    }
-    constructor(public httpClient:HttpClient, private dialog: MatDialog, public route: ActivatedRoute, private napomenaService: NapomenaService, private myAlert:AlertService) {
-    }
+  }
     public napomenaUpdateRequest:NapomenaGetAllResponseNapomena={
       napomenaId:0,
       opis:"",

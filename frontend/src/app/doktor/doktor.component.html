@@ -1,4 +1,5 @@
-<div style="width: 80%; margin: 0 auto;">
+<app-nav-bar-doktor></app-nav-bar-doktor>
+<div *ngIf="showFirstForm"  style="width: 80%; margin: 0 auto;">
   <ul class="nav nav-tabs" id="korisniciTabs" role="tablist">
     <li class="nav-item" role="presentation">
       <a class="nav-link active" id="dodaj-tab" data-bs-toggle="tab" href="#dodaj" role="tab" aria-controls="dodaj" aria-selected="true">
@@ -217,3 +218,30 @@
     </div>
   </form>
 </div>
+
+
+<form *ngIf="!showFirstForm">
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label >Korisnicko ime</label>
+          <input type="email" class="form-control" placeholder="Unesite korisnicko ime"
+                 [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.korisnickoIme">
+        </div>
+        <div class="form-group">
+          <label >Email</label>
+          <input type="email" class="form-control" placeholder="Unesite email" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.email">
+        </div>
+        <div class="form-group">
+          <label >Lozinka</label>
+          <input type="password" class="form-control" placeholder="Unesite lozinku" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.lozinka">
+        </div>
+      </div>
+
+    </div>
+    <label *ngIf="prikaziErrorNalog">Korisnicki podaci su vec koristeni</label>
+    <button type="submit" class="btn btn-primary mt-3" (click)="AddKorisnickiNalog()">Submit</button>
+  </div>
+</form>

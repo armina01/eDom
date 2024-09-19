@@ -8,11 +8,12 @@ import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {LijekService} from "../Services/LijekService";
 import {AlertService} from "../Services/AlertService";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
 
 @Component({
   selector: 'app-lijek',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, NavBarDoktorComponent],
   providers: [LijekService],
   templateUrl: './lijek.component.html',
   styleUrl: './lijek.component.css'
@@ -42,9 +43,7 @@ export class LijekComponent implements OnInit{
         this.lijekService.IzbrisiLijek(item).subscribe(
           response => () => {
             this.myAlert.showSuccess("Uspješno obrisan lijek")
-            setTimeout(() => {
-              this.ngOnInit();
-            }, 3000);
+            this.ngOnInit();
           },
           (error: any) => {
             console.error('Error:', error);
@@ -57,7 +56,9 @@ export class LijekComponent implements OnInit{
             }
           })
       }
+
     });
+
   }
 
   openWarningDialog = (message: string): MatDialogRef<WarningDialogComponent> => {

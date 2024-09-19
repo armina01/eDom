@@ -1,35 +1,17 @@
-<div *ngIf="jeNjegovatelj === true || jeDoktor===true">
+<div *ngIf="jeNjegovatelj === true">
   <app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
 </div>
 <div *ngIf="jeNutricionista === true">
   <app-nav-bar-nutricionista></app-nav-bar-nutricionista>
 </div>
-<div>
-
-
-  <!-- Glavna kartica  <i class="fa fa-bell" [ngClass]="{'notification-icon': true, 'new-notification': hasNewNotification}" (click)="markNotificationAsRead()"></i>-->
+<div *ngIf="jeDoktor === true">
+  <app-nav-bar-doktor></app-nav-bar-doktor>
 </div>
-<div >
-<table *ngIf="obavijetUkljucena" class="table table-striped">
-  <thead>
-  <tr>
-    <th>Obavijesti</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let item of obavijesti">
-    <td>{{ item.poruka }}</td>
-  </tr>
-  </tbody>
-</table>
-</div>
-<div [innerHTML]="notification2"></div>
-
 <div class="container mt-4">
   <!-- Glavna kartica -->
   <div class="card">
-    <div class="card-header  text-white">
-      <h1>Pregled svih korisnika doma</h1>
+    <div class="card-header">
+      <h3>Pregled svih korisnika doma</h3>
     </div>
     <div class="card-body">
       <!-- Pretraga -->
@@ -40,53 +22,80 @@
 
       <!-- Kartice za pojedine korisnike -->
       <div class="row">
-        <div *ngFor="let item of getFiltriraniKorisnici()" class="col-md-6">
-          <div class="card mb-3">
+        <div *ngFor="let item of getFiltriraniKorisnici()" class="col-md-6 col-lg-4 mb-3">
+          <div class="card">
             <div class="row g-0">
+              <div class="col-md-4 d-flex justify-content-center align-items-center">
+                <img src="assets/MicrosoftTeams-image (8).png" class="img-fluid rounded-start" alt="Korisnik Slika"/>
+              </div>
               <div class="col-md-8">
                 <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="slikaKorisnika">
-                      <td>
-                        <img src="assets/MicrosoftTeams-image (8).png"/> </td>
-                    </div>
-                    <div class="podaciKorisnika">
-                      <h5 class="card-title font-weight-bold mb-3 imeKorisnika">{{ item.imePrezime }}</h5>
-                    </div>
-                  </div>
+                  <h5 class="card-title font-weight-bold mb-3 imeKorisnika">{{ item.imePrezime }}</h5>
                   <p class="card-text">
-
-                    <i class="bi bi-calendar me-2"></i> <strong>JMBG:</strong>{{ item.jmbg }} <br>
+                    <i class="bi bi-calendar me-2"></i> <strong>JMBG:</strong> {{ item.jmbg }} <br>
                     <i class="bi bi-door-open me-2"></i> <strong>Datum rođenja:</strong> {{ item.datumRodjenja | date }}<br>
                     <i class="bi bi-house-door me-2"></i> <strong>Broj sobe:</strong> {{ item.brojSobe }}<br>
                     <i class="bi bi-geo-alt me-2"></i> <strong>Opština:</strong> {{ item.opstinaNaziv }}<br>
                     <i class="bi bi-code me-2"></i> <strong>Poštanski broj:</strong> {{ item.opstinaBroj }}
                   </p>
                   <div class="mt-3">
-                    <button class="btn btn-sm btn-danger me-2" *ngIf="jeAdmin" (click)="ObrisiKorisnika(item)">
-                      <i class="bi bi-trash"></i> Izbriši korisnika
-                    </button>
-                    <button class="btn btn-sm btn-warning me-2" *ngIf="jeAdmin" (click)="OdaberiKorisnika(item)">
-                      <i class="bi bi-pencil"></i> Update korisnika
-                    </button>
-                    <button class="btn btn-sm btn-info me-2" *ngIf="jeNutricionista || jeNjegovatelj" (click)="PrikaziNapomene(item)">
-                      <i class="bi bi-sticky"></i> Prikaži napomene
-                    </button>
-                    <button class="btn btn-sm btn-primary me-2" *ngIf="jeNutricionista || jeNjegovatelj"(click)="PrikaziAktivneNapomene(item)">
-                      <i class="bi bi-sticky"></i> Aktivne napomene
-                    </button>
-                    <button class="btn btn-sm btn-success me-2"  *ngIf="jeNjegovatelj" (click)="PregledZadataka(item)">
-                      <i class="bi bi-list-check"></i> Pregledaj zadatke
-                    </button>
-                    <button class="btn btn-sm btn-secondary me-2" *ngIf="jeNjegovatelj" (click)="PregledSedmicnihZadataka(item)">
-                      <i class="bi bi-calendar-check"></i> Pregledaj sedmične zadatke
-                    </button>
-                    <button class="btn btn-sm btn-dark" *ngIf="jeNjegovatelj" (click)="PregledArhiveZadataka(item)">
-                      <i class="bi bi-archive"></i> Pregledaj arhivu zadataka
-                    </button>
-                    <button class="btn btn-sm btn-dark" *ngIf="jeNutricionista" (click)="DodajPlanIshrane(item)">
-                      <i class="bi bi-archive" (click)="DodajPlanIshrane(item)"></i> Pregledaj plan ishrane
-                    </button>
+                    <!-- Admin Actions Dropdown -->
+                    <div class="dropdown d-inline-block me-2" *ngIf="jeAdmin">
+                      <button class="btn btn-danger dropdown-toggle" type="button" id="adminActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Admin Actions
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="adminActionsDropdown">
+                        <li>
+                          <a class="dropdown-item" (click)="ObrisiKorisnika(item)">
+                            <i class="bi bi-trash"></i> Izbriši korisnika
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" (click)="OdaberiKorisnika(item)">
+                            <i class="bi bi-pencil"></i> Update korisnika
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <!-- Role-Specific Actions Dropdown -->
+                    <div class="dropdown d-inline-block me-2" *ngIf="jeNutricionista || jeNjegovatelj || jeDoktor">
+                      <button class="btn btn-custom-green dropdown-toggle" type="button" id="roleActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Aktivnosti
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="roleActionsDropdown">
+                        <li *ngIf="jeNutricionista || jeNjegovatelj || jeDoktor">
+                          <a class="dropdown-item" (click)="PrikaziNapomene(item)">
+                            <i class="bi bi-sticky"></i> Prikaži napomene
+                          </a>
+                        </li>
+                        <li *ngIf="jeNutricionista || jeNjegovatelj || jeDoktor">
+                          <a class="dropdown-item" (click)="PrikaziAktivneNapomene(item)">
+                            <i class="bi bi-sticky"></i> Aktivne napomene
+                          </a>
+                        </li>
+                        <li *ngIf="jeNjegovatelj">
+                          <a class="dropdown-item" (click)="PregledZadataka(item)">
+                            <i class="bi bi-list-check"></i> Pregledaj dnevne zadatke
+                          </a>
+                        </li>
+                        <li *ngIf="jeNjegovatelj">
+                          <a class="dropdown-item" (click)="PregledSedmicnihZadataka(item)">
+                            <i class="bi bi-calendar-check"></i> Pregledaj sedmične zadatke
+                          </a>
+                        </li>
+                        <li *ngIf="jeNjegovatelj">
+                          <a class="dropdown-item" (click)="PregledArhiveZadataka(item)">
+                            <i class="bi bi-archive"></i> Pregledaj arhivu zadataka
+                          </a>
+                        </li>
+                        <li *ngIf="jeNutricionista">
+                          <a class="dropdown-item" (click)="DodajPlanIshrane(item)">
+                            <i class="bi bi-archive"></i> Pregledaj plan ishrane
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -97,4 +106,3 @@
     </div>
   </div>
 </div>
-

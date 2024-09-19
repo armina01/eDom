@@ -15,6 +15,10 @@ import {ActivatedRoute} from "@angular/router";
 import {ZadaciService} from "../Services/ZadaciService";
 import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
 import {SignalRService} from "../Services/signalR.service";
+import {
+  KorisnikDomaGetAllResponse,
+  KorisnikDomaGetAllResponseKorisnik
+} from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
 
 @Component({
   selector: 'app-get-zadaci',
@@ -34,6 +38,7 @@ export class GetZadaciComponent {
   jeNjegovatelj:boolean=false;
   jeDoktor:boolean=false;
   jeFizijatar:boolean=false;
+  korisnik:KorisnikDomaGetAllResponseKorisnik|undefined=undefined;
   ngOnInit(){
     if(this._myAuthService.jeNjegovatelj())
     {
@@ -70,6 +75,15 @@ export class GetZadaciComponent {
     this.route.params.subscribe(params => {
       this._korisnikDomaId = +params['id'] || 0;
     });
+    this.PronadjiKorisnika();
+  }
+  PronadjiKorisnika(){
+    let url =MyConfig.adresa_servera +`/korisnikDoma-getAll`
+    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x:KorisnikDomaGetAllResponse)=>{
+
+      this.korisnik= x.korisnici.find(x=>x.korisnikDomaID=== this._korisnikDomaId) ;
+    })
+
   }
   showOpsti:boolean=false;
   showFizijatrijski=false;
@@ -387,4 +401,5 @@ export class GetZadaciComponent {
       this.showEmptyFiz=true;
     }
   }
+
 }

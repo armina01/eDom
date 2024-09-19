@@ -23,6 +23,12 @@ export class NavBarNjejgovateljComponent {
 
   constructor(public httpClient:HttpClient, private dialog: MatDialog,public router: Router,private signalRService: SignalRService) {
   }
+
+  isMenuOpen: boolean = false;
+
+  toggleDropdown() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
   IdiDodajZadatke() {
       this.router.navigate(['/dodajZadatke']);
 

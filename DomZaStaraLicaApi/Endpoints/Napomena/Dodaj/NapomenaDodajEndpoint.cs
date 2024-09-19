@@ -50,8 +50,7 @@ namespace DomZaStaraLicaApi.Endpoints.Napomena.Dodaj
 
             foreach (var njegovatelj in njegovatelji)
             {
-               
-                await _hubContext.Clients.Group(njegovatelj).SendAsync("dodana_nova_napomena", "napomena dodana" + newObj.Opis + " za korisnika " + korisnik.ImePrezime);
+                await _hubContext.Clients.Group(njegovatelj).SendAsync("dodana_nova_napomena", newObj.Opis + " za korisnika " + korisnik.ImePrezime);
             }
 
             return new NapomenaDodajResponse

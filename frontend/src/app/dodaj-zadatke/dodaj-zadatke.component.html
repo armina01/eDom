@@ -1,10 +1,12 @@
 <app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
-<H3 class="Naslov"><i class="fa-solid fa-list-check"></i>Dodajte zadatke</H3>
 
 <div class="container mt-4">
   <div class="row">
     <div class="col-md-6">
       <div class="card">
+        <div class="card-header">
+          <h3 class="Naslov"><i class="fa-solid fa-list-check"></i>Dodajte zadatke</h3>
+        </div>
         <div class="card-body">
           <div class="form-group mb-3">
             <label for="opisZadatka">
@@ -61,7 +63,7 @@
 
 
     <div class="col-md-6">
-      <div class="card">
+      <div class="card 2">
         <div class="card-body">
           <div class="toggle-container" >
             <div class="toggle-container" (click)="SelectAll()">
@@ -131,7 +133,7 @@
 <div class="d-flex justify-content-center">
   <Button (click)="DodajZadatak()" class="btn btn-success">
     <i class="far fa-plus-square"></i>
-    Dodaj zadatak
+    Dodaj
   </Button>
 </div>
 <div *ngIf="showConfirmationDialog" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="confirmationDialogLabel" aria-modal="true" style="display: block;">
@@ -139,10 +141,10 @@
     <div class="modal-content bg-success text-white">
       <div class="modal-header">
         <h5 class="modal-title">
-          <i class="bi bi-check-circle"></i> Uspješno ste dodali dijagnozu
+          <i class="bi bi-check-circle"></i> Uspješno ste dodali zadatak
         </h5>
       </div>
     </div>
   </div>
-
+</div>
 

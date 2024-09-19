@@ -21,12 +21,14 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import {KorisnikDomaService} from "../Services/KorisnikDomaService";
 import {GetAllPoslovnaPozicijaResponsePoslovnaPozicija} from "../poslovna-pozicija/getAllPoslovnaPozicija";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
 
 
 @Component({
   selector: 'app-pregled-korisnika-doma',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarNjejgovateljComponent, NavBarNutricionistaComponent, FaIconComponent,FontAwesomeModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarNjejgovateljComponent, NavBarNutricionistaComponent,
+      NavBarDoktorComponent, FaIconComponent,FontAwesomeModule],
   providers:[MyAuthService,SignalRService, KorisnikDomaService],
   templateUrl: './pregled-korisnika-doma.component.html',
   styleUrl: './pregled-korisnika-doma.component.css'

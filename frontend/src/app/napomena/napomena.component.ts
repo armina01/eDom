@@ -15,11 +15,13 @@ import {KorisnikDomaService} from "../Services/KorisnikDomaService";
 import {NapomenaService} from "../Services/NapomenaService";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {AlertService} from "../Services/AlertService";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
+import {ZaposlenikGetAllRsponseZaposlenik} from "../pregled-napomena/zaposlenikGetAllRsponse";
 
 @Component({
   selector: 'app-napomena',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent],
   providers:[KorisnikDomaService, NapomenaService],
   templateUrl: './napomena.component.html',
   styleUrl: './napomena.component.css'
@@ -32,6 +34,8 @@ export class NapomenaComponent implements OnInit{
   napomenaForm: FormGroup;
   public   selectedKorisnici: OdabraniKorisnikDoma[] = [];
   public upozorenje:boolean=false;
+  zaposlenikId:number=0;
+
     ngOnInit(): void {
       this.getVrsteNapomene();
       this.getAllKorisnici();
@@ -43,7 +47,6 @@ export class NapomenaComponent implements OnInit{
         prioritet: [false],
         datumPostavke: ['', Validators.required],
         isAktivna: [false],
-        zaposlenikId: ['', Validators.required],
         vrstaNapomeneId: ['', Validators.required],
 
       });
@@ -96,7 +99,13 @@ export class NapomenaComponent implements OnInit{
       ...this.napomenaForm.value,
       korisnikDomaID: korisnik.korisnikDomaID
     };
-    console.log(this.napomenaDodajRequest);
+
+    const korisnikString = window.localStorage.getItem('korisnik');
+
+    let korisnikObjekat = korisnikString ? JSON.parse(korisnikString) : null;
+    this.zaposlenikId = korisnikObjekat ? korisnikObjekat.zaposlenikId : this.zaposlenikId;
+    this.napomenaDodajRequest.zaposlenikId = this.zaposlenikId;
+
     this.napomenaService.DodajNapomenu(this.napomenaDodajRequest).subscribe(x => {
       this.myAlert.showSuccess("Napomena uspješno dodana");
     });

@@ -28,7 +28,7 @@ export class AppComponent  implements OnInit, OnDestroy{
     const oldToken = this.myAuth.getAuthorizationToken()?.vrijednost;
     console.log('Početak intervala za provjeru tokena');
     if (oldToken) {
-      this.refreshSubscription = interval( 30* 1000) //svakih 30 sec  30 * 1000
+      this.refreshSubscription = interval( 45*60* 1000) //svakih 30 sec  30 * 1000
         .pipe(
           takeWhile(() => this.myAuth.isLogiran())
         )

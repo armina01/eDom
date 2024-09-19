@@ -12,3 +12,11 @@
 .table-striped-custom tbody tr:nth-of-type(even) {
   background-color: white;
 }
+.card-header{
+  background-color: #a3c4ea;
+}
+.card{
+  margin-right: 5%;
+  margin-left: 5%;
+  margin-top: 20px;
+}
