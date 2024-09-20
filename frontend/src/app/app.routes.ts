@@ -39,6 +39,8 @@ export const routes: Routes = [
   {path: 'opstina', component:OpstinaComponent,canActivate: [AutorizacijaGuard]},
   {path: 'korisnkDoma', component:KorisnikComponent},
   {path: 'korisnickiNalog', component:KorisnickiNalogComponent,canActivate: [AutorizacijaGuard]},
+  {path: 'korisnkDoma', component:KorisnikComponent,canActivate: [AutorizacijaGuard]},
+  {path: 'korisnickinalog', component:KorisnickiNalogComponent},
   {path: 'poslovnaPozicija', component:PoslovnaPozicijaComponent,canActivate: [AutorizacijaGuard]},
   {path:'njegovatelj',component:NjegovateljComponent,canActivate: [AutorizacijaGuard]},
   {path:'doktor',component:DoktorComponent,canActivate: [AutorizacijaGuard]},
@@ -61,14 +63,14 @@ export const routes: Routes = [
   {path: 'nutricionista',component:NutricionistaComponent},
   {path:'home',component:HomepageComponent,canActivate: [AutorizacijaGuard]},
   {path:'pregleddnevnihzadataka/:id',component:GetZadaciComponent,canActivate: [AutorizacijaGuard]},
-
+  {path:'dodajZadatke',component:DodajZadatkeComponent,canActivate: [AutorizacijaGuard]},
   {path:'pregledsedmicnihzadataka/:id',component:PregledSedmicnihZadatakaComponent,canActivate: [AutorizacijaGuard]},
   {path:'pregledarhivezadataka/:id',component:PregledArhiveZadatakaComponent,canActivate: [AutorizacijaGuard]},
   {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent,canActivate: [AutorizacijaGuard]},
   {path:'nutricionista/o-meni',component:PregledPodatakaNutricionistaComponent,canActivate: [AutorizacijaGuard]},
   {path:'dodajplanishrane/:id',component:DodajPlanIshraneComponent,canActivate: [AutorizacijaGuard]},
   {path:'autorizacija',component:Enable2FAComponent},
-  {path:'dodajPlanoveIshrane', component: DodajVisePlanovaComponent,canActivate: [AutorizacijaGuard]}
+  {path:'dodajPlanoveIshrane', component: DodajVisePlanovaComponent,canActivate: [AutorizacijaGuard]},
 ]
 
 
