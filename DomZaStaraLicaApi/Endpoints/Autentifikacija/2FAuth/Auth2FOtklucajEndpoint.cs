@@ -1,10 +1,12 @@
 ﻿using DomZaStaraLicaApi.Data;
+using DomZaStaraLicaApi.Data.Models;
 using DomZaStaraLicaApi.Helper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DomZaStaraLicaApi.Endpoints.Autentifikacija._2FAuth
 {
-    public class Auth2FOtklucajEndpoint:MyBaseEndpoint<Auth2FOtkljucajRequest,NoResponse>
+    public class Auth2FOtklucajEndpoint:MyBaseEndpoint<Auth2FOtkljucajRequest, AuthToken>
     {
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly MyAuthService _authService;
@@ -16,16 +18,18 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija._2FAuth
             _authService = authService;
         }
         [HttpPost("2f-otklucaj")]
-        public override async Task<NoResponse> Obradi([FromBody] Auth2FOtkljucajRequest request)
+        public override async Task<AuthToken> Obradi([FromBody] Auth2FOtkljucajRequest request)
         {
-            if (!_authService.GetAuthInfo().isLogiran)
-            {
-                throw new Exception("nije logirani");
-            }
-            var token = _authService.GetAuthInfo().autentifikacijaToken;
+            
+            var token = _applicationDbContext.AuthToken
+                        .Include(x => x.korisnickiNalog)
+                        .Where(x => x.korisnickiNalog.KorisnickoIme == request.username)
+                        .OrderBy(x => x.id)  // Assuming 'CreationTime' is a property of AuthToken
+                        .LastOrDefault();
 
             if (token is null)
                 throw new ArgumentNullException(nameof(token));
+
 
             if (request.Kljuc == token.TwoFKey)
             {
@@ -37,7 +41,7 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija._2FAuth
                 throw new Exception("Netacan kljuc");
             }
 
-            return new NoResponse();
+            return token;
         }
 
     }
