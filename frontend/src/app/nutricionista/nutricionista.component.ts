@@ -21,11 +21,12 @@ import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component
 import {NutricionistaService} from "../Services/NutricionistaService";
 import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
 import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
+import {NavBarAdminComponent} from "../nav-bar-admin/nav-bar-admin.component";
 
 @Component({
   selector: 'app-nutricionista',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarAdminComponent],
   providers:[NutricionistaService,KorisnickiNalogService],
   templateUrl: './nutricionista.component.html',
   styleUrls: ['./nutricionista.component.css']

@@ -16,7 +16,6 @@ import {
   GetAllKorisnickiNalogResponse,
   GetAllKorisnickiNalogResponseKorisnickiNalog
 } from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
-import {SignalRService} from "../Services/signalR.service";
 
 @Component({
   selector: 'app-log-in',
@@ -28,7 +27,7 @@ import {SignalRService} from "../Services/signalR.service";
 })
 export class LogInComponent {
 
-  constructor(public httpClient:HttpClient, private router: Router, private myAuthService:MyAuthService,private signalRService: SignalRService
+  constructor(public httpClient:HttpClient, private router: Router, private myAuthService:MyAuthService,
              ) { }
 
   ngOnInit(){
@@ -36,7 +35,6 @@ export class LogInComponent {
         response => {
           this.korisnik = response;
         });
-    //this.signalRService.otvori_ws_konekciju();
   }
   GetAllzaposlenici(): Observable<GetAllZaposlenikResponseZaposlenik[]> {
     let url: string = MyConfig.adresa_servera + `/getAllZaposlenici`;
@@ -55,36 +53,11 @@ export class LogInComponent {
     jeDoktor:false,
     jeFizioterapeut:false,
     jeNjegovatelj:false,
-    jeNutricionista:false,
-    SignalRConnectionID:""
+    jeNutricionista:false
   }
   public lozinkaNeTacna=false;
   signIn() {
     this.GetAllKorisnickiNalog();
-
-    let url=MyConfig.adresa_servera+`/login`;
-
-    this.logInRequest.SignalRConnectionID=SignalRService.ConnectionId;
-
-    this.httpClient.post<AuthLogInResponse>(url, this.logInRequest).subscribe((x)=>{
-
-      if (!x.logInInformacija.isLogiran){
-            this.lozinkaNeTacna=true;
-      }
-      else{
-        let korisnikNalogId=x.logInInformacija.autentifikacijaToken.korisnickiNalogId
-        console.log(korisnikNalogId)
-        let _korisnik=this.korisnik.find(
-            item=>item.nalogId===korisnikNalogId)
-          this.myAuthService.setLogiraniKorisnik(x.logInInformacija.autentifikacijaToken,_korisnik);
-
-        this.router.navigate(["/pregledKorisnikaDoma"])
-      }
-    },
-      (error) => {
-        this.lozinkaNeTacna=true;
-      });
-    this.signalRService.otvori_ws_konekciju();
 
   }
   GetAllKorisnickiNalog() {
@@ -115,8 +88,12 @@ export class LogInComponent {
                 let _korisnik=this.korisnik.find(
                   item=>item.nalogId===korisnikNalogId)
                 this.myAuthService.setLogiraniKorisnik(x.logInInformacija.autentifikacijaToken,_korisnik);
-
-                this.router.navigate(["/pregledKorisnikaDoma"])
+                if(!this._korisnickiNalog?.jeAdmin) {
+                  this.router.navigate(["/pregledKorisnikaDoma"])
+                }
+                else{
+                  this.router.navigate(["/admin-home"])
+                }
               }
             },
             (error) => {

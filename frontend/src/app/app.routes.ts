@@ -32,15 +32,15 @@ import{DodajPlanIshraneComponent} from "./dodaj-plan-ishrane/dodaj-plan-ishrane.
 import {Enable2FAComponent} from "./enable-2-fa/enable-2-fa.component";
 import {AutorizacijaGuard} from "./Helper/autorizacija-guard.service";
 import {DodajVisePlanovaComponent} from "./dodaj-vise-planova/dodaj-vise-planova.component";
+import {HomepageAdminComponent} from "./homepage-admin/homepage-admin.component";
+import {NavBarAdminComponent} from "./nav-bar-admin/nav-bar-admin.component";
 
 export const routes: Routes = [
   {path: 'header', component: HeaderComponent},
-  {path: 'pregledKorisnikaDoma', component: PregledKorisnikaDomaComponent, canActivate: [AutorizacijaGuard]},
+  {path: 'pregledKorisnikaDoma', component: PregledKorisnikaDomaComponent,canActivate: [AutorizacijaGuard]},
   {path: 'opstina', component:OpstinaComponent,canActivate: [AutorizacijaGuard]},
-  {path: 'korisnkDoma', component:KorisnikComponent},
-  {path: 'korisnickiNalog', component:KorisnickiNalogComponent,canActivate: [AutorizacijaGuard]},
   {path: 'korisnkDoma', component:KorisnikComponent,canActivate: [AutorizacijaGuard]},
-  {path: 'korisnickinalog', component:KorisnickiNalogComponent},
+  {path: 'korisnickinalog', component:KorisnickiNalogComponent,canActivate: [AutorizacijaGuard]},
   {path: 'poslovnaPozicija', component:PoslovnaPozicijaComponent,canActivate: [AutorizacijaGuard]},
   {path:'njegovatelj',component:NjegovateljComponent,canActivate: [AutorizacijaGuard]},
   {path:'doktor',component:DoktorComponent,canActivate: [AutorizacijaGuard]},
@@ -63,7 +63,7 @@ export const routes: Routes = [
   {path: 'nutricionista',component:NutricionistaComponent},
   {path:'home',component:HomepageComponent,canActivate: [AutorizacijaGuard]},
   {path:'pregleddnevnihzadataka/:id',component:GetZadaciComponent,canActivate: [AutorizacijaGuard]},
-  {path:'dodajZadatke',component:DodajZadatkeComponent,canActivate: [AutorizacijaGuard]},
+
   {path:'pregledsedmicnihzadataka/:id',component:PregledSedmicnihZadatakaComponent,canActivate: [AutorizacijaGuard]},
   {path:'pregledarhivezadataka/:id',component:PregledArhiveZadatakaComponent,canActivate: [AutorizacijaGuard]},
   {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent,canActivate: [AutorizacijaGuard]},
@@ -71,6 +71,7 @@ export const routes: Routes = [
   {path:'dodajplanishrane/:id',component:DodajPlanIshraneComponent,canActivate: [AutorizacijaGuard]},
   {path:'autorizacija',component:Enable2FAComponent},
   {path:'dodajPlanoveIshrane', component: DodajVisePlanovaComponent,canActivate: [AutorizacijaGuard]},
+  {path:'admin-home', component: HomepageAdminComponent,canActivate: [AutorizacijaGuard]},
 ]
 
 

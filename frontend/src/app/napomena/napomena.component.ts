@@ -11,16 +11,11 @@ import {
 } from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
 import {VrstaNapomeneGetAllResponse, VrstaNapomeneGetAllResponseVrstaNapomene} from "./vrstaNapomeneGetAllResponse";
 import {OdabraniKorisnikDoma} from "./odabraniKorisnikDoma";
-import {KorisnikDomaService} from "../Services/KorisnikDomaService";
-import {NapomenaService} from "../Services/NapomenaService";
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {AlertService} from "../Services/AlertService";
 
 @Component({
   selector: 'app-napomena',
   standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  providers:[KorisnikDomaService, NapomenaService],
   templateUrl: './napomena.component.html',
   styleUrl: './napomena.component.css'
 })
@@ -29,24 +24,11 @@ export class NapomenaComponent implements OnInit{
   public korisniciDoma: KorisnikDomaGetAllResponseKorisnik[] = [];
   public vrsteNapomena:VrstaNapomeneGetAllResponseVrstaNapomene[]=[];
   public prikazaniKorisniciDoma:  OdabraniKorisnikDoma[] = [];
-  napomenaForm: FormGroup;
-  public   selectedKorisnici: OdabraniKorisnikDoma[] = [];
-  public upozorenje:boolean=false;
     ngOnInit(): void {
       this.getVrsteNapomene();
       this.getAllKorisnici();
-
     }
-    constructor(public httpClient: HttpClient,private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService, private napomenaService: NapomenaService,private fb: FormBuilder, private myAlert:AlertService) {
-      this.napomenaForm = this.fb.group({
-        opis: ['', Validators.required],
-        prioritet: [false],
-        datumPostavke: ['', Validators.required],
-        isAktivna: [false],
-        zaposlenikId: ['', Validators.required],
-        vrstaNapomeneId: ['', Validators.required],
-
-      });
+    constructor(public httpClient: HttpClient,private dialog: MatDialog) {
     }
 
     public napomenaDodajRequest:NapomenaDodajRequest={
@@ -60,14 +42,16 @@ export class NapomenaComponent implements OnInit{
     }
 
   getAllKorisnici() {
-    this.korisnikDomaService.GetAllKorisnici().subscribe((x: KorisnikDomaGetAllResponse) => {
+    let url = MyConfig.adresa_servera + `/korisnikDoma-getAll`
+    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x: KorisnikDomaGetAllResponse) => {
       this.korisniciDoma = x.korisnici;
       this.PrikaziKorisnikeDoma();
     })
   }
 
   getVrsteNapomene() {
-    this.napomenaService.GetVrsteNapomena().subscribe(x=>{
+    let url = MyConfig.adresa_servera + `/vrstaNapomene/getAll`
+    this.httpClient.get<VrstaNapomeneGetAllResponse>(url).subscribe((x: VrstaNapomeneGetAllResponse) => {
       this.vrsteNapomena=x.vrsteNapomena;
     })
   }
@@ -90,33 +74,22 @@ export class NapomenaComponent implements OnInit{
     return this.prikazaniKorisniciDoma;
   }
 
-  NapomenaPost(korisnik: OdabraniKorisnikDoma): void {
-    let url = MyConfig.adresa_servera + `/napomena/dodaj`;
-    this.napomenaDodajRequest = {
-      ...this.napomenaForm.value,
-      korisnikDomaID: korisnik.korisnikDomaID
-    };
+  NapomenaPost(korisnik: OdabraniKorisnikDoma) {
+
+    let url=MyConfig.adresa_servera + `/napomena/dodaj`;
+    this.napomenaDodajRequest.korisnikDomaID = korisnik.korisnikDomaID;
     console.log(this.napomenaDodajRequest);
-    this.napomenaService.DodajNapomenu(this.napomenaDodajRequest).subscribe(x => {
-      this.myAlert.showSuccess("Napomena uspješno dodana");
+    this.httpClient.post(url, this.napomenaDodajRequest).subscribe(response=>{
+      console.log("Napomena uspjesno dodana");
     });
-    korisnik.selected = false;
+    korisnik.selected=false;
   }
 
   Dodaj() {
-    this.selectedKorisnici=this.prikazaniKorisniciDoma.filter(x=>x.selected===true)
-    if (this.napomenaForm.invalid || !this.selectedKorisnici.length) {
-      this.napomenaForm.markAllAsTouched();
-      this.upozorenje=true;
-    }
-    else {
-      this.selectedKorisnici.forEach(korisnik => {
-          this.NapomenaPost(korisnik);
-          this.upozorenje=false;
-        }
-      );
-    }
-
-
+    let selectedKorisnici=this.prikazaniKorisniciDoma.filter(x=>x.selected===true)
+    selectedKorisnici.forEach(korisnik=> {
+        this.NapomenaPost(korisnik);
+      }
+    );
   }
 }

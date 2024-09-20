@@ -1,12 +1,7 @@
 ﻿using DomZaStaraLicaApi.Data;
-using DomZaStaraLicaApi.Data.Models;
 using DomZaStaraLicaApi.Endpoints.Doktor.Dodaj;
 using DomZaStaraLicaApi.Helper;
-using DomZaStaraLicaApi.SignalR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 namespace DomZaStaraLicaApi.Endpoints.Napomena.Dodaj
 {
@@ -14,12 +9,10 @@ namespace DomZaStaraLicaApi.Endpoints.Napomena.Dodaj
     public class NapomenaDodajEndpoint:MyBaseEndpoint<NapomenaDodajRequest, NapomenaDodajResponse>
     {
         private readonly ApplicationDbContext _applicationDbContext;
-        private readonly IHubContext<SignalRHub> _hubContext;
 
-        public NapomenaDodajEndpoint(ApplicationDbContext applicationDbContext, IHubContext<SignalRHub> hubContext)
+        public NapomenaDodajEndpoint(ApplicationDbContext applicationDbContext)
         {
             _applicationDbContext = applicationDbContext;
-            _hubContext = hubContext;   
         }
 
         [HttpPost]
@@ -36,23 +29,9 @@ namespace DomZaStaraLicaApi.Endpoints.Napomena.Dodaj
                 VrstaNapomeneId=request.VrstaNapomeneId
                 
             };
-
-
             _applicationDbContext.Napomena.Add(newObj);
+
             await _applicationDbContext.SaveChangesAsync();
-
-            var korisnik = _applicationDbContext.KorisnikDoma.Find(request.KorisnikDomaID);
-
-
-            var njegovatelji = await _applicationDbContext.KorisnickiNalog
-            .Where(zaposlenik => zaposlenik.JeNjegovatelj).Select(x => x.KorisnickoIme)
-            .ToListAsync();
-
-            foreach (var njegovatelj in njegovatelji)
-            {
-               
-                await _hubContext.Clients.Group(njegovatelj).SendAsync("dodana_nova_napomena", "napomena dodana" + newObj.Opis + " za korisnika " + korisnik.ImePrezime);
-            }
 
             return new NapomenaDodajResponse
             {

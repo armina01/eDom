@@ -8,6 +8,5 @@
         public DateTime datumDijagnoze { get; set; }
         public int ZaposlenikId { get; set; }
         public int KorisnikDomaID { get; set; }
-        public IFormFile? File { get; set; }
     }
 }

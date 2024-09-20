@@ -11,6 +11,5 @@ export interface GetAllKorisnickiNalogResponseKorisnickiNalog {
     jeFizioterapeut: boolean;
     jeNutricionista: boolean;
     jeDoktor: boolean;
-    SignalRConnectionID:string | null;
-
+    email:string;
 }

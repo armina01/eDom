@@ -31,6 +31,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.GetAllKorisnickiNalog
                 JeFizioterapeut=x.JeFizioterapeut,
                 JeNjegovatelj=x.JeNjegovatelj,
                 JeNutricionista=x.JeNutricionista,
+                Email=x.Email
             })
             .ToListAsync();
             return new GetAllKorisnickiNalogResponse

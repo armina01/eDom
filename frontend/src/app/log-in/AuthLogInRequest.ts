@@ -6,6 +6,5 @@ export interface AuthLogInRequest {
     jeFizioterapeut: boolean;
     jeNutricionista: boolean;
     jeDoktor: boolean;
-    SignalRConnectionID:string | null;
 }
 

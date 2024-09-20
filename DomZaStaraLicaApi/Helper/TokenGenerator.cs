@@ -1,7 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace DomZaStaraLicaApi.Helper
@@ -27,8 +24,5 @@ namespace DomZaStaraLicaApi.Helper
             }
             return result.ToString();
         }
-
-
     }
-
 }

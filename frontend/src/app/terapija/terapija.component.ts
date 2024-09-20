@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormControl, FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {TerapijaDodajRequest} from "./terapijaDodajRequest";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
@@ -18,12 +18,6 @@ import {Router} from "@angular/router";
 import {TerapijaLijekGetAllResponse, TerapijaLijekGetAllResponseTerapijaLijek} from "./terapijaLijekGetAllResponse";
 import {join} from "@angular/compiler-cli";
 import {TerapijaLijekUpdateRequest} from "./terapijaLijekUpdateRequest";
-import {KorisnikDomaService} from "../Services/KorisnikDomaService";
-import {DoktorService} from "../Services/DoktorService";
-import {TerapijaService} from "../Services/TerapijaService";
-import {LijekService} from "../Services/LijekService";
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {AlertService} from "../Services/AlertService";
 
 
 
@@ -31,7 +25,6 @@ import {AlertService} from "../Services/AlertService";
   selector: 'app-terapija',
   standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule],
-    providers: [KorisnikDomaService, DoktorService, TerapijaService, LijekService],
   templateUrl: './terapija.component.html',
   styleUrl: './terapija.component.css'
 })
@@ -51,14 +44,9 @@ export class TerapijaComponent implements OnInit {
   public odabraniLijekoviDialog:LijekGetAllResponseLijek[] = [];
   public prikaziOdabaneLijekoveLabel:boolean=false;
 
-  lijekForma: FormGroup;
 
+  constructor(public httpClient: HttpClient, private dialog: MatDialog, public router: Router) {
 
-  constructor(public httpClient: HttpClient, private dialog: MatDialog, public router: Router, private korisnikDomaService: KorisnikDomaService, private doktorService: DoktorService, private terapijaService: TerapijaService, private lijekService:LijekService, private fb: FormBuilder, private myAlert:AlertService, private formBuilder: FormBuilder) {
-    this.lijekForma = this.formBuilder.group({
-      naziv: ['', Validators.required],
-      uputstvo: ['', Validators.required]
-    });
   }
 
   ngOnInit(): void {
@@ -92,45 +80,41 @@ export class TerapijaComponent implements OnInit {
     uputstvo: ""
   }
 
-  Dodaj(terapijaForm: NgForm): void {
-    if (terapijaForm.valid) {
-      this.terapijaRequest.lijekovi = this.Listalijekova;
+  Dodaj() {
 
-      this.terapijaService.DodajTerapiju(this.terapijaRequest).subscribe(response => {
-        this.myAlert.showSuccess('Terapija uspješno dodana');
-      }, error => {
-        this.myAlert.showError("Došlo je do greške prilikom dodavanja terapije");
-      });
-    } else {
-      terapijaForm.control.markAllAsTouched();
-    }
-    setTimeout(() => {
-      this.GetAllTerapijeLijekovi();
-    }, 3000);
-    this.Listalijekova=[];
+    let url = MyConfig.adresa_servera + `/terapijaLijek/dodaj`;
+    console.log(this.terapijaRequest);
+    this.httpClient.post(url, this.terapijaRequest).subscribe(response => {
+      console.log("Terapija uspjesno dodana");
+    });
+
   }
 
   GetAllLijekovi() {
-    this.lijekService.GetAllLijekovi().subscribe(x => {
+    let url: string = MyConfig.adresa_servera + `/lijek/getAll`;
+    this.httpClient.get<LijekGetAllResponse>(url).subscribe(x => {
       this.lijekovi = x.lijekovi;
     })
   }
 
   GetAllDoktore() {
-    this.doktorService.GetAllDoktori().subscribe(x=>{
-      this.doktori=x.doktori;
+    let url: string = MyConfig.adresa_servera + `/doktor-getAll`;
+    this.httpClient.get<DoktorGetAllResponse>(url).subscribe(x => {
+      this.doktori = x.doktori;
     })
   }
 
   GetAllKorisnike() {
-    this.korisnikDomaService.GetAllKorisnici().subscribe(x=>{
-      this.korisniciDoma=x.korisnici;
+    let url = MyConfig.adresa_servera + `/korisnikDoma-getAll`
+    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x: KorisnikDomaGetAllResponse) => {
+      this.korisniciDoma = x.korisnici;
     })
   }
 
 
   GetAllTerapijeLijekovi() {
-    this.terapijaService.GetAllTerapije().subscribe(x => {
+    let url: string = MyConfig.adresa_servera + `/terapijaLijek/getAll`;
+    this.httpClient.get<TerapijaLijekGetAllResponse>(url).subscribe(x => {
       this.terapijeLijekovi = x.terapijeLijekovi
     })
   }
@@ -161,27 +145,23 @@ export class TerapijaComponent implements OnInit {
     const dialogRef: MatDialogRef<WarningDialogComponent, boolean> = this.openWarningDialog('Da li ste sigurni da želite izbrisati terapiju?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.terapijaService.IzbrisiTerapiju(item).subscribe(
+        let url: string = MyConfig.adresa_servera + `/terapijaLijek/obrisi`;
+        const params = new HttpParams().set('terapijaId', item.terapijaId);
+        this.httpClient.delete(url, {params}).subscribe(
           response => () => {
-            this.myAlert.showSuccess("Uspješno obrisana terapija")
-            setTimeout(() => {
-              this.GetAllTerapijeLijekovi();
-              this.getFiltriraneTerapije();
-            }, 3000);
+            console.log("Deleted item")
           },
           (error: any) => {
             console.error('Error:', error);
 
             if (error.status === 500) {
-              this.myAlert.showError('Nije moguće izbrisati ovu terapiju');
+              alert('Nije moguće izbrisati ovu terapiju');
+              console.error('Handle 500 error here');
             } else {
               // Handle other errors
               alert('An error occurred.');
             }
           })
-        setTimeout(() => {
-          this.GetAllTerapijeLijekovi();
-        }, 3000);
       }
     });
   }
@@ -201,21 +181,12 @@ export class TerapijaComponent implements OnInit {
       vremenskiInterval: item.terapija.vremenskiInterval,
       doktorId: item.terapija.doktorId,
       korisnikDomaID: item.terapija.korisnikDomaID,
-      lijekovi: this.Listalijekova
+      lijekovi:this.Listalijekova
 
     };
   }
 
-  getLijekoviZaTerapiju(terapijaId: number) {
 
-    const filtriraneTerapije = this.getFiltriraneTerapije();
-
-    const lijekoviZaTerapiju = filtriraneTerapije
-      .filter(terapijaLijekObj => terapijaLijekObj.terapijaLijek.terapija.terapijaId === terapijaId)
-      .map(terapijaLijekObj => terapijaLijekObj.lijekovi);
-
-    return lijekoviZaTerapiju;
-  }
   Update() {
     if(this.odabranaTerapija)
     {
@@ -229,16 +200,17 @@ export class TerapijaComponent implements OnInit {
         lijekovi:this.Listalijekova
       }
     }
-    this.terapijaService.UpdateTerapiju(this.terapijaUpdateRequest).subscribe(request => {
-      this.myAlert.showSuccess("Terapija uspješno ažurirana ")
+
+    let url: string = MyConfig.adresa_servera + `/terapijaLijek/update`;
+    console.log(this.terapijaUpdateRequest)
+    this.httpClient.post(url, this.terapijaUpdateRequest).subscribe(request => {
+      console.log("Terapija updateovana ", request)
     })
 
     this.odabranaTerapija=null;
-    this.Listalijekova=[];
-
     setTimeout(() => {
-      this.GetAllTerapijeLijekovi();
-    }, 3000);
+      this.ngOnInit();
+    }, 5000);
   }
 
   DodajNoviLijek() {
@@ -246,22 +218,19 @@ export class TerapijaComponent implements OnInit {
   }
 
   DodajLijek() {
-    if (this.lijekForma.valid) {
-      this.lijekService.DodajLijek(this.lijekForma.value).subscribe(response => {
-        this.myAlert.showSuccess("Lijek uspješno dodan");
-      });
+    let url = MyConfig.adresa_servera + `/lijek/dodaj`;
+    console.log(this.lijekRequest);
+    this.httpClient.post(url, this.lijekRequest).subscribe(response => {
+      console.log("Lijek uspjesno dodan");
+    });
 
-      setTimeout(() => {
-        this.ngOnInit();  
-      }, 3000);
+    setTimeout(() => {
+      this.ngOnInit();
+    }, 5000); // 5000 milisekundi = 5 sekundi
 
-      this.isKliknutoDugme = false;
-    } else {
+    this.isKliknutoDugme = false;
 
-      this.isKliknutoDugme = true;
-    }
   }
-
 
   PregledajLijekove() {
     this.router.navigate(["/lijek"])
@@ -273,6 +242,7 @@ export class TerapijaComponent implements OnInit {
     let lijekId = this.lijekovi.find(x => x.naziv===lijek.naziv)?.lijekId;
     if (lijekId != undefined)
       this.Listalijekova.push(lijekId);
+    console.log(this.Listalijekova);
     this.odabraniNazivLijeka="";
     this.odabraniNazivLijekaDialog="";
 

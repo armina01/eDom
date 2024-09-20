@@ -16,7 +16,7 @@
   <div class="form-group">
     <label for="verificationCode" class="custom-label">Ukucaj kod</label>
 
-    <input type="text" class="form-control custom-input" id="verificationCode" [ngModel]="Auth2FOtkljucajRequest.kljuc">
+    <input type="text" class="form-control custom-input" id="verificationCode" [ngModelOptions]="{standalone: true}" [(ngModel)]="kljuc">
   </div>
 
   <button class="btn btn-success custom-btn" (click)="PotvrdiSifru()">Verify</button>

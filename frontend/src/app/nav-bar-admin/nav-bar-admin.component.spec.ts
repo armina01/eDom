@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AlertComponent } from './alert.component';
+import { NavBarAdminComponent } from './nav-bar-admin.component';
 
-describe('AlertComponent', () => {
-  let component: AlertComponent;
-  let fixture: ComponentFixture<AlertComponent>;
+describe('NavBarAdminComponent', () => {
+  let component: NavBarAdminComponent;
+  let fixture: ComponentFixture<NavBarAdminComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AlertComponent]
+      imports: [NavBarAdminComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(AlertComponent);
+    fixture = TestBed.createComponent(NavBarAdminComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

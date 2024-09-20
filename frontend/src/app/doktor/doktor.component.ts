@@ -13,44 +13,17 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DoktorGetAllResponse, DoktorGetAllResponseDoktor} from "./doktorGetAllResponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {DoktorUpdateRequest} from "./doktorUpdateRequest";
-import {DoktorService} from "../Services/DoktorService";
-import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import {AlertService} from "../Services/AlertService";
 
 @Component({
   selector: 'app-doktor',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule],
-    providers: [DoktorService],
+    imports: [CommonModule, FormsModule,HttpClientModule],
   templateUrl: './doktor.component.html',
   styleUrl: './doktor.component.css'
 })
 export class DoktorComponent implements OnInit{
 
-    doktorForm: FormGroup;
-    updateForm: FormGroup;
-    constructor(private fb: FormBuilder, public httpClient: HttpClient,private dialog: MatDialog, private doktorService: DoktorService, private myAlert:AlertService) {
-      this.doktorForm = this.fb.group({
-        imePrezime: ['', Validators.required],
-        jmbg: ['', [Validators.required, Validators.pattern('^[0-9]{13}$')]],
-        datumRodjenja: ['', Validators.required],
-        datumZaposlenja: ['', Validators.required],
-        nazivKlinike: ['', Validators.required],
-        oblastMedicine: ['', Validators.required],
-        specijalizacija: ['', Validators.required],
-        poslovnaPozicijaId: ['', Validators.required]
-      });
-
-      this.updateForm = this.fb.group({
-        imePrezime: ['', Validators.required],
-        jmbg: ['', [Validators.required, Validators.pattern('^[0-9]{13}$')]],
-        datumRodjenja: ['', Validators.required],
-        datumZaposlenja: ['', Validators.required],
-        nazivKlinike: ['', Validators.required],
-        oblastMedicine: ['', Validators.required],
-        specijalizacija: ['', Validators.required],
-        poslovnaPozicijaId: ['', Validators.required]
-      });
+    constructor(public httpClient: HttpClient,private dialog: MatDialog) {
     }
 
     ngOnInit(): void {
@@ -62,8 +35,6 @@ export class DoktorComponent implements OnInit{
 
     poslovnePozicije:GetAllPoslovnaPozicijaResponsePoslovnaPozicija[]=[];
     allDoktori:DoktorGetAllResponseDoktor[]=[];
-    public odabraniDoktor:DoktorGetAllResponseDoktor | null=null;
-    public prikaziTabelu:boolean=false;
 
     public doktorRequest: DoktorRequest = {
     imePrezime: "",
@@ -100,24 +71,19 @@ export class DoktorComponent implements OnInit{
 
 
     Dodaj() {
-
-      if (this.doktorForm.valid) {
-        this.doktorService.DodajDoktora(this.doktorForm.value).subscribe((request: any) => {
-          this.myAlert.showSuccess("Doktor uspješno dodan");
+      let url=MyConfig.adresa_servera + `/Doktor-dodaj`;
+      console.log(this.doktorRequest);
+        this.httpClient.post(url, this.doktorRequest).subscribe(response=>{
+          console.log("Doktor uspjesno dodan");
         });
-      } else {
-        this.myAlert.showError("Podaci za unos nisu validni");
-      }
-
     }
 
 
     GetAllDoktori() {
-
-       this.doktorService.GetAllDoktori().subscribe(x=>{
-         this.allDoktori = x.doktori;
-       })
-
+        let url: string = MyConfig.adresa_servera + `/doktor-getAll`;
+        this.httpClient.get<DoktorGetAllResponse>(url).subscribe(x => {
+            this.allDoktori = x.doktori;
+        })
     }
 
     getAllDoktori() {
@@ -127,16 +93,17 @@ export class DoktorComponent implements OnInit{
       const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
       dialogRef.afterClosed().subscribe(res => {
         if (res) {
-          this.doktorService.IzbrisiDoktora(item).subscribe(
+          let url: string = MyConfig.adresa_servera + `/doktor-obrisi`;
+          const params = new HttpParams().set('ZaposlenikId', item.zaposlenikId);
+          this.httpClient.delete(url, {params}).subscribe(
             response => () => {
-              this.getAllDoktori(); // ili samo ispisat da je uspjesno izgrisano
-              this.myAlert.showSuccess("Uspješno obrisan doktor");
+              console.log("Deleted item")
             },
             (error: any) => {
               console.error('Error:', error);
 
               if (error.status === 500) {
-                this.myAlert.showError('Nije moguće izbrisati ovaj korisnički nalog');
+                alert('Nije moguće izbrisati ovaj korisnički nalog');
                 console.error('Handle 500 error here');
               } else {
                 // Handle other errors
@@ -153,59 +120,38 @@ export class DoktorComponent implements OnInit{
     });
   };
     Odaberi(item: DoktorGetAllResponseDoktor) {
+      this.doktorRequest.imePrezime=item.imePrezime
+      this.doktorRequest.jmbg=item.jmbg
+      this.doktorRequest.datumRodjenja=item.datumRodjenja
+      this.doktorRequest.datumZaposlenja=item.datumZaposlenja
+      this.doktorRequest.specijalizacija=item.specijalizacija
+      this.doktorRequest.oblastMedicine=item.oblastMedicine
+      this.doktorRequest.nazivKlinike=item.nazivKlinike
+      this.doktorRequest.poslovnaPozicijaId=item.poslovnaPozicijaId
+      this.updateDoktorRequest.zaposlenikId=item.zaposlenikId
 
-      this.odabraniDoktor = item;
-
-      this.updateForm.patchValue({
-        imePrezime: this.odabraniDoktor.imePrezime,
-        jmbg: this.odabraniDoktor.jmbg,
-        datumRodjenja: this.odabraniDoktor.datumRodjenja,
-        datumZaposlenja: this.odabraniDoktor.datumZaposlenja,
-        nazivKlinike: this.odabraniDoktor.nazivKlinike,
-        oblastMedicine: this.odabraniDoktor.oblastMedicine,
-        specijalizacija: this.odabraniDoktor.specijalizacija,
-        poslovnaPozicijaId:this.odabraniDoktor.poslovnaPozicijaId
-      });
 
     }
 
   Update() {
+    this.updateDoktorRequest.imePrezime=this.doktorRequest.imePrezime
+    this.updateDoktorRequest.jmbg=this.doktorRequest.jmbg
+    this.updateDoktorRequest.datumRodjenja=this.doktorRequest.datumRodjenja
+    this.updateDoktorRequest.datumZaposlenja=this.doktorRequest.datumZaposlenja
+    this.updateDoktorRequest.specijalizacija=this.doktorRequest.specijalizacija
+    this.updateDoktorRequest.oblastMedicine=this.doktorRequest.oblastMedicine
+    this.updateDoktorRequest.nazivKlinike=this.doktorRequest.nazivKlinike
+    this.updateDoktorRequest.poslovnaPozicijaId=this.doktorRequest.poslovnaPozicijaId
 
-    if (this.updateForm.invalid) {
-      this.updateForm.markAllAsTouched();
-      return;
-    }
-
-    if (this.odabraniDoktor !== null) {
-      this.odabraniDoktor.imePrezime = this.updateForm.get('imePrezime')?.value || '';
-      this.odabraniDoktor.jmbg = this.updateForm.get('jmbg')?.value || '';
-      this.odabraniDoktor.datumRodjenja = this.updateForm.get('datumRodjenja')?.value || '';
-      this.odabraniDoktor.datumZaposlenja = this.updateForm.get('datumZaposlenja')?.value || '';
-      this.odabraniDoktor.nazivKlinike = this.updateForm.get('nazivKlinike')?.value || '';
-      this.odabraniDoktor.oblastMedicine = this.updateForm.get('oblastMedicine')?.value || '';
-      this.odabraniDoktor.specijalizacija = this.updateForm.get('specijalizacija')?.value || '';
-      this.odabraniDoktor.poslovnaPozicijaId=this.updateForm.get('poslovnaPozicijaId')?.value || '';
-
-
-      this.doktorService.UpdateDoktora(this.odabraniDoktor).subscribe(
-        response => {
-          this.myAlert.showSuccess("Uspješno ažuriran doktor");
-          this.OcistiFormu();
-          this.odabraniDoktor=null;
-        },
-        error => {
-          this.myAlert.showError("Greška prilikom ažuriranja");
-        }
-      );
-    }
+    let url: string = MyConfig.adresa_servera + `/doktor-update`;
+    console.log(this.updateDoktorRequest)
+    this.httpClient.post(url, this.updateDoktorRequest).subscribe(request => {
+      console.log("Doktor updateovan ", request)
+    })
   }
 
-  OcistiFormu(): void {
-    this.updateForm.reset();
-  }
 
   Prikazi() {
     this.GetAllDoktori();
-    this.prikaziTabelu=true;
   }
 }

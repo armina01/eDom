@@ -1,11 +1,8 @@
 ﻿using DomZaStaraLicaApi.Data;
 using DomZaStaraLicaApi.Data.Models;
 using DomZaStaraLicaApi.Helper;
-using DomZaStaraLicaApi.SignalR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
 {
@@ -13,11 +10,9 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
     public class LogInEndpoint : MyBaseEndpoint<LoginRequest, LogInResponse>
     {
         private readonly ApplicationDbContext _applicationDbContext;
-        private readonly IHubContext<SignalRHub> _hubContext;
-        public LogInEndpoint(ApplicationDbContext applicationDbContext, IHubContext<SignalRHub> hubContext)
+        public LogInEndpoint(ApplicationDbContext applicationDbContext)
         {
             _applicationDbContext = applicationDbContext;
-            _hubContext = hubContext;   
         }
         [HttpPost]
         public override async Task<LogInResponse> Obradi([FromBody] LoginRequest request)
@@ -48,11 +43,6 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
             };
             _applicationDbContext.Add(noviToken);
              await _applicationDbContext.SaveChangesAsync();
-
-            await _hubContext.Groups.AddToGroupAsync(
-          request.SignalRConnectionID,
-          noviToken.korisnickiNalog.KorisnickoIme
-          ); 
             return new LogInResponse { LogInInformacija = new MyAuthInfo(noviToken) };
         }
         

@@ -9,7 +9,7 @@ namespace DomZaStaraLicaApi.Endpoints.Napomena.Dodaj
         public bool Prioritet { get; set; }
         public bool isAktivna { get; set; }
         public DateTime DatumPostavke { get; set; }
-        //public DateTime? DatumIsteka { get; set; }
+        public DateTime? DatumIsteka { get; set; }
         public int ZaposlenikId { get; set; }
         public int KorisnikDomaID { get; set; }
         public int VrstaNapomeneId { get; set; }

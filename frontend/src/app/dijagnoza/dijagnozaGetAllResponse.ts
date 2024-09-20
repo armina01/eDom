@@ -7,7 +7,7 @@ export interface DijagnozaGetAllResponseDijagnoza
   dijagnozaId: number
   nazivBolesti: string
   opis: string
-  datumDijagnoze: string
+  datumDijagnoze: Date
   zaposlenikId: number
   korisnikDomaID: number
 }

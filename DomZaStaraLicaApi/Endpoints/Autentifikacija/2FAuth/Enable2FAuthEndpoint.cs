@@ -40,6 +40,7 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija._2FAuth
             {
                 ipAdresa = Request.HttpContext.Connection.RemoteIpAddress?.ToString(),
                 vrijednost = randomString,
+                KorisnickiNalogId = user.NalogId,
                 korisnickiNalog = user,
                 vrijemeEvidentiranja = DateTime.Now,
                 TwoFKey = secret
