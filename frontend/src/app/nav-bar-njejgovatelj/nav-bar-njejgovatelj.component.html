@@ -17,11 +17,17 @@
         </table>
       </div>
     </div>
-    <ul class="nav-links ">
+
+    <!-- Hamburger button for mobile view -->
+    <div class="hamburger-menu" (click)="toggleDropdown()">
+      <span>&#9776;</span>
+    </div>
+
+    <ul class="nav-links" [ngClass]="{ 'responsive': isMenuOpen }">
       <li><a (click)="IdiPregledKorisnika()">Korisnici doma</a></li>
-      <li class="Zadaci"><a (click)="IdiDodajZadatke()"> Dodaj Zadatke</a></li>
+      <li class="Zadaci"><a (click)="IdiDodajZadatke()">Zadaci</a></li>
       <li><a (click)="IdiPocetna()">Odjavi se</a></li>
-    </ul>
+     </ul>
 
     <div class="profile" (click)="PregledOMeni()">
       <span class="far fa-user"></span>

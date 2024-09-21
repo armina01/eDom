@@ -8,7 +8,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="Otkazi()"></button>
         </div>
         <div class="modal-body center-content">
-          <label>Enter your current password:</label>
+          <label>Ukucaj trenutnu lozinku:</label>
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text">
@@ -17,14 +17,14 @@
             </div>
             <input type="password" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="staraLozinka" />
           </div>
-          <div class="error-message" *ngIf="showErrorNePostojiNalog">Invalid password</div>
+          <div class="error-message" *ngIf="showErrorNePostojiNalog">Pogresna lozinka</div>
           <button type="button" class="btn btn-primary mt-2" (click)="ProvjeriLozinku()">Potvrdi</button>
 
           <div class="modal-body" *ngIf="showPromijeniLozinku">
-            <label>Enter your new password:</label>
+            <label>Ukucaj novu lozinku:</label>
             <input type="password" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="novaLozinka" />
 
-            <label>Confirm your new password:</label>
+            <label>Potvrdite novu lozinku:</label>
             <input type="password" class="form-control" [ngModelOptions]="{standalone:true}" [(ngModel)]="novaLozinkaPotvrda" />
 
             <div class="error-message" *ngIf="lozicnkeNotMatching">Lozinke se ne podudaraju!</div>

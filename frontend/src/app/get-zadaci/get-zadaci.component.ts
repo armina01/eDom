@@ -83,7 +83,9 @@ export class GetZadaciComponent {
       this.korisnik=x.korisnici.find(x=>x.korisnikDomaID===this._korisnikDomaId) ;
     })
 
+    this.PronadjiKorisnika();
   }
+
   showOpsti:boolean=false;
   showFizijatrijski=false;
   showMedicinski=false;
@@ -231,7 +233,7 @@ export class GetZadaciComponent {
     }
     this.opstiZadatak= this.zadaci.filter(x=>x.vrstaZadatkaId===this.OpstiZadatakId &&
       x.korisnikDomaId===this._korisnikDomaId)
-    this.ngOnInit();
+
   }
   public showEmpty=false;
   DodajZadatak(data:DodajZadatakRequest){

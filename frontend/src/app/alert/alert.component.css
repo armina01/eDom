@@ -1,0 +1,16 @@
+.modal-dialog {
+  position: fixed; /* Fiksiran u odnosu na prozor */
+  top: 50%; /* Postavlja modal 50% od vrha prozora */
+  left: 50%; /* Postavlja modal 50% od lijevog ruba prozora */
+  transform: translate(-50%, -50%); /* Pomjera modal natrag za 50% svoje visine i širine da bude centriran */
+  z-index: 1050; /* Povećan z-index kako bi bio iznad drugih elemenata */
+  background-color: white; /* Dodaj pozadinu modalu */
+  padding: 20px; /* Opcionalno: Dodaj padding */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Opcionalno: Dodaj sjenku */
+  width: 80%; /* Opcionalno: Kontroliši širinu modal dijaloga */
+  max-width: 600px; /* Opcionalno: Ograniči maksimalnu širinu */
+}
+
+.modal-body {
+  text-align: center; /* Centriraj sadržaj unutar modal-body */
+}

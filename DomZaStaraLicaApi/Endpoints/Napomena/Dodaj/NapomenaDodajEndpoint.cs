@@ -29,9 +29,22 @@ namespace DomZaStaraLicaApi.Endpoints.Napomena.Dodaj
                 VrstaNapomeneId=request.VrstaNapomeneId
                 
             };
-            _applicationDbContext.Napomena.Add(newObj);
 
+
+            _applicationDbContext.Napomena.Add(newObj);
             await _applicationDbContext.SaveChangesAsync();
+
+            var korisnik = _applicationDbContext.KorisnikDoma.Find(request.KorisnikDomaID);
+
+
+            var njegovatelji = await _applicationDbContext.KorisnickiNalog
+            .Where(zaposlenik => zaposlenik.JeNjegovatelj).Select(x => x.KorisnickoIme)
+            .ToListAsync();
+
+            foreach (var njegovatelj in njegovatelji)
+            {
+                await _hubContext.Clients.Group(njegovatelj).SendAsync("dodana_nova_napomena", newObj.Opis + " za korisnika " + korisnik.ImePrezime);
+            }
 
             return new NapomenaDodajResponse
             {

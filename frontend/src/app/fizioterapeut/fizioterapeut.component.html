@@ -1,4 +1,17 @@
 <h2>Dodavanje fizioterapeuta</h2>
+<div *ngIf="showFirstForm" style="width: 80%; margin: 0 auto;">
+  <ul class="nav nav-tabs" id="fizioterapeutiTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="dodaj-tab" data-bs-toggle="tab" href="#dodaj" role="tab" aria-controls="dodaj" aria-selected="true">
+        Dodaj fizioterapeuta
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="pregled-tab" data-bs-toggle="tab" href="#pregled" role="tab" aria-controls="pregled" aria-selected="false">
+        Pretraga
+      </a>
+    </li>
+  </ul>
 
 <form #FizioterapeutForma="ngForm" >
   <div>

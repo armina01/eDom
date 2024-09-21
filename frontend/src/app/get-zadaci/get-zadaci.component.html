@@ -1,5 +1,9 @@
 <app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
 <br/>
+<div class="card">
+  <div class="card-header">
+    <h3 class="Naslov"><i class="fa-solid fa-list-check"></i>Upravljanje zadacima za korisnika {{korisnik?.imePrezime}}</h3>
+  </div>
 <H4 class="Naslov"><i class="fa-solid fa-list-check"></i>Upravljanje zadacima za korisnika {{korisnik?.imePrezime}}</H4>
 <div class="form-group">
   <div class="container mt-4">
@@ -9,11 +13,6 @@
         <div class="input-group" id="datumZadatkaDiv">
           <input type="date" class="form-control" id="datumZadatka"
                  [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDatum" (change)="RefreshOpstiZadaci()">
-          <div class="input-group-append">
-                <span class="input-group-text" id="basic-addon1">
-                    <i class="fas fa-calendar-alt"></i>
-                </span>
-          </div>
         </div>
       </div>
     </div>
@@ -200,5 +199,6 @@
   </table>
       </div>
   </div>
+</div>
 </div>
 

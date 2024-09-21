@@ -1,5 +1,5 @@
-<form #updateForm="ngForm"  name="dijagnozaUpdForm">
-<div *ngIf="odabranaDijagnoza">
+<app-nav-bar-doktor></app-nav-bar-doktor>
+<form [formGroup]="updateForm" *ngIf="odabranaDijagnoza" name="dijagnozaUpdForm">
   <div class="modal fade show" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-modal="true" role="dialog" style="display: block;">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -8,51 +8,43 @@
           <button type="button" (click)="odabranaDijagnoza = null" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-
           <div class="mb-3">
-            <label for="dijagnozaId" class="form-label">ID:</label>
-            <input id="dijagnozaId" class="form-control" [value]="odabranaDijagnoza.dijagnozaId" disabled>
+            <label for="nazivBolesti1" class="form-label">Naziv bolesti:</label>
+            <input id="nazivBolesti1" formControlName="nazivBolesti" class="form-control" />
+            <div *ngIf="updateForm.controls['nazivBolesti'].invalid && updateForm.controls['nazivBolesti'].touched" class="text-danger">
+              Naziv bolesti je obavezan.
+            </div>
           </div>
-
           <div class="mb-3">
-            <label for="nazivBolesti" class="form-label">Naziv bolesti:</label>
-            <input id="nazivBolestiUpd" class="form-control" [(ngModel)]="odabranaDijagnoza.nazivBolesti">
+            <label for="opis1" class="form-label">Opis:</label>
+            <input id="opis1" formControlName="opis" class="form-control" />
+            <div *ngIf="updateForm.controls['opis'].invalid && updateForm.controls['opis'].touched" class="text-danger">
+              Opis je obavezan.
+            </div>
           </div>
-
           <div class="mb-3">
-            <label for="opis" class="form-label">Opis:</label>
-            <input id="opisUpd" class="form-control" [(ngModel)]="odabranaDijagnoza.opis">
+            <label for="datumDijagnoze1" class="form-label">Datum uspostavljanja dijagnoze:</label>
+            <input type="date" id="datumDijagnoze1" formControlName="datumDijagnoze" class="form-control" />
+            <div *ngIf="updateForm.controls['datumDijagnoze'].invalid && updateForm.controls['datumDijagnoze'].touched" class="text-danger">
+              Datum uspostavljanja dijagnoze je obavezan.
+            </div>
           </div>
-
           <div class="mb-3">
-            <label for="datumDijagnoze" class="form-label">Datum uspostavljanja dijagnoze:</label>
-            <input id="datumDijagnozeUpd" class="form-control" [(ngModel)]="odabranaDijagnoza.datumDijagnoze">
+            <label for="file1" class="form-label"><i class="bi bi-file-earmark-text"></i> Nalaz korisnika</label>
+            <div>
+              <input type="file" id="file1" (change)="onFileSelected($event)" class="form-control" />
+            </div>
           </div>
-
-          <div class="mb-3">
-            <label for="korisnikDomaID" class="form-label">Korisnik doma:</label>
-            <select id="korisnikDomaID" class="form-select" [(ngModel)]="odabranaDijagnoza.korisnikDomaID" disabled>
-              <option *ngFor="let item of korisniciDoma" [value]="item.korisnikDomaID">{{item.imePrezime}}</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label for="zaposlenikId" class="form-label">Doktor:</label>
-            <select id="zaposlenikId" class="form-select" [(ngModel)]="odabranaDijagnoza.zaposlenikId" disabled>
-              <option *ngFor="let item of doktori" [value]="item.zaposlenikId">{{item.imePrezime}}</option>
-            </select>
-          </div>
-
           <div class="modal-footer">
-            <button type="button" (click)="odabranaDijagnoza = null" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" (click)="Update()" class="btn btn-primary">Save changes</button>
+            <button type="button" (click)="odabranaDijagnoza = null" class="btn btn-secondary" data-bs-dismiss="modal">Zatvori</button>
+            <button type="button" (click)="Update()" class="btn btn-primary" [disabled]="updateForm.invalid">Spasi</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </form>
+
 
 <div class="container mt-4">
   <ul class="nav nav-tabs">
@@ -62,28 +54,27 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-bs-toggle="tab" href="#pretragaTerapija">
-        <i class="bi bi-search"></i> Prgled dijagnoza
+      <a class="nav-link" data-bs-toggle="tab" href="#pregledDijagnoza">
+        <i class="bi bi-search"></i> Pregled dijagnoza
       </a>
     </li>
   </ul>
 
-  <div class="tab-content mt-3">
-    <!-- Dodavanje dijagnoza -->
+  <div class="tab-content">
+    <!-- Dodavanje dijagnoze -->
     <div class="tab-pane fade show active" id="dodavanjeDijagnoze">
-      <!-- Ostatak koda za dodavanje dijagnoze... -->
       <div class="container mt-4">
         <div class="card">
-          <div class="card-header bg-primary text-white">
+          <div class="card-header">
             <h1 class="fs-5"><i class="bi bi-file-plus"></i> Dodavanje dijagnoze</h1>
           </div>
           <div class="card-body">
-            <form #DijagnozaForma="ngForm" name="dijagnozaForm">
+            <form [formGroup]="dijagnozaForm" (ngSubmit)="Dodaj()">
               <div class="mb-3">
                 <label for="nazivBolesti" class="form-label"><i class="bi bi-file-text"></i> Naziv bolesti</label>
                 <div>
-                  <input type="text" id="nazivBolesti" name="nazivBolesti" class="form-control" [(ngModel)]="dijagnozaRequest.nazivBolesti">
-                  <div *ngIf="!dijagnozaRequest.nazivBolesti" class="text-danger small">
+                  <input type="text" id="nazivBolesti" formControlName="nazivBolesti" class="form-control">
+                  <div *ngIf="dijagnozaForm.get('nazivBolesti')?.invalid && dijagnozaForm.get('nazivBolesti')?.touched" class="text-danger small">
                     * Obavezno polje
                   </div>
                 </div>
@@ -91,45 +82,49 @@
               <div class="mb-3">
                 <label for="opis" class="form-label"><i class="bi bi-file-text"></i> Opis</label>
                 <div>
-                  <input type="text" id="opis" name="opis" class="form-control" [(ngModel)]="dijagnozaRequest.opis">
-                  <div *ngIf="!dijagnozaRequest.opis" class="text-danger small">
+                  <input type="text" id="opis" formControlName="opis" class="form-control">
+                  <div *ngIf="dijagnozaForm.get('opis')?.invalid && dijagnozaForm.get('opis')?.touched" class="text-danger small">
                     * Obavezno polje
                   </div>
                 </div>
               </div>
               <div class="mb-3">
-                <label for="datumDijagnoze" class="form-label"><i class="bi bi-calendar"></i> Datum uspostavljanja dijagnoze</label>
+                <label for="datumDijagnoze" class="form-label">
+                  <i class="bi bi-calendar"></i> Datum uspostavljanja dijagnoze
+                </label>
                 <div>
-                  <input type="date" id="datumDijagnoze" name="datumDijagnoze" class="form-control" [(ngModel)]="dijagnozaRequest.datumDijagnoze">
+                  <input type="date" id="datumDijagnoze" formControlName="datumDijagnoze" class="form-control">
                 </div>
               </div>
               <div class="mb-3">
                 <label for="file" class="form-label"><i class="bi bi-file-earmark-text"></i> Nalaz korisnika</label>
                 <div>
-                  <input type="file" id="file" name="file" class="form-control" (change)="onFileSelected($event)" required />
+                  <input type="file" id="file" (change)="onFileSelected($event)" class="form-control" />
                 </div>
               </div>
               <div class="mb-3">
                 <label for="cmbKorisnik" class="form-label"><i class="bi bi-person"></i> Izaberite korisnika doma:</label>
                 <div>
-                  <select id="cmbKorisnik" class="form-select" [ngModelOptions]="{standalone: true}" [(ngModel)]="dijagnozaRequest.korisnikDomaID">
-                    <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime}}</option>
+                  <select id="cmbKorisnik" formControlName="korisnikDomaID" class="form-select">
+                    <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime }} </option>
                   </select>
                 </div>
               </div>
+              <!--
               <div class="mb-3">
                 <label for="cmbDoktor" class="form-label"><i class="bi bi-person"></i> Doktor:</label>
                 <div>
-                  <select id="cmbDoktor" class="form-select" [ngModelOptions]="{standalone: true}" [(ngModel)]="dijagnozaRequest.zaposlenikId">
-                    <option *ngFor="let option of doktori" [ngValue]="option.zaposlenikId">{{ option.imePrezime}}</option>
+                  <select id="cmbDoktor" formControlName="zaposlenikId" class="form-select">
+                    <option *ngFor="let option of doktori" [ngValue]="option.zaposlenikId">{{ option.imePrezime }}</option>
                   </select>
                 </div>
               </div>
-              <div class="mb-3">
-                <button (click)="Dodaj()" class="btn btn-success mb-2" style="background-color: #28a745;">
-                  <i class="bi bi-plus-circle"></i> Dodaj
+              -->
+              <div class="text-center">
+                <button type="submit" class="btn btn-success" [disabled]="dijagnozaForm.invalid" style="background-color: #28a745;">
+                  <i class="far fa-plus-square"></i> Dodaj
                 </button>
-                <!-- Dijalog -->
+                <!-- Dijalog
                 <div *ngIf="showConfirmationDialog" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="confirmationDialogLabel" aria-modal="true" style="display: block;">
                   <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content bg-success text-white">
@@ -140,7 +135,7 @@
                       </div>
                     </div>
                   </div>
-                </div>
+                </div>  -->
               </div>
             </form>
           </div>
@@ -148,48 +143,62 @@
       </div>
     </div>
 
-    <!-- Pretraga dijagnoza -->
-    <div class="tab-pane fade" id="pretragaTerapija">
-      <!-- Ostatak koda za pretragu dijagnoza... -->
+    <!-- Pregled dijagnoza -->
+    <div class="tab-pane fade" id="pregledDijagnoza">
       <div class="container mt-4">
         <div class="card">
-          <div class="card-header bg-primary text-white">
-            <h1 class="fs-5"> Pregled dijagnoze</h1>
+          <div class="card-header">
+            <h1 class="fs-5"><i class="bi bi-search"></i> Pregled dijagnoza</h1>
           </div>
-          <form #PregledForma="ngForm" name="PregledDijagnozeForm">
           <div class="card-body">
-            <div class="mb-3">
-              <label for="cmbKorisnikPretraga" class="form-label">Izaberite korisnika doma:</label>
-              <select id="cmbKorisnikPretraga" [ngModelOptions]="{standalone: true}" [(ngModel)]="pretragaPoKorisniku" class="form-select">
-                <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime}}</option>
-              </select>
-            </div>
-          </div>
-          </form>
-          <div class="row row-cols-1 g-4">
-            <div *ngFor="let item of getFiltriraneDijagnoze()" class="col">
-              <div class="card" style="width: 100%;">
-                <div class="card-body">
-                  <h5 class="card-title">{{ item.nazivBolesti }}</h5>
-                  <p class="card-text"><strong>Opis: </strong>{{ item.opis }}</p>
-                  <p class="card-text"><strong>Datum uspostavljanja dijagnoze: </strong>{{ item.datumDijagnoze | date }}</p>
-                  <p class="card-text"><strong> Ime doktora:</strong>
-                    <span *ngFor="let doktor of doktori">
-            <ng-container *ngIf="item.zaposlenikId == doktor.zaposlenikId">
-              {{ doktor.imePrezime }}
-            </ng-container>
-          </span>
-                  </p>
-                  <div class="btn-group" role="group" aria-label="Akcije">
-                    <button class="btn btn-light border border-primary" style="margin-right: 15px;"(click)="downloadFile(item.dijagnozaId)">
-                      <i class="bi bi-download"></i> Preuzmi nalaz
-                    </button>
-                    <button type="submit" class="btn btn-primary" style="background-color: red; margin-right: 15px;" (click)="Obrisi(item)">
-                      <i class="bi bi-x"></i> Izbriši dijagnozu
-                    </button>
-                    <button type="submit" class="btn btn-primary" style="background-color: blue; margin-right: 15px;" (click)="Odaberi(item)">
-                      <i class="bi bi-pencil"></i> Update dijagnozu
-                    </button>
+            <form #PregledForma="ngForm" name="PregledDijagnozeForm">
+              <div class="mb-3">
+                <label for="cmbKorisnikPretraga" class="form-label">Izaberite korisnika doma:</label>
+                <select id="cmbKorisnikPretraga" [ngModelOptions]="{standalone: true}" [(ngModel)]="pretragaPoKorisniku" class="form-select">
+                  <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime }}</option>
+                </select>
+              </div>
+            </form>
+            <div class="row row-cols-1 g-4">
+              <div *ngFor="let item of getFiltriraneDijagnoze()" class="col">
+                <div class="card" style="width: 100%;">
+                  <div class="card-body"><div>
+                    <h5 class="card-title">
+                      {{ item.nazivBolesti }}
+                    </h5>
+                    <p class="card-text">
+                      <i class="bi bi-info-circle me-2"></i>
+                      <strong>Opis: </strong>{{ item.opis }}
+                    </p>
+                    <p class="card-text">
+                      <i class="bi bi-calendar-event me-2"></i>
+                      <strong>Datum uspostavljanja dijagnoze: </strong>{{ item.datumDijagnoze | date }}
+                    </p>
+                    <p class="card-text">
+                      <i class="bi bi-person me-2"></i>
+                      <strong>Ime doktora:</strong>
+                      <span *ngFor="let doktor of doktori">
+                        <ng-container *ngIf="item.zaposlenikId == doktor.zaposlenikId">
+                        {{ doktor.imePrezime }}
+                        </ng-container>
+                      </span>
+                    </p>
+                  </div>
+                  <br>
+                    <div class="btn-group" role="group" aria-label="Akcije">
+                      <button class="btn btn-light border border-primary" style="margin-right: 15px;" (click)="downloadFile(item.dijagnozaId)">
+                        <i class="bi bi-download"></i> Preuzmi nalaz
+                      </button>
+                      <button type="submit" class="btn btn-danger"  style="margin-right: 15px" (click)="deleteFile(item.dijagnozaId)">
+                        <i class="bi bi-x"></i> Izbriši nalaz
+                      </button>
+                      <button type="button" class="btn btn-primary" style="margin-right: 15px" (click)="Odaberi(item)">
+                        <i class="bi bi-pencil"></i> Update dijagnozu
+                      </button>
+                      <button type="button" style="margin-right: 15px" class="btn btn-danger" (click)="Obrisi(item)">
+                        <i class="bi bi-trash"></i> Izbriši dijagnozu
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

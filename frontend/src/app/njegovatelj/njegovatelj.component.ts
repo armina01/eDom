@@ -173,18 +173,17 @@ export class NjegovateljComponent {
   }
   prikaziErrorNalog:boolean=false
   AddKorisnickiNalog(): void {
-    this.korisnickiNalogService.DodajKorisnickiNalog(this.korisnickiNalogRequest).subscribe({
-      next: (request) => {
-        console.log("Request", request)
-        this.prikaziErrorNalog = false;
-        this.showError = false;
-        this.njegovatelj.nalogId = request.korisnikId
-        this.UpdateNjegovatelj();
-      }, error: (err) => {
-        console.error("Error in DodajKorisnickiNalog: ", err);
-        // Handle the error here (e.g., set flags to show errors in UI)
-      }
-    });
+console.log(this.korisnickiNalogRequest);
+    this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
+      console.log("Request",request)
+      this.prikaziErrorNalog=false;
+      this.showError=false;
+      this.njegovatelj.nalogId = request.korisnikId
+      this.UpdateNjegovatelj();
+    },(error: any) => {
+      console.log("Error")
+        this.prikaziErrorNalog=true;
+      })
   }
   openWarningDialog = (message: string): MatDialogRef<WarningDialogComponent> => {
     return this.dialog.open(WarningDialogComponent, {
@@ -216,7 +215,6 @@ export class NjegovateljComponent {
         this.GetAllNjegovatelji();
         this.showConfirmationDialog = true;
         this.setAutoHide();
-        console.log("Prosao update",this.updNjegovateljRequest)
         this.Clean();
       })
     }

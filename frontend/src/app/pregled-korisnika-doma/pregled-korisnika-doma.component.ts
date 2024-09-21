@@ -19,20 +19,24 @@ import {NotifikacijaResponse, NotifikacijaResponseNotifikacija} from "../Service
 import {faBell, faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
+import {KorisnikDomaService} from "../Services/KorisnikDomaService";
+import {GetAllPoslovnaPozicijaResponsePoslovnaPozicija} from "../poslovna-pozicija/getAllPoslovnaPozicija";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
 
 
 @Component({
   selector: 'app-pregled-korisnika-doma',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarNjejgovateljComponent, NavBarNutricionistaComponent, FaIconComponent,FontAwesomeModule],
-  providers:[MyAuthService,SignalRService],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarNjejgovateljComponent, NavBarNutricionistaComponent,
+      NavBarDoktorComponent, FaIconComponent,FontAwesomeModule],
+  providers:[MyAuthService,SignalRService, KorisnikDomaService],
   templateUrl: './pregled-korisnika-doma.component.html',
   styleUrl: './pregled-korisnika-doma.component.css'
 })
 export class PregledKorisnikaDomaComponent implements  OnInit{
 
   constructor(public httpClient:HttpClient, private dialog: MatDialog,public router: Router
-  , private _myAuthService:MyAuthService, private signalRService: SignalRService) {}
+  , private _myAuthService:MyAuthService, private signalRService: SignalRService, private korisnikDomaService:KorisnikDomaService) {}
 
   public korisnikUpdateRequest: KorisnikDomaUpdateRequest ={
     korisnikDomaID:0,
@@ -47,6 +51,7 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   obavijetUkljucena:boolean=false;
   pretragaNaziv="";
   korisnici:KorisnikDomaGetAllResponseKorisnik[]=[];
+
   public odabraniKorisnik: KorisnikDomaUpdateRequest | null=null;
   options:OpsinaGetAllResponseOpstina[]=[];
   forma: any;
@@ -54,6 +59,8 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   jeNutricionista=false;
   jeDoktor=false;
   public notification2="";
+
+
   ngOnInit(): void {
     if(this._myAuthService.jeNjegovatelj())
     {
@@ -64,10 +71,18 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     {
       this.jeDoktor=true;
     }
-    let url =MyConfig.adresa_servera +`/korisnikDoma-getAll`
-    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x:KorisnikDomaGetAllResponse)=>{
-      this.korisnici = x.korisnici;
-    })
+
+
+    this.korisnikDomaService.GetAllKorisnici().subscribe((data)=>{
+      console.log(data);
+      this.korisnici=data.korisnici;
+    });
+
+    //let url =MyConfig.adresa_servera +`/korisnikDoma-getAll`
+    //this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x:KorisnikDomaGetAllResponse)=>{
+      //this.korisnici = x.korisnici;
+    //})
+
   }
   getFiltriraniKorisnici() {
     return this.korisnici.filter(x=>(x.imePrezime.toLowerCase()).startsWith(this.pretragaNaziv.toLowerCase()))

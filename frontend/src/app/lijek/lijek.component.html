@@ -1,61 +1,7 @@
-<!--<p>lijek works!</p>
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <th>Naziv lijeka</th>
-    <th>Uputstvo</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let item of lijekovi">
-    <td>{{ item.naziv }}</td>
-    <td>{{ item.uputstvo }}</td>
-    <td><button type="submit"  class="btn btn-primary" style="background-color: red;" (click)="Izbrisi(item)" >Izbriši</button></td>
-    <td><button type="submit"  class="btn btn-primary" (click)="Odaberi(item)" >Update</button></td>
-  </tr>
-  </tbody>
-</table>
-
-
-<div *ngIf="odabraniLijek">
-
-  <div class="modal fade show" id="exampleModalLive3" tabindex="-1" aria-labelledby="exampleModalLiveLabel3" aria-modal="true" role="dialog" style="display: block;">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLiveLabel3">Update lijeka</h1>
-          <button type="button" (click)="odabraniLijek=null" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-
-          <div>
-            <label class="form-label"> LijekId: </label>
-            <input class="form-control"  [(ngModel)]="odabraniLijek.lijekId" disabled>
-          </div>
-
-          <div>
-            <label class="form-label"> Naziv: </label>
-            <input class="form-control"  [(ngModel)]="odabraniLijek.naziv">
-          </div>
-
-          <div>
-            <label class="form-label"> Uputstvo: </label>
-            <input class="form-control"  [(ngModel)]="odabraniLijek.uputstvo">
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" (click)="odabraniLijek=null" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" (click)="Update()" class="btn btn-primary">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
--->
+<app-nav-bar-doktor></app-nav-bar-doktor>
 <div class="container mt-4">
   <div class="card">
-    <div class="card-header bg-primary text-white">
+    <div class="card-header">
       <h5 class="fs-5 text-center">Pregled lijekova <i class="bi bi-pill"></i></h5>
     </div>
     <div class="card-body">

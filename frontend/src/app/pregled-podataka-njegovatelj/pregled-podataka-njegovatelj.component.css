@@ -35,7 +35,7 @@
   text-align: center;
 }
 .modal-header {
-  background-color: #307116;
+  background-color: #778e77;
   color: #fff;
   padding: 10px;
   border-top-left-radius: 8px;
@@ -67,7 +67,7 @@
 }
 
 .btn-primary {
-  background-color: #307116;
+  background-color: #778e77;
   color: #fff;
 }
 
@@ -80,4 +80,8 @@
   color: #fff;
 }
 
+h1 {
+  margin-left: 120px;
+  margin-top: 10px;
+}
 /* Optionally, you can add more styles based on your design */

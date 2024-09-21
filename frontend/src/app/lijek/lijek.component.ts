@@ -6,11 +6,15 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {LijekService} from "../Services/LijekService";
+import {AlertService} from "../Services/AlertService";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
 
 @Component({
   selector: 'app-lijek',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, NavBarDoktorComponent],
+  providers: [LijekService],
   templateUrl: './lijek.component.html',
   styleUrl: './lijek.component.css'
 })
@@ -22,13 +26,12 @@ export class LijekComponent implements OnInit{
         this.GetAllLijekovi();
     }
 
-    constructor(public httpClient: HttpClient,private dialog: MatDialog) {
+    constructor(public httpClient: HttpClient,private dialog: MatDialog, private lijekService:LijekService, private myAlert:AlertService) {
     }
 
 
   GetAllLijekovi() {
-    let url: string = MyConfig.adresa_servera + `/lijek/getAll`;
-    this.httpClient.get<LijekGetAllResponse>(url).subscribe(x => {
+    this.lijekService.GetAllLijekovi().subscribe(x => {
       this.lijekovi = x.lijekovi;
     })
   }
@@ -41,7 +44,8 @@ export class LijekComponent implements OnInit{
         const params = new HttpParams().set('lijekId', item.lijekId);
         this.httpClient.delete(url, {params}).subscribe(
           response => () => {
-            console.log("Deleted item")
+            this.myAlert.showSuccess("Uspješno obrisan lijek")
+            this.ngOnInit();
           },
           (error: any) => {
             console.error('Error:', error);
