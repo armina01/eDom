@@ -1,0 +1,24 @@
+<div class="verification-form">
+  <div class="form-group">
+    <label for="korisnickoIme" class="custom-label">Korisničko ime</label>
+    <input type="text" class="form-control custom-input" id="korisnickoIme" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickoIme">
+    <label *ngIf="neispravnoKorisnickoIme" class="upozorenje">Neispravno korisnicko ime!</label>
+  </div>
+
+  <div class="form-group">
+    <label for="email" class="custom-label">Email</label>
+    <input type="text" class="form-control custom-input" id="email" [(ngModel)]="email">
+  </div>
+
+  <button class="btn btn-primary custom-btn" type="submit" (click)="PosaljiMail()">Send Verification Code</button>
+  <span *ngIf="isSendingEmail" class="fas fa-paper-plane fa-spin" role="status" aria-hidden="true"></span>
+  <label *ngIf="neispravniPodaci" class="upozorenje">Molimo popunite sva polja!</label>
+  <div class="form-group">
+    <label for="verificationCode" class="custom-label">Ukucaj kod</label>
+
+    <input type="text" class="form-control custom-input" id="verificationCode" [ngModel]="Auth2FOtkljucajRequest.kljuc">
+  </div>
+
+  <button class="btn btn-success custom-btn" (click)="PotvrdiSifru()">Verify</button>
+  <label *ngIf="verifikacijaNijeOkej" class="upozorenje">Kod je netacan!</label>
+</div>

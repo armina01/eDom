@@ -17,6 +17,7 @@ namespace DomZaStaraLicaApi.Data.Models
         public int KorisnikDomaID { get; set; }
         [ForeignKey(nameof(KorisnikDomaID))]
         public KorisnikDoma KorisnikDoma { get; set; }
+        public string? NalazFilePath { get; set; }
 
     }
 }

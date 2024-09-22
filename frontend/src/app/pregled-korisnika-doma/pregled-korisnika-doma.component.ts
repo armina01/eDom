@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
 import {KorisnikDomaGetAllResponse, KorisnikDomaGetAllResponseKorisnik} from "./korisnikDoma-getAll-response";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {MyConfig} from "../my-config";
@@ -10,20 +9,36 @@ import {KorisnikDomaUpdateRequest} from "./korisnikDomaUpdateRequest";
 import {OpsinaGetAllResponseOpstina, OpstinaGetAllResponse} from "../opstina/opstina-getAll";
 import {map, Observable} from "rxjs";
 import {Router} from "@angular/router";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
+import {MyAuthService} from "../Services/MyAuthService";
+import {NavBarNutricionistaComponent} from "../nav-bar-nutricionista/nav-bar-nutricionista.component";
+import {SignalRService} from "../Services/signalR.service";
+import {NotifikacijaResponse, NotifikacijaResponseNotifikacija} from "../Services/notifikacijaRequest";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {KorisnikDomaService} from "../Services/KorisnikDomaService";
+import {GetAllPoslovnaPozicijaResponsePoslovnaPozicija} from "../poslovna-pozicija/getAllPoslovnaPozicija";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
+import {faBell, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {AlertService} from "../Services/AlertService";
+import {NavBarFizioterapeutComponent} from "../nav-bar-fizioterapeut/nav-bar-fizioterapeut.component";
 
 
 @Component({
   selector: 'app-pregled-korisnika-doma',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarNjejgovateljComponent, NavBarNutricionistaComponent,
+    NavBarDoktorComponent, FaIconComponent, FontAwesomeModule, NavBarFizioterapeutComponent],
+  providers: [MyAuthService, SignalRService, KorisnikDomaService],
   templateUrl: './pregled-korisnika-doma.component.html',
-  styleUrl: './pregled-korisnika-doma.component.css'
+  styleUrls: ['./pregled-korisnika-doma.component.css']  // Ispravljeno u styleUrls
 })
 export class PregledKorisnikaDomaComponent implements  OnInit{
 
-  constructor(public httpClient:HttpClient, private dialog: MatDialog, public router: Router) {
-
-  }
+  constructor(public httpClient:HttpClient, private dialog: MatDialog,public router: Router
+  , private _myAuthService:MyAuthService, private signalRService: SignalRService,
+              private korisnikDomaService:KorisnikDomaService, private myAlert:AlertService) {}
 
   public korisnikUpdateRequest: KorisnikDomaUpdateRequest ={
     korisnikDomaID:0,
@@ -35,40 +50,70 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     slika_base64_format:""
 
   }
+  public hasNewNotification: boolean = false;
+  obavijetUkljucena:boolean=false;
   pretragaNaziv="";
   korisnici:KorisnikDomaGetAllResponseKorisnik[]=[];
+
   public odabraniKorisnik: KorisnikDomaUpdateRequest | null=null;
   options:OpsinaGetAllResponseOpstina[]=[];
+  forma: any;
+  jeNjegovatelj=false;
+  jeNutricionista=false;
+  jeDoktor=false;
+  jeFizioterapeut:boolean=false;
+  public notification2="";
 
 
   ngOnInit(): void {
-    let url=MyConfig.adresa_servera +`/korisnikDoma-getAll`
-    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe({
-      next: x =>{
-        x.korisnici.forEach(k=>{
-          k.random = this.getRandomNumber();
-        })
-        this.korisnici=x.korisnici;
+    if(this._myAuthService.jeNjegovatelj())
+    {
+      this.jeNjegovatelj=true;
+    }else if (this._myAuthService.jeNutricionista()) {
+      this.jeNutricionista=true;
+    }else if(this._myAuthService.jeDoktor())
+    {
+      this.jeDoktor=true;
+    }
+    else if(this._myAuthService.jeAdmin()){
+      this.jeAdmin=true;
+    }
+    else if(this._myAuthService.jeFizioterapeut()){
+      this.jeFizioterapeut=true;
+    }
 
+    this.getAllKorisnici();
+
+  }
+  getAllKorisnici()
+  {
+    this.korisnikDomaService.GetAllKorisnici().subscribe({
+      next: (data) => {
+        console.log(data);
+        this.korisnici = data.korisnici;
+        this.korisnici.forEach(k => {
+          k.random = this.getRandomNumber();
+        });
       },
-      error: x =>{
-        alert("greska: " + x.error)
+      error: (err) => {
+        alert("greska: " + err.error);
       }
-    })
+    });
   }
   getFiltriraniKorisnici() {
     return this.korisnici.filter(x=>(x.imePrezime.toLowerCase()).startsWith(this.pretragaNaziv.toLowerCase()))
   }
 
+    public obavijesti: any;
+
+
   ObrisiKorisnika(data: KorisnikDomaGetAllResponseKorisnik) {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati opštinu?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/korisnikDoma-obrisi`;
-        const params = new HttpParams().set('KorisnikDomaID', data.korisnikDomaID);
-        this.httpClient.delete(url, {params}).subscribe(
+        this.korisnikDomaService.IzbrisiKorisnikaDoma(data).subscribe(
           response => () => {
-            console.log("Deleted item")
+            alert("Deleted item")
           },
           (error: any) => {
             console.error('Error:', error);
@@ -95,10 +140,11 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   UpdateKorisnika() {
     let podaci=this.odabraniKorisnik
     console.log(podaci);
-    const url = MyConfig.adresa_servera+`/korisnikDoma-update`;
-    this.httpClient.post(url, podaci).subscribe((res) =>
-      console.log("Korisnik doma updatovan"))
-    this.ngOnInit();
+    this.korisnikDomaService.UpdateKorisnikaDoma(podaci).subscribe((res) =>
+      this.myAlert.showSuccess("Korisnik doma uspješno ažuriran"))
+    this.odabraniKorisnik=null;
+    this.getAllKorisnici();
+
   }
 
   OdaberiKorisnika(item: KorisnikDomaGetAllResponseKorisnik) {
@@ -170,15 +216,14 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  ObrisiSlikuKorisnika() {
+  ObrisiSlikuKorisnika(korisnikDomaID: number) {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati sliku korisnika?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/korisnikDoma/obrisiSliku`;
-        const params = new HttpParams().set('KorisnikDomaID', this.odabraniKorisnik?.korisnikDomaID??0);
-        this.httpClient.delete(url, {params}).subscribe(
+        this.korisnikDomaService.IzbrisiSlikuKorisnika(korisnikDomaID).subscribe(
           response => () => {
-            console.log("Deleted item")
+            alert("Deleted item")
+            this.getAllKorisnici();
           },
           (error: any) => {
             console.error('Error:', error);
@@ -193,5 +238,18 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
           })
       }
     });
+  }
+  DodajPlanIshrane(item: KorisnikDomaGetAllResponseKorisnik) {
+    this.router.navigate(['/dodajplanishrane', item.korisnikDomaID]);
+  }
+
+
+  jeAdmin: any;
+    protected readonly faEye = faEye;
+    protected readonly faEyeSlash = faEyeSlash;
+    protected readonly faBell = faBell;
+
+  DodajPregledTerapija() {
+    this.router.navigate(['fizioTerapija']);
   }
 }

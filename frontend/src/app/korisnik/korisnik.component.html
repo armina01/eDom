@@ -1,34 +1,59 @@
+<div class="card" style="width: 90%; margin: auto;">
+  <div class="card-header bg-primary text-white">
+    <h2>Dodavanje korisnika doma</h2>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="KorisnikDomaForma" (ngSubmit)="Dodaj()">
+      <div class="mb-3">
+        <label for="imePrezime" class="form-label">Ime i prezime</label>
+        <input type="text" id="imePrezime" formControlName="imePrezime" class="form-control" required>
+        <div *ngIf="KorisnikDomaForma.get('imePrezime')?.invalid && KorisnikDomaForma.get('imePrezime')?.touched" class="text-danger">
+          Ime i prezime su obavezni.
+        </div>
+      </div>
 
-<h2>Dodavanje korisnika doma</h2>
+      <div class="mb-3">
+        <label for="jmbg" class="form-label">JMBG</label>
+        <input type="text" id="jmbg" formControlName="jmbg" class="form-control" required pattern="^\d{13}$">
+        <div *ngIf="KorisnikDomaForma.get('jmbg')?.invalid && KorisnikDomaForma.get('jmbg')?.touched" class="text-danger">
+          JMBG je obavezan i mora imati tačno 13 cifara.
+        </div>
+      </div>
 
-<form #KorisnikDomaForma="ngForm" >
-  <div>
-    <label>Ime i prezime</label>
-    <input type="text" name="imePrezime" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.imePrezime">
-  </div>
-  <div>
-    <label>JMBG</label>
-    <input type="text" name="jmbg" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.jmbg">
-  </div>
-  <div>
-    <label>Datum rodjenja</label>
-    <input type="date" name="datumRodjenja" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.datumRodjenja">
-  </div>
-  <div>
-    <label>Broj sobe</label>
-    <input type="number" name="brojSobe" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.brojSobe">
-  </div>
-  <div class="dropdown">
-    <label>Opština</label>
-    <select class="btn btn-secondary dropdown-toggle" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnikRequest.opstinaID">
-      <option class="dropdown-item" *ngFor="let option of options" [value]="option.opstinaID">{{ option.nazivOpstine }}</option>
-    </select>
-  </div>
-  <div>
-    <label>Slika korisnika</label>
-    <input id="slika-input" type="file" accept="image/*" (change)="generisi_preview()">
-    <img style="max-width: 100%; height: 200px" src="{{korisnikRequest.slika_base64_format}}">
-  </div>
-  <button type="submit" class="btn btn-primary mb-2" (click)="Dodaj()">Dodaj</button>
-</form>
+      <div class="mb-3">
+        <label for="datumRodjenja" class="form-label">Datum rođenja</label>
+        <input type="date" id="datumRodjenja" formControlName="datumRodjenja" class="form-control" required>
+        <div *ngIf="KorisnikDomaForma.get('datumRodjenja')?.invalid && KorisnikDomaForma.get('datumRodjenja')?.touched" class="text-danger">
+          Datum rođenja je obavezan.
+        </div>
+      </div>
 
+      <div class="mb-3">
+        <label for="brojSobe" class="form-label">Broj sobe</label>
+        <input type="number" id="brojSobe" formControlName="brojSobe" class="form-control" required>
+        <div *ngIf="KorisnikDomaForma.get('brojSobe')?.invalid && KorisnikDomaForma.get('brojSobe')?.touched" class="text-danger">
+          Broj sobe je obavezan.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="opstina" class="form-label">Opština</label>
+        <select id="opstina" formControlName="opstinaID" class="form-select" required>
+          <option value="" disabled>Odaberite opštinu</option>
+          <option *ngFor="let option of options" [value]="option.opstinaID">{{ option.nazivOpstine }}</option>
+        </select>
+        <div *ngIf="KorisnikDomaForma.get('opstinaID')?.invalid && KorisnikDomaForma.get('opstinaID')?.touched" class="text-danger">
+          Opština je obavezna.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="slika-input" class="form-label">Slika korisnika</label>
+        <input id="slika-input" type="file" accept="image/*" (change)="generisi_preview()" class="form-control">
+        <img style="max-width: 100%; height: auto; margin-top: 10px;" [src]="korisnikRequest.slika_base64_format">
+      </div>
+
+      <button type="submit" class="btn btn-primary mb-2">Dodaj</button>
+    </form>
+  </div>
+</div>

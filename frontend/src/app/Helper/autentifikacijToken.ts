@@ -5,6 +5,7 @@ export interface AutentifikacijaToken {
   korisnickiNalog: KorisnickiNalog
   vrijemeEvidentiranja: string
   ipAdresa: string
+
 }
 export interface KorisnickiNalog {
   korisnickoIme: string;

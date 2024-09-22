@@ -1,52 +1,57 @@
-import {Component, Inject, Injector} from '@angular/core';
+import {Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MyConfig} from "../my-config";
-import {
-  GetAllKorisnickiNalogResponse,
-  GetAllKorisnickiNalogResponseKorisnickiNalog
-} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
-import {map, Observable} from "rxjs";
-import {HTTP_INTERCEPTORS, HttpClient, HttpHandler, HttpClientModule, HttpParams} from "@angular/common/http";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {map, Observable, pipe} from "rxjs";
+import { HttpClient,  HttpClientModule} from "@angular/common/http";
+import {FormsModule} from "@angular/forms";
 import {
   GetAllPoslovnaPozicijaResponse,
   GetAllPoslovnaPozicijaResponsePoslovnaPozicija
 } from "../poslovna-pozicija/getAllPoslovnaPozicija";
 import {DodajNjegovateljaRequest} from "./dodajNjegovateljaRequest";
-import {GetAllNjegovateljaResponseNjegovatelj, GetAllNjegovateljiResponse} from "./getAllNjegovateljiResponse";
+import {GetAllNjegovateljaResponseNjegovatelj} from "./getAllNjegovateljiResponse";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import{jePrazno} from "../Helper/Provjera";
-import {MY_AUTH_SERVICE_TOKEN, MyAuthService} from "../Services/MyAuthService";
+import { MyAuthService} from "../Services/MyAuthService";
 import {Router} from "@angular/router";
-import {MyAuthInterceptor} from "../Helper/MyAuthInterceptor";
+import {NjegovateljiService} from "../Services/NjegovateljService";
+import {PoslovnaPozicijaService} from "../Services/PoslovnaPozicijaService";
+import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
+import {GetAllKorisnickiNalogResponseKorisnickiNalog} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
+import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
 
 @Component({
   selector: 'app-njegovatelj',
   standalone: true,
   imports: [CommonModule, FormsModule, HttpClientModule],
-  providers: [MyAuthService,{ provide: MY_AUTH_SERVICE_TOKEN, useClass: MyAuthService }],
+  providers: [MyAuthService, NjegovateljiService, HttpClient,PoslovnaPozicijaService,KorisnickiNalogService],
   templateUrl: './njegovatelj.component.html',
   styleUrl: './njegovatelj.component.css'
 })
 export class NjegovateljComponent {
   constructor(private httpClient: HttpClient,private dialog: MatDialog
-    ,private router: Router,@Inject(MY_AUTH_SERVICE_TOKEN) private _myAuthService: MyAuthService) {
+    ,private router: Router,//@Inject(MY_AUTH_SERVICE_TOKEN)
+              private _myAuthService: MyAuthService,
+              private njegovateljService: NjegovateljiService,
+              private poslovnaPozicijaService:PoslovnaPozicijaService,
+              public korisnickiNalogService : KorisnickiNalogService
+  ) {
 
   }
   isValid: boolean = false;
-
+  showFirstForm: boolean = true;
   validateInput(data:string) {
     const regex = /^\d{13}$/;
     this.isValid = regex.test(data);
   }
-  showError: number=0;
+  showError=false;
 
 
   public poslovnaPozicija: GetAllPoslovnaPozicijaResponsePoslovnaPozicija[] = [];
   GetAllPoslovnaPozicija():Observable<GetAllPoslovnaPozicijaResponsePoslovnaPozicija[]> {
-    let url: string = MyConfig.adresa_servera + `/getAllPoslovnaPozicija`;
-    return this.httpClient.get<GetAllPoslovnaPozicijaResponse>(url).pipe(
+
+    return this.poslovnaPozicijaService.GetAllPoslovnaPozicija().pipe(
         map((response)=>response.poslovnePozicije)
     )
   }
@@ -97,55 +102,88 @@ export class NjegovateljComponent {
     if(jePrazno(this.njegovatelj.imePrezime) && jePrazno(this.njegovatelj.jmbg)
         && jePrazno(this.njegovatelj.poslovnaPozicijaId) )
     {
-      let url: string = MyConfig.adresa_servera + `/dodajNjegovatelja`;
-    this.httpClient.post(url, this.njegovatelj).subscribe(request => {
-      console.log("Korisnicki nalog dodan za ", request)
-    })}
+
+      this.njegovateljService.dodajNjegovatelja(this.njegovatelj).subscribe(request => {
+        console.log("Korisnicki nalog dodan za ", request)
+        this.showFirstForm= false;
+        this.updNjegovateljRequest.zaposlenikId=request.njegovateljID;
+      })}
     else {
-      this.showError=1;
+      this.showError=true;
     }
 
   }
   public allNjegovatelji: GetAllNjegovateljaResponseNjegovatelj[]=[];
   GetAllNjegovatelji() {
-    const authToken = this._myAuthService.getAuthorizationToken();
-    console.log('Authentication Token:', authToken);
-    let url: string = MyConfig.adresa_servera + `/getAllNjegovatelji`;
-    this.httpClient.get<GetAllNjegovateljiResponse>(url).subscribe(x => {
-      this.allNjegovatelji = x.njegovatelji;
-    })
+    this.njegovateljService.GetAllNjegovatelji().subscribe((data) => {
+      this.allNjegovatelji = data.njegovatelji;
+
+    });
   }
   getAllNjegovatelji() {
     return this.allNjegovatelji;
   }
 
   IzbrisiNjegovatelja(data: GetAllNjegovateljaResponseNjegovatelj) {
-    const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
+    const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati njegovatelja?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/izbrisiNjegovatelja`;
-        const params = new HttpParams().set('NjegovateljId', data.zaposlenikId);
-        this.httpClient.delete(url, {params}).subscribe(
-            response => () => {
-              console.log("Deleted item")
-            },
-            (error: any) => {
-              console.error('Error:', error);
+        this.njegovateljService.deleteNjegovatelj(data.zaposlenikId)
+            .subscribe(
+                () => {
+                  this.GetAllNjegovatelji();
+                  // Update your component data or perform any other actions
+                },
+                (error: any) => {
+                  console.error('Error:', error);
 
-              if (error.status === 500) {
-                alert('Nije moguće izbrisati ovaj korisnički nalog');
-                console.error('Handle 500 error here');
-              } else {
-                // Handle other errors
-                alert('An error occurred.');
-              }
-            })
+                  if (error.status === 500) {
+                    alert('Nije moguće izbrisati ovaj korisnički nalog');
+                    console.error('Handle 500 error here');
+                  } else {
+                    // Handle other errors
+                    alert('An error occurred.');
+                  }
+                }
+            );
       }
     });
 
 
   }
+  public korisnickiNalogRequest: KorisnickiNalogRequest = {
+    korisnickoIme: "",
+    lozinka: "",
+    email:"",
+    jeAdmin: false,
+    jeDoktor: false,
+    jeFizioterapeut: false,
+    jeNjegovatelj: true,
+    jeNutricionista: false,
+    je2FActive:true,
+  }
+  korisnickiNalog: GetAllKorisnickiNalogResponseKorisnickiNalog[] = [];
+  public showConfirmationDialog: boolean = false;
+  setAutoHide() {
+    setTimeout(() => {
+      this.showConfirmationDialog = false;
 
+    }, 3000);
+  }
+  prikaziErrorNalog:boolean=false
+  AddKorisnickiNalog(): void {
+console.log(this.korisnickiNalogRequest);
+    this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
+      console.log("Request",request)
+      this.prikaziErrorNalog=false;
+      this.showError=false;
+      this.njegovatelj.nalogId = request.korisnikId
+      this.UpdateNjegovatelj();
+    },(error: any) => {
+      console.log("Error")
+        this.prikaziErrorNalog=true;
+      })
+  }
   openWarningDialog = (message: string): MatDialogRef<WarningDialogComponent> => {
     return this.dialog.open(WarningDialogComponent, {
       data: {message},
@@ -154,8 +192,10 @@ export class NjegovateljComponent {
 
 
   UpdateNjegovatelj() {
+
     if(jePrazno(this.njegovatelj.imePrezime) && jePrazno(this.njegovatelj.jmbg)
-        && jePrazno(this.njegovatelj.poslovnaPozicijaId) ) {
+        && jePrazno(this.njegovatelj.poslovnaPozicijaId)) {
+
       this.updNjegovateljRequest.imePrezime = this.njegovatelj.imePrezime;
       this.updNjegovateljRequest.jmbg = this.njegovatelj.jmbg;
       this.updNjegovateljRequest.isNjegovatelj = this.njegovatelj.isNjegovatelj;
@@ -163,17 +203,24 @@ export class NjegovateljComponent {
       this.updNjegovateljRequest.datumZaposlenja = this.njegovatelj.datumZaposlenja;
       this.updNjegovateljRequest.datumRodjenja = this.njegovatelj.datumRodjenja;
       this.updNjegovateljRequest.poslovnaPozicijaId = this.njegovatelj.poslovnaPozicijaId;
-      this.updNjegovateljRequest.poslovnaPozicijaId = this.njegovatelj.brojPacijenata;
+      this.updNjegovateljRequest.brojPacijenata = this.njegovatelj.brojPacijenata;
+      this.updNjegovateljRequest.nalogId=this.njegovatelj.nalogId??null;
       let url: string = MyConfig.adresa_servera + `/updateNjegovatelja`;
       console.log(this.updNjegovateljRequest)
       this.httpClient.post(url, this.updNjegovateljRequest).subscribe(request => {
-
+        this.showFirstForm=true;
+        this.showError=false;
+        this.GetAllNjegovatelji();
+        this.showConfirmationDialog = true;
+        this.setAutoHide();
+        this.Clean();
       })
     }
     else {
-      this.showError=1;
+      this.showError=true;
     }
   }
+  prikaziNjegovatelje=false;
   SelectNjegovatelja(item: GetAllNjegovateljaResponseNjegovatelj) {
     this.njegovatelj.imePrezime=item.imePrezime;
     this.njegovatelj.jmbg=item.jmbg;
@@ -184,6 +231,22 @@ export class NjegovateljComponent {
     this.njegovatelj.poslovnaPozicijaId=item.poslovnaPozicijaId;
     this.njegovatelj.brojPacijenata=item.brojPacijenata;
     this.updNjegovateljRequest.zaposlenikId=item.zaposlenikId;
+    this.prikaziErrorNalog=false;
+    this.showError=false;
+    this.validateInput(this.njegovatelj.jmbg);
+  }
 
+  PregledajNjegovatelje() {
+    this.GetAllNjegovatelji()
+    this.prikaziNjegovatelje=!this.prikaziNjegovatelje
+  }
+
+  private Clean() {
+    this.njegovatelj.imePrezime="";
+    this.njegovatelj.jmbg="";
+    this.njegovatelj.isMedicinskiTehnicar=false;
+    this.njegovatelj.isNjegovatelj=false;
+    this.njegovatelj.poslovnaPozicijaId=0;
+    this.njegovatelj.brojPacijenata=0;
   }
 }

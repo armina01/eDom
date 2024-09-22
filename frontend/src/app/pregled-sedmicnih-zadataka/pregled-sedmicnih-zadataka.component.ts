@@ -2,7 +2,7 @@ import {Component, Inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormsModule} from "@angular/forms";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {MY_AUTH_SERVICE_TOKEN, MyAuthService} from "../Services/MyAuthService";
+import { MyAuthService} from "../Services/MyAuthService";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {ActivatedRoute} from "@angular/router";
 import {GetAllNjegovateljaResponseNjegovatelj} from "../njegovatelj/getAllNjegovateljiResponse";
@@ -12,22 +12,32 @@ import {MyConfig} from "../my-config";
 import {DodajZadatakResponse} from "../get-zadaci/DodajZadatakResponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {finalize} from "rxjs";
+import {ZadaciService} from "../Services/ZadaciService";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
 
 @Component({
   selector: 'app-pregled-sedmicnih-zadataka',
   standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, NavBarNjejgovateljComponent],
+  providers: [ZadaciService],
   templateUrl: './pregled-sedmicnih-zadataka.component.html',
   styleUrl: './pregled-sedmicnih-zadataka.component.css'
 })
 export class PregledSedmicnihZadatakaComponent {
+  public DnevniZadatakId: number=0;
 
-  constructor(public httpClient: HttpClient,@Inject(MY_AUTH_SERVICE_TOKEN) private _myAuthService: MyAuthService
-      ,private dialog: MatDialog,private route: ActivatedRoute) {
+
+  constructor(public httpClient: HttpClient,//@Inject(MY_AUTH_SERVICE_TOKEN)
+              private _myAuthService: MyAuthService
+      ,private dialog: MatDialog,private route: ActivatedRoute,
+              private zadaciService:ZadaciService) {
   }
   showOpsti:boolean=false;
   showFizijatrijski=false;
   showMedicinski=false;
+  public OpstiZadatakId: number = 0;
+  public MedicinskiZadatakId: number = 0;
+  public FizijatrijskiZadatakId: number = 0;
   public njegovatelj:GetAllNjegovateljaResponseNjegovatelj|null=null;
   public medicinskiZadatak: GetAllZadatakResponseZadatak[]=[];
   public opstiZadatak: GetAllZadatakResponseZadatak[]=[];
@@ -42,8 +52,8 @@ export class PregledSedmicnihZadatakaComponent {
     datumPostavke:new Date(),
     zaposlenikPostavioId: 0,
     zaposlenikEditovaoId:null,
-    intervalZadatkaId:2,
-    vrstaZadatkaId:6,
+    intervalZadatkaId:0,
+    vrstaZadatkaId:0,
     korisnikDomaId:0
   }
   public updateOpstiZadatak:GetAllZadatakResponseZadatak={
@@ -53,8 +63,8 @@ export class PregledSedmicnihZadatakaComponent {
     datumPostavke:new Date(),
     zaposlenikPostavioId: 0,
     zaposlenikEditovaoId:null,
-    intervalZadatkaId:2,
-    vrstaZadatkaId:6,
+    intervalZadatkaId:0,
+    vrstaZadatkaId:0,
     korisnikDomaId:0
   }
   GetAllMedicinskiZadaci() {
@@ -71,12 +81,30 @@ export class PregledSedmicnihZadatakaComponent {
   }
   GetAllOpstiZadaci() {
     this.GetAllZadaci();
-    this.opstiZadatak= this.zadaci.filter(x=>x.vrstaZadatkaId===6)
+    this.opstiZadatak= this.zadaci.filter(x=>x.vrstaZadatkaId===this.OpstiZadatakId
+    && x.korisnikDomaId===this._korisnikDomaId)
     this.showOpsti=true;
     this.showFizijatrijski=false;
     this.showMedicinski=false;
+    this.showDodajOpstiZadatak=true;
   }
   ngOnInit(){
+    this.zadaciService.GetVrsteZadataka().subscribe(response=>{
+      this.OpstiZadatakId=response.vrsteZadatka.find(x=>x.naziv==="Opsti zadatak")?.vrstaZadatkaId??0;
+      this.dodajOpstiZadatak.vrstaZadatkaId=response.vrsteZadatka.find(x=>x.naziv==="Opsti zadatak")?.vrstaZadatkaId??0;
+      this.updateOpstiZadatak.vrstaZadatkaId=response.vrsteZadatka.find(x=>x.naziv==="Opsti zadatak")?.vrstaZadatkaId??0;
+    })
+    this.zadaciService.GetVrsteZadataka().subscribe(response=>{
+      this.MedicinskiZadatakId=response.vrsteZadatka.find(x=>x.naziv==="Medicinski zadatak")?.vrstaZadatkaId??0;
+    });
+    this.zadaciService.GetVrsteZadataka().subscribe(response=>{
+      this.FizijatrijskiZadatakId=response.vrsteZadatka.find(x=>x.naziv==="Fizijatrijski zadatak")?.vrstaZadatkaId??0;
+    });
+    this.zadaciService.GetIntervalZadataka().subscribe(response=>{
+      this.dodajOpstiZadatak.intervalZadatkaId=response.intervaliZadatka.find(x=>x.jeDnevni===false)?.intervalZadatkaId??0;
+      this.updateOpstiZadatak.intervalZadatkaId=response.intervaliZadatka.find(x=>x.jeDnevni===false)?.intervalZadatkaId??0;
+      this.DnevniZadatakId=response.intervaliZadatka.find(x=>x.jeDnevni===false)?.intervalZadatkaId??0;
+    })
     this.GetAllZadaci();
     this.njegovatelj=this.getZaposlenik();
     this.route.params.subscribe(params => {
@@ -93,8 +121,7 @@ export class PregledSedmicnihZadatakaComponent {
     }
   }
   GetAllZadaci() {
-    let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
-    this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
+    this.zadaciService.GetAllZadaci().subscribe(x => {
       this.zadaci = x.zadaci.filter(zadatak => {
         const todayDate = new Date(this.odabraniDatum);
         const datumPostavke = new Date(zadatak.datumPostavke);
@@ -107,7 +134,7 @@ export class PregledSedmicnihZadatakaComponent {
           const endOfWeek = new Date(todayDate);
           endOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 7);
           return (
-              zadatak.intervalZadatkaId === 2 &&
+              zadatak.intervalZadatkaId === this.DnevniZadatakId &&
               datumPostavke >= startOfWeek &&
               datumPostavke <= endOfWeek
           );
@@ -145,8 +172,7 @@ export class PregledSedmicnihZadatakaComponent {
   DodajZadatak(data:DodajZadatakRequest){
     if(data.opis!=="") {
       console.log("Data",data);
-      let url: string = MyConfig.adresa_servera + `/dodajZadatak`;
-      this.httpClient.post<DodajZadatakResponse>(url, data).subscribe((response:DodajZadatakResponse) => {
+      this.zadaciService.DodajZadatak(data).subscribe((response:DodajZadatakResponse) => {
         this.RefreshOpstiZadaci();
         this.dodajOpstiZadatak.opis="";
         this.dodajOpstiZadatak.status=false;
@@ -167,32 +193,24 @@ export class PregledSedmicnihZadatakaComponent {
     this.updateOpstiZadatak.datumPostavke=item.datumPostavke;
     this.updateOpstiZadatak.zaposlenikEditovaoId=this.getZaposlenik()?.zaposlenikId??null;
     this.updateOpstiZadatak.korisnikDomaId=this._korisnikDomaId;
-    let url: string = MyConfig.adresa_servera + `/updateZadatak`;
-    this.httpClient.post(url,  this.updateOpstiZadatak).subscribe(
+    this.zadaciService.UpdateZadatak(this.updateOpstiZadatak).subscribe(
         () => {
           console.log("Uspjesan update");
         });
   }
 
   RefreshOpstiZadaci() {
-    let url: string = MyConfig.adresa_servera + `/getAllZadatak`;
-    this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
-      this.httpClient.get<GetAllZadatakResponse>(url).subscribe(x => {
+    this.zadaciService.GetAllZadaci().subscribe(x => {
         this.zadaci = x.zadaci.filter(zadatak => {
           const todayDate = new Date(this.odabraniDatum);
           const datumPostavke = new Date(zadatak.datumPostavke);
-
-          // Check if datumPostavke is a valid Date object
           if (Object.prototype.toString.call(datumPostavke) === "[object Date]" && !isNaN(datumPostavke.getTime())) {
-            // Adjust the startOfWeek and endOfWeek for Monday to Sunday week
             const startOfWeek = new Date(todayDate);
-            startOfWeek.setDate(todayDate.getDate() - (todayDate.getDay() + 6) % 7 + 1); // Set to the first day of the week (Monday)
-
+            startOfWeek.setDate(todayDate.getDate() - (todayDate.getDay() + 6) % 7 + 1);
             const endOfWeek = new Date(todayDate);
-            endOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 7); // Set to the last day of the week (Sunday)
-
+            endOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 7);
             return (
-                zadatak.intervalZadatkaId === 2 &&
+                zadatak.intervalZadatkaId === this.MedicinskiZadatakId &&
                 datumPostavke >= startOfWeek &&
                 datumPostavke <= endOfWeek
             );
@@ -202,7 +220,6 @@ export class PregledSedmicnihZadatakaComponent {
             return false;
           }
         });
-      });
 
       this.GetAllOpstiZadaci();
     });
@@ -211,9 +228,7 @@ export class PregledSedmicnihZadatakaComponent {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/obrisiZadatak`;
-        const params = new HttpParams().set('ZadatakId', item.zadatakId);
-        this.httpClient.delete(url, {params}).pipe(
+        this.zadaciService.IzbrisiZadatak(item).pipe(
             finalize(() => {
               this.RefreshOpstiZadaci();
             })

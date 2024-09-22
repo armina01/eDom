@@ -1,76 +1,157 @@
+<app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="Naslov"><i class="fa-solid fa-list-check"></i>Upravljanje zadacima za korisnika {{_korisnikDomaId}}</h3>
+  </div>
 <div class="form-group">
-    <label for="datumZadatka">Izaberite dan iz sedmice koju zelite</label>
-    <input type="date" class="form-control" id="datumZadatka"
-           [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDatum" (change)="RefreshOpstiZadaci()">
-</div>
-<button class="btn btn-primary" type="submit" (click)="GetAllMedicinskiZadaci()">Pregledaj medicinske zadatke </button>
-<button class="btn btn-primary" type="submit" (click)="GetAllOpstiZadaci()">Pregledaj opste zadatke </button>
-<button class="btn btn-primary" type="submit" (click)="GetAllFizijatrijskiZadaci()">Pregledaj fizijatrijske zadatke </button>
-
-
-<table  *ngIf="showMedicinski===true" class="medicinskiZadaci">
-    <thead>
+  <div class="container mt-4">
+    <div class="form-group text-center">
+      <label for="datumZadatka">Odaberite datum zadatka kojim želite upravljati</label>
+      <div class="container" style="max-width: 40%;">
+        <div class="input-group" id="datumZadatkaDiv">
+          <input type="date" class="form-control" id="datumZadatka"
+                 [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDatum" (change)="RefreshOpstiZadaci()">
+          <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon1">
+                    <i class="fas fa-calendar-alt"></i>
+                </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="text-center">
+      <button class="btn btn-success" type="submit" (click)="GetAllMedicinskiZadaci()">
+        <i class="fas fa-medkit"></i> Pregledaj medicinske zadatke
+      </button>
+      <button class="btn btn-warning" type="submit" (click)="GetAllOpstiZadaci()">
+        <i class="fas fa-tasks"></i> Pregledaj opšte zadatke
+      </button>
+      <button class="btn btn-info" type="submit" (click)="GetAllFizijatrijskiZadaci()">
+        <i class="fas fa-wheelchair"></i> Pregledaj fizijatrijske zadatke
+      </button>
+    </div>
+  </div>
+  <table *ngIf="showMedicinski === true" class="table table-striped table-bordered medicinskiZadaci mt-4">
+    <thead class="thead-dark">
     <tr>
-        <th>Opis</th>
-        <th>Status</th>
+      <th  class="text-center" scope="col">Opis</th>
+      <th class="text-center" scope="col">Status</th>
+      <th class="text-center" scope="col">Akcije</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let item of getAllMedicinskizadaci()">
-        <td>{{ item.opis }}</td>
-        <input class="form-check-input" type="checkbox" id="gridCheck4" [(ngModel)]="item.status">
-        <label class="form-check-label">
-            Status
-        </label>
-        <td><button type="submit"  class="btn btn-primary" >Izbrisi zadatak</button></td>
+      <td class="text-center">{{ item.opis }}</td>
+      <td class="text-center">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="gridCheck4" [(ngModel)]="item.status">
+          <label class="form-check-label" for="gridCheck4"></label>
+        </div>
+      </td>
+      <td class="text-center">
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+          <i class="fas fa-trash"></i> Izbrisi zadatak
+        </button>
+      </td>
     </tr>
     </tbody>
-</table>
-<table *ngFor="let item of getAllFizijatrijskizadaci()" class="fizijatrijskiZadaci">
+  </table>
+  <table *ngFor="let item of getAllFizijatrijskizadaci()" class="fizijatrijskiZadaci">
     <thead>
     <tr>
-        <th>Opis</th>
-        <th>Status</th>
+      <th class="text-center">Opis</th>
+      <th class="text-center" >Status</th>
+      <th class="text-center">Akcija</th>
     </tr>
     </thead>
     <tbody  *ngIf="showFizijatrijski===true">
     <tr >
-        <td>{{ item.opis }}</td>
-        <td>
-            <input class="form-check-input" type="checkbox" id="gridCheck1" [(ngModel)]="item.status">
-            <label class="form-check-label">
-                Status
-            </label>
-        </td>
-        <td><button type="submit"  class="btn btn-primary" >Izbrisi zadatak</button></td>
+      <td class="text-center">{{ item.opis }}</td>
+      <td class="text-center">
+        <input class="form-check-input" type="checkbox" id="gridCheck1" [(ngModel)]="item.status">
+        <label class="form-check-label">
+
+        </label>
+      </td>
+      <td class="center-content"><button type="submit"  class="btn btn-primary" >Izbrisi zadatak</button></td>
     </tr>
     </tbody>
-</table>
-<table *ngIf="showOpsti===true" class="opstiZadaci">
-    <thead>
+  </table>
+  <table *ngIf="showOpsti === true"  class="table table-striped table-bordered opstiZadaci mt-4">
+    <thead class="thead-dark">
     <tr>
-        <th>Opis</th>
-        <th>Status</th>
+      <th class="text-center" scope="col">Opis</th>
+      <th class="text-center" scope="col">Status</th>
+      <th class="text-center" scope="col">Akcije</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let item of getAllOpstizadaci()">
-        <td>{{ item.opis }}
-
-        </td>
-        <input class="form-check-input" type="checkbox" id="gridCheck8" (change)="UpdateOpstiZadatak(item)" [(ngModel)]="item.status">
-        <td><button type="submit"  class="btn btn-primary" (click)="IzbrisiZadatak(item)">Izbrisi zadatak</button></td>
+      <td class="text-center">{{ item.opis }}</td>
+      <td class="text-center">
+        <div class="text-center">
+          <input class="form-check-input" type="checkbox" id="gridCheck8" (change)="UpdateOpstiZadatak(item)" [(ngModel)]="item.status">
+          <label class="form-check-label" for="gridCheck8"></label>
+        </div>
+      </td>
+      <td class="text-center" >
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" (click)="IzbrisiZadatak(item)">
+          <i class="fas fa-trash"></i> Izbrisi zadatak
+        </button>
+      </td>
     </tr>
-    </tbody>
-    <tbody *ngIf="showDodajOpstiZadatak===true">
+    <tbody *ngIf="showDodajOpstiZadatak === true">
     <tr>
-        <td><input [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.opis" />
-            <label *ngIf="showEmpty">Niste ispunili polje!</label></td>
-        <input class="form-check-input" type="checkbox" id="gridCheck2" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.status" >
-
-        <td><button type="submit"  class="btn btn-primary"(click)="DodajOpstiZadatak()" >Dodaj zadatak</button></td>
+      <td class="center-content">
+        <div class="input-group">
+          <input type="text" class="form-control" [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="dodajOpstiZadatak.opis" placeholder="Unesite opis zadatka" />
+        </div>
+        <label *ngIf="showEmpty" class="text-danger">Niste ispunili polje!</label>
+      </td>
+      <td class="text-center">
+        <div class="text-center">
+          <input class="form-check-input" type="checkbox" id="gridCheck2" [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="dodajOpstiZadatak.status">
+          <label class="form-check-label" for="gridCheck2"></label>
+        </div>
+      </td>
+      <td class="text-center">
+        <button type="button" class="btn btn-primary" (click)="DodajOpstiZadatak()">
+          <i class="fas fa-check"></i> Dodaj zadatak
+        </button>
+      </td>
     </tr>
     </tbody>
-    <Button (click)="PrikaziDodajOpstiZadatak()">Dodaj novi zadatak</Button>
-</table>
 
+  </table>
+  <table *ngIf="showFizijatrijski === true" class="table table-striped table-bordered fizijatrijskiZadaci mt-4">
+    <thead class="thead-dark">
+    <tr>
+      <th class="text-center" scope="col">Opis</th>
+      <th class="text-center" scope="col">Status</th>
+      <th class="text-center" scope="col">Akcije</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of getAllFizijatrijskizadaci()">
+      <td class="text-center">{{ item.opis }}</td>
+      <td class="text-center">
+        <div class="text-center">
+          <input class="form-check-input" type="checkbox" id="gridCheck" [(ngModel)]="item.status">
+          <label class="form-check-label" for="gridCheck1">Status</label>
+        </div>
+      </td>
+      <td class="text-center">
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+          <i class="fas fa-trash"></i> Izbrisi zadatak
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+</div>

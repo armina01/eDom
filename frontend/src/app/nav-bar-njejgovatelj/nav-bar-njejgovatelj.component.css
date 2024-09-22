@@ -1,0 +1,201 @@
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+header {
+  background-color: #436243;
+  padding: 15px 20px;
+  color: #fff;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  position: relative;
+}
+
+.logo {
+  height: 140%;
+}
+
+.logo img {
+  width: 100px;
+  height: 100%;
+}
+
+.nav-links {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  margin-right: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  height: 80%;
+}
+
+.profile span {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.hamburger-menu {
+  display: none;
+  cursor: pointer;
+  font-size: 28px;
+}
+
+li {
+  cursor: pointer;
+}
+
+li:hover {
+  background-color: #778e77;
+  border-radius: 20%;
+}
+
+li a {
+  padding: 5px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  height: 80%;
+  cursor: pointer; /* Ensures that the profile div is clickable */
+}
+
+.profile span {
+  font-size: 24px; /* Adjust the size as needed */
+  margin-right: 10px;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: #365736;
+    position: absolute;
+    top: 50px;
+    left: 0;
+  }
+
+  .nav-links.responsive {
+    display: flex;
+  }
+
+  .hamburger-menu {
+    display: block;
+  }
+}
+
+/* Styling for the dropdown content */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #365936; /* Match background color with navbar */
+  border: 1px solid #ddd;
+  z-index: 1050;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  position: relative; /* Allow child elements to use absolute positioning */
+}
+
+.hamburger-menu {
+  display: none;
+  cursor: pointer;
+  font-size: 28px;
+}
+
+/* Make sure the dropdown menu overlaps other elements */
+.nav-links {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links.responsive {
+  display: flex;
+  position: absolute; /* Zadržava overlay iznad ostalih elemenata */
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  background-color: #588158; /* Održavanje iste pozadine */
+  z-index: 1050; /* Osigurava da je meni iznad svih elemenata */
+  flex-direction: column; /* Vertikalno poravnavanje stavki */
+  padding: 10px; /* Razmak unutar menija */
+
+  border-radius: 8px; /* Blago zaobljeni uglovi */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Blaga sjena ispod menija */
+  transition: all 0.3s ease; /* Lagana animacija otvaranja menija */
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .nav-links {
+    display: none; /* Hide by default on smaller screens */
+  }
+
+  .nav-links.responsive {
+    display: flex; /* Show when active */
+  }
+
+  .hamburger-menu {
+    display: block;
+  }
+}
+
+/* Styling for the dropdown content */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #436243; /* Match background color with navbar */
+  border: 1px solid #ddd;
+  z-index: 1050; /* Ensure it appears above other elements */
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-content.show {
+  display: block;
+}
+

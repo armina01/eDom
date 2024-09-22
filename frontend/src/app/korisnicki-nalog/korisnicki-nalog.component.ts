@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {KorisnickiNalogRequest} from "./korisnickiNalogRequest";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClient, HttpParams} from "@angular/common/http";
 import {MyConfig} from "../my-config";
 import {
   GetAllKorisnickiNalogResponse,
@@ -11,38 +11,42 @@ import {
 import {DeleteKorisnickiNalogRequest} from "./deleteKorisnickiNalogRequest";
 import { WarningDialogComponent } from '../warning-dialog/warning-dialog.component';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
+import {MyAuthInterceptor} from "../Helper/MyAuthInterceptor";
 @Component({
   selector: 'app-korisnicki-nalog',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  providers :[KorisnickiNalogService],
   templateUrl: './korisnicki-nalog.component.html',
   styleUrl: './korisnicki-nalog.component.css'
 })
 export class KorisnickiNalogComponent {
-  constructor(public httpClient: HttpClient,private dialog: MatDialog) {
+  constructor(public httpClient: HttpClient,private dialog: MatDialog,public korisnickiNalogService : KorisnickiNalogService) {
   }
 
   public korisnickiNalogRequest: KorisnickiNalogRequest = {
     korisnickoIme: "",
     lozinka: "",
+    email:"sadzidadziho@gmail.com",
     jeAdmin: true,
     jeDoktor: false,
     jeFizioterapeut: false,
     jeNjegovatelj: false,
-    jeNutricionista: false
+    jeNutricionista: false,
+    je2FActive:true,
   }
   korisnickiNalog: GetAllKorisnickiNalogResponseKorisnickiNalog[] = [];
 
   AddKorisnickiNalog(): void {
-    let url = MyConfig.adresa_servera + `/dodajKorisnickiNalog`;
-    this.httpClient.post(url, this.korisnickiNalogRequest).subscribe(request => {
+    console.log(this.korisnickiNalogRequest);
+    this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
       console.log("Korisnicki nalog dodan za ", request)
     })
   }
 
   GetAllKorisnickiNalog(): void {
-    let url: string = MyConfig.adresa_servera + `/get-all-KorisnickiNalog`;
-    this.httpClient.get<GetAllKorisnickiNalogResponse>(url).subscribe(x => {
+    this.korisnickiNalogService.GetAllKorisnickiNalog().subscribe(x => {
       console.log(x.korisnickiNalozi)
       this.korisnickiNalog = x.korisnickiNalozi
     })
@@ -59,9 +63,7 @@ export class KorisnickiNalogComponent {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nalog?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/izbrisiKorisnickiNalog`;
-        const params = new HttpParams().set('KorisnikId', data.nalogId);
-        this.httpClient.delete(url, {params}).subscribe(
+        this.korisnickiNalogService.ObrisiKorisnickiNalog(data).subscribe(
             response => () => {
               console.log("Deleted item")
             },

@@ -5,7 +5,7 @@ import {
   GetAllNjegovateljaResponseNjegovatelj,
   GetAllNjegovateljiResponse
 } from "../njegovatelj/getAllNjegovateljiResponse";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import {
   GetAllPoslovnaPozicijaResponse,
@@ -17,17 +17,27 @@ import {
 } from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
 import {MatDialog} from "@angular/material/dialog";
 import {ProvjeraPasswordaRequest, ProvjeraPasswordaResponse} from "./provjeraPasswordaResponse";
+import {NjegovateljiService} from "../Services/NjegovateljService";
+import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
+import {PoslovnaPozicijaService} from "../Services/PoslovnaPozicijaService";
+import {PasswordService} from "../Services/PasswordService";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
 
 @Component({
   selector: 'app-pregled-podataka-njegovatelj',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, FontAwesomeModule, NavBarNjejgovateljComponent],
+  providers: [NjegovateljiService,KorisnickiNalogService,PoslovnaPozicijaService,PasswordService],
   templateUrl: './pregled-podataka-njegovatelj.component.html',
   styleUrl: './pregled-podataka-njegovatelj.component.css'
 })
 export class PregledPodatakaNjegovateljComponent {
 
-  constructor(public httpClient:HttpClient,private dialog: MatDialog)
+  constructor(public httpClient:HttpClient,private dialog: MatDialog,
+              private njegovateljService:NjegovateljiService, private korisnickiNalogService:KorisnickiNalogService,
+              private poslovnaPozicijaService:PoslovnaPozicijaService,
+              private passwordService:PasswordService)
   {}
   public novoKorisnickoIme:string="";
   public prikaziDialog:boolean=false;
@@ -54,8 +64,7 @@ export class PregledPodatakaNjegovateljComponent {
   }
   GetPodatkeZaposlenika()
   {
-    let url: string = MyConfig.adresa_servera + `/getAllNjegovatelji`;
-    this.httpClient.get<GetAllNjegovateljiResponse>(url).subscribe(x => {
+    this.njegovateljService.GetAllNjegovatelji().subscribe(x => {
       this.allNjegovatelji = x.njegovatelji;
       this.njegovatelj=this.allNjegovatelji.find(njegovatelj=>
           njegovatelj.zaposlenikId===this.getNjegovatelj()?.zaposlenikId) ||null;
@@ -77,8 +86,7 @@ export class PregledPodatakaNjegovateljComponent {
   }
   public poslovnaPozicija:GetAllPoslovnaPozicijaResponsePoslovnaPozicija|null=null;
   GetPoslovnaPozicija(){
-    let url: string = MyConfig.adresa_servera + `/getAllPoslovnaPozicija`;
-      this.httpClient.get<GetAllPoslovnaPozicijaResponse>(url).subscribe(x => {
+    this.poslovnaPozicijaService.GetAllPoslovnaPozicija().subscribe(x => {
 
         this.poslovnaPozicija = x.poslovnePozicije.find(pozicija=>
             pozicija.poslovnaPozicijaId===this.njegovatelj?.poslovnaPozicijaId) || null;
@@ -86,8 +94,7 @@ export class PregledPodatakaNjegovateljComponent {
   }
   public korisnickiNalog:GetAllKorisnickiNalogResponseKorisnickiNalog|null=null;
   GetAllKorisnickiNalog(): void {
-    let url: string = MyConfig.adresa_servera + `/get-all-KorisnickiNalog`;
-    this.httpClient.get<GetAllKorisnickiNalogResponse>(url).subscribe(x => {
+    this.korisnickiNalogService.GetAllKorisnickiNalog().subscribe(x => {
 
       this.korisnickiNalog = x.korisnickiNalozi.find(
           nalog=>nalog.nalogId===this.njegovatelj?.nalogId) || null;
@@ -99,14 +106,16 @@ export class PregledPodatakaNjegovateljComponent {
   showProvjeraLozinkeZaNalog:boolean=false;
   showPromijeniNalog:boolean=false
   ProvjeriLozinku(){
-    let url: string = MyConfig.adresa_servera + `/provjeraPassworda`;
+
     this.requestLozinka.korisnickiNalogId=this.getNjegovatelj()?.nalogId || 0;
     this.requestLozinka.lozinka=this.staraLozinka;
-    this.httpClient.post<ProvjeraPasswordaResponse>(url,this.requestLozinka).subscribe(response => {
-      console.log("Response",response.jeIspravno);
+    console.log(this.staraLozinka)
+    this.passwordService.ProvjeriPassword(this.requestLozinka).subscribe(response => {
+
       if(response.jeIspravno)
       {
         this.showErrorNePostojiNalog=false;
+        console.log(this.showProvjeraLozinkeZaLozinku);
         if(this.showProvjeraLozinkeZaLozinku) {
           this.showPromijeniLozinku=true;
         }
@@ -125,21 +134,25 @@ export class PregledPodatakaNjegovateljComponent {
 
   PromijeniLozinku() {
     this.prikaziDialog=true;
+    this.showProvjeraLozinkeZaLozinku=true;
+    this.showPromijeniLozinku=false;
+    this.showPromijeniNalog=false;
+    this.showProvjeraLozinkeZaNalog=false;
   }
 
   lozicnkeNotMatching:boolean=false;
   emptyKorIme:boolean=false;
+  uspjesnoPromijenjeniPodaci: boolean=false;
   ProvjeraIPromjenaLozinke() {
 
     if(this.showProvjeraLozinkeZaLozinku) {
       if (this.novaLozinka === this.novaLozinkaPotvrda && this.korisnickiNalog) {
         this.lozicnkeNotMatching=false;
         this.korisnickiNalog.lozinka = this.novaLozinka;
-        let url: string = MyConfig.adresa_servera + `/updateNaloga`;
-        this.httpClient.post(url, this.korisnickiNalog).subscribe(x => {
-          console.log("Uspjesno promijenjeno")
-        })
+        this.korisnickiNalogService.UpdateKorisnickiNalog(this.korisnickiNalog).subscribe(x => {})
+        this.uspjesnoPromijenjeniPodaci=true;
         this.SveFalse();
+
       }
       else{
         this.lozicnkeNotMatching=true;
@@ -150,10 +163,7 @@ export class PregledPodatakaNjegovateljComponent {
       if(this.novoKorisnickoIme!=="" && this.korisnickiNalog)
       {
         this.korisnickiNalog.korisnickoIme=this.novoKorisnickoIme;
-        let url: string = MyConfig.adresa_servera + `/updateNaloga`;
-        this.httpClient.post(url, this.korisnickiNalog).subscribe(x => {
-          console.log("Uspjesno promijenjeno")
-        })
+        this.korisnickiNalogService.UpdateKorisnickiNalog(this.korisnickiNalog).subscribe(x => {})
         this.SveFalse();
       }
       else {
@@ -185,5 +195,13 @@ export class PregledPodatakaNjegovateljComponent {
   Otkazi() {
     this.prikaziDialog=false;
     this.SveFalse();
+  }
+
+  PromijeniKorIme() {
+    this.showProvjeraLozinkeZaNalog=true;
+    this.showPromijeniNalog=false;
+    this.prikaziDialog=true;
+    this.showProvjeraLozinkeZaLozinku=false;
+    this.showPromijeniLozinku=false;
   }
 }

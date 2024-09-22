@@ -1,33 +1,113 @@
 
-<h2>Dodavanje opštine</h2>
+<div style="width: 80%; margin: 0 auto;">
+  <ul class="nav nav-tabs" id="opstineTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="dodaj-tab" data-bs-toggle="tab" href="#dodaj" role="tab" aria-controls="dodaj" aria-selected="true">
+        Dodaj opštinu
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="pregled-tab" data-bs-toggle="tab" href="#pregled" role="tab" aria-controls="pregled" aria-selected="false">
+        Pregled opština
+      </a>
+    </li>
+  </ul>
 
-<form #opstinaForma="ngForm" (ngSubmit)="Dodaj(opstinaForma.value)">
-<div>
-  <label>Naziv</label>
-  <input type="text" name="nazivOpstine" ngModel>
-</div>
-  <div>
-    <label>Postanski broj</label>
-    <input type="number" name="postanskiBroj" ngModel>
+  <div class="tab-content" id="myTabContent" style="margin-top: 20px;">
+    <!-- Tab za dodavanje opštine -->
+    <div class="tab-pane fade show active" id="dodaj" role="tabpanel" aria-labelledby="dodaj-tab">
+      <div class="card p-3">
+        <form [formGroup]="opstinaForm" (ngSubmit)="Dodaj()">
+          <div class="form-group mb-3">
+            <label for="nazivOpstine">Naziv opštine</label>
+            <input id="nazivOpstine" type="text" formControlName="nazivOpstine" class="form-control">
+            <div *ngIf="opstinaForm.get('nazivOpstine')?.invalid && opstinaForm.get('nazivOpstine')?.touched" class="text-danger">
+              Naziv opštine je obavezan.
+            </div>
+          </div>
+          <div class="form-group mb-3">
+            <label for="postanskiBroj">Poštanski broj</label>
+            <input id="postanskiBroj" type="number" formControlName="postanskiBroj" class="form-control">
+            <div *ngIf="opstinaForm.get('postanskiBroj')?.invalid && opstinaForm.get('postanskiBroj')?.touched" class="text-danger">
+              Poštanski broj je obavezan i mora imati tačno 5 cifara.
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success mt-3" [disabled]="opstinaForm.invalid">
+            <i class="fas fa-plus-circle"></i> Dodaj opštinu
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tab za pregled opština -->
+    <div class="tab-pane fade" id="pregled" role="tabpanel" aria-labelledby="pregled-tab">
+      <div class="card p-3">
+        <h3>Pregled svih opština</h3>
+        <div style="text-align: center;">
+          <button type="button" class="btn btn-primary btn-sm w-auto" (click)="prikaziOpstine = !prikaziOpstine; GetAllOpstine()">
+            <i class="fas fa-eye"></i> Prikaži dodane opštine
+          </button>
+        </div>
+
+        <!-- Tabela -->
+        <div *ngIf="prikaziOpstine">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>Naziv opštine</th>
+              <th>Poštanski broj</th>
+              <th>Akcije</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of getAllOpstine()">
+              <td>{{item.nazivOpstine}}</td>
+              <td>{{ item.postanskiBroj }}</td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="ObrisiOpstinu(item)">
+                  <i class="fas fa-trash-alt"></i> Izbriši
+                </button>
+                <button type="button" class="btn btn-warning btn-sm" (click)="Odaberi(item)">
+                  <i class="fas fa-edit"></i> Update
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
-  <button type="submit">Dodaj opšinu</button>
-</form>
-<div>
-  <h1>Pregled svih opština</h1>
-  <button type="submit" (click)="GetAllOpstine()">Prikaži dodane opšine</button>
-  <table class="table table-striped">
-    <thead>
-    <tr>
-      <th>Naziv opštine</th>
-      <th>Poštanski broj</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let item of getAllOpstine()">
-      <td>{{item.nazivOpstine}}</td>
-      <td>{{ item.postanskiBroj}}</td>
-      <td><button type="submit"  class="btn btn-primary" (click)="ObrisiOpstinu(item)">Izbriši opštinu</button></td>
-    </tr>
-    </tbody>
-  </table>
 </div>
+
+
+<form #updateForm="ngForm" name="fizioterapeutUpdForm">
+  <div *ngIf="odabranaOpstina">
+    <div class="modal fade show" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-modal="true" role="dialog" style="display: block;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLiveLabel">Update opstine</h1>
+            <button type="button" (click)="odabranaOpstina = null" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="ImePrezime" class="form-label">Naziv opštine:</label>
+              <input id="ImePrezime" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabranaOpstina.nazivOpstine">
+            </div>
+            <div class="mb-3">
+              <label for="Jmbg" class="form-label">Postanski broj:</label>
+              <input id="Jmbg" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabranaOpstina.postanskiBroj">
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" (click)="odabranaOpstina = null" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" (click)="Update()" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+

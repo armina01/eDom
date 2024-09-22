@@ -1,54 +1,150 @@
-<div class="form-group">
-    <label for="opisZadatka">Opis zadatka</label>
-    <input type="text" class="form-control" id="opisZadatka" placeholder="Enter opis zadatka"
-           [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.opis" >
-    <label *ngIf="showErrorPrazno" style="color: red;" >Polje je obavezno!</label>
+<app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="Naslov"><i class="fa-solid fa-list-check"></i>Dodajte zadatke</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group mb-3">
+            <label for="opisZadatka">
+              <i class="far fa-clipboard"></i>
+              Opis zadatka
+            </label>
+            <input type="text" class="form-control" id="opisZadatka" placeholder="Ukucaj opis zadatka"
+                   [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.opis">
+            <label *ngIf="showErrorPrazno" class="error-message">Polje je obavezno!</label>
+
+          </div>
+
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="gridCheck2"
+                   [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.status">
+            <label class="form-check-label" for="gridCheck2">Status zadatka</label>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="datumZadatka">
+              <i class="far fa-calendar-alt"></i>
+              Datum zadatka
+            </label>
+            <input type="date" class="form-control" id="datumZadatka"
+                   [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.datumPostavke">
+          </div>
+          <div class="checkbox-container mb-3">
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="dnevni"
+                   [ngModelOptions]="{standalone:true}" [(ngModel)]="_vrstaDnevnogZadatkaId">
+            <label class="form-check-label" for="dnevni">
+
+              Dnevni
+            </label>
+          </div>
+
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="sedmicni"
+                   [ngModelOptions]="{standalone:true}" [(ngModel)]="_vrstaSedmicnogZadatkaId">
+            <label class="form-check-label" for="sedmicni">
+
+              Sedmični
+            </label>
+          </div>
+          </div>
+          <label *ngIf="this.showErrorObojeIzabrano" class="error-message">Nije moguće izabrati obje opcije!</label>
+          <label *ngIf="this.showErrorNijeIzabrano" class="error-message">Obavezno je izabrati jednu opciju!</label>
+
+
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-6">
+      <div class="card 2">
+        <div class="card-body">
+          <div class="toggle-container" >
+            <div class="toggle-container" (click)="SelectAll()">
+              <label class="toggle-label" [class.active]="!isSelected">
+                <div class="toggle-bar">
+                  <div class="toggle-circle"></div>
+                </div>
+                <span>Oznaci sve</span>
+
+
+              </label>
+            </div>
+            <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1">
+                            <i class="fas fa-search"></i>
+                      </span>
+              <input type="text" class="form-control" placeholder="Pretrazi" [ngModelOptions]="{standalone:true}" [(ngModel)]="pretragaNaziv" aria-label="Search" aria-describedby="basic-addon1">
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>
+                  <i class="far fa-check-square"></i>
+                  Oznaci
+                </th>
+                <th>
+                  <i class="far fa-user"></i>
+                  ImePrezime
+                </th>
+                <th>
+                  <i class="far fa-id-card"></i>
+                  JMBG
+                </th>
+                <th>
+                  <i class="far fa-calendar-alt"></i>
+                  Datum rodjenja
+                </th>
+                <th>
+                  <i class="fa-solid fa-list-ol"></i>
+                  Broj sobe
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of getKorisnici()">
+                <td>
+                  <input class="form-check-input" type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="item.selected" />
+                </td>
+                <td>{{ item.imePrezime }}</td>
+                <td>{{ item.jmbg}}</td>
+                <td>{{ item.datumRodjenja | date }}</td>
+                <td>{{ item.brojSobe }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <label *ngIf="showErrorNemaKorisnika" class="error-message"> Niste izabrali korisnika!</label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="d-flex justify-content-center">
+  <Button (click)="DodajZadatak()" class="btn btn-success">
+    <i class="far fa-plus-square"></i>
+    Dodaj
+  </Button>
+</div>
+<div *ngIf="showConfirmationDialog" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="confirmationDialogLabel" aria-modal="true" style="display: block;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-success text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-check-circle"></i> Uspješno ste dodali zadatak
+        </h5>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" id="gridCheck2"
-           [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.status">
-    <label class="form-check-label" for="gridCheck2" >Status zadatka</label>
-</div>
-
-<div class="form-group">
-    <label for="datumZadatka">Datum zadatka</label>
-    <input type="date" class="form-control" id="datumZadatka"
-           [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.datumPostavke">
-</div>
-
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" id="dnevni"
-           [ngModelOptions]="{standalone:true}" [(ngModel)]="_vrstaDnevnogZadatkaId">
-    <label class="form-check-label" for="dnevni">Dnevni</label>
-</div>
-
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" id="sedmicni"
-           [ngModelOptions]="{standalone:true}" [(ngModel)]="_vrstaSedmicnogZadatkaId">
-    <label class="form-check-label" for="sedmicni">Sedmični</label>
-</div>
-<label *ngIf="this.showErrorObojeIzabrano===true"  style="color: red;" >Nije moguće izabrati obje opcije!</label>
-<label *ngIf="this.showErrorNijeIzabrano===true"  style="color: red;" >Obavezno je izabrati jednu opciju!</label>
-<Button (click)="DodajZadatak()" >Dodaj zadatak</Button>
-<button type="button" class="btn btn-primary btn-sm" (click)="SelectAll()" >Oznaci sve</button>
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Oznaci</th>
-        <th>ImePrezime</th>
-        <th>JMBG</th>
-        <th>Datum rodjenja</th>
-        <th>Broj sobe</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let item of getKorisnici()">
-        <td><input  type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="item.selected" /></td>
-        <td>{{ item.imePrezime }}</td>
-        <td>{{ item.jmbg}}</td>
-        <td>{{ item.datumRodjenja | date }}</td>
-        <td>{{ item.brojSobe }}</td>
-    </tr>
-    </tbody>
-</table>

@@ -1,0 +1,124 @@
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+header {
+  background-color: #436243;
+  padding: 15px 20px;
+  color: #fff;
+
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height:50px;
+}
+.logo{
+  height: 140%;
+}
+.logo img {
+  width: 100px;
+  height: 100%;
+}
+.fa-user{
+  height:100%;
+}
+.nav-links {
+
+  display: flex;
+  list-style-type: none;
+  margin:0;
+  padding: 0;
+}
+.nav-links li {
+  margin-right: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  height:80%;
+}
+
+.profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.profile span {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+li{
+  cursor: pointer;
+}
+
+li :hover {
+  background-color: #778e77;
+  border-radius:  20%;
+}
+li a{
+  padding: 5px;
+}
+/* Ensure the navbar container is positioned correctly */
+.navbar {
+  position: relative; /* Allow child elements to use absolute positioning */
+}
+
+/* Styling for the dropdown content */
+.dropdown-content {
+  display: none; /* Hide dropdown by default */
+  position: absolute; /* Position it relative to the nearest positioned ancestor */
+  top: 100%; /* Place it directly below the parent (navbar) */
+  left: 0; /* Align with the left edge of the parent */
+  width: 100%; /* Make it span the full width of the parent */
+  background-color: white; /* Set background color for better visibility */
+  border: 1px solid #ddd; /* Border to distinguish from the background */
+  z-index: 1050; /* Ensure it appears above other elements */
+  max-height: 300px; /* Optional: limit the height and enable scrolling */
+  overflow-y: auto; /* Add scrollbar if content exceeds max-height */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Optional: shadow for better visibility */
+}
+
+/* Show the dropdown content when it's supposed to be visible */
+.dropdown-content.show {
+  display: block; /* Show the dropdown */
+}
+
+/* Ensure table inside the dropdown is responsive */
+.table-responsive {
+  margin: 0; /* Ensure no extra margin */
+  width: 100%; /* Full width for table */
+}
+
+/* Adjust button style if needed */
+.btn-custom-green {
+  background-color: #519151; /* Light green color */
+  border-color: #548c54;     /* Border color matching background */
+  color: #000;               /* Dark text for better contrast */
+}
+
+.btn-custom-green:hover {
+  background-color: #468c46; /* Slightly darker green on hover */
+  border-color: #478f47;
+  color: #000;
+}
+
+.profile span {
+  font-size: 24px; /* Adjust the size as needed */
+  margin-right: 10px;
+}

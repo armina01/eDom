@@ -11,17 +11,20 @@ import {DodajZadatakRequest} from "../get-zadaci/dodajZadatakRequest";
 import {GetAllNjegovateljaResponseNjegovatelj} from "../njegovatelj/getAllNjegovateljiResponse";
 import {DodajZadatakResponse} from "../get-zadaci/DodajZadatakResponse";
 import {SelectKorisnikeDoma} from "./SelectKorisnikeDoma";
+import {ZadaciService} from "../Services/ZadaciService";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
 
 @Component({
   selector: 'app-dodaj-zadatke',
   standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, NavBarNjejgovateljComponent],
+  providers :[ZadaciService],
   templateUrl: './dodaj-zadatke.component.html',
   styleUrl: './dodaj-zadatke.component.css'
 })
 export class DodajZadatkeComponent {
 
-  constructor(public httpClient:HttpClient) {
+  constructor(public httpClient:HttpClient,private zadatakService:ZadaciService) {
   }
 
   public _showKorisnici:SelectKorisnikeDoma[]=[];
@@ -39,6 +42,9 @@ export class DodajZadatkeComponent {
 
   public njegovatelj:GetAllNjegovateljaResponseNjegovatelj|null=null;
   ngOnInit(){
+    this.zadatakService.GetVrsteZadataka().subscribe(response=>{
+      this.dodajOpstiZadatak.vrstaZadatkaId=response.vrsteZadatka.find(x=>x.naziv==="Opsti zadatak")?.vrstaZadatkaId??0;
+    })
   this.GetAllKorisnici();
 
     this.njegovatelj=this.getZaposlenik();
@@ -67,7 +73,11 @@ export class DodajZadatkeComponent {
     });
   }
   getKorisnici() {
+    if(this.pretragaNaziv!=="") {
+      return this._showKorisnici.filter(x => (x.imePrezime.toLowerCase()).startsWith(this.pretragaNaziv.toLowerCase()))
+    } else {
       return this._showKorisnici;
+    }
   }
 
   public _vrstaDnevnogZadatkaId:boolean=false;
@@ -75,6 +85,7 @@ export class DodajZadatkeComponent {
   public showErrorNijeIzabrano:boolean=false;
   public showErrorObojeIzabrano:boolean=false;
   public showErrorPrazno:boolean=false;
+  public showErrorNemaKorisnika=false;
   DodajZadatak() {
     if(this._vrstaDnevnogZadatkaId===this._vrstaSedmicnogZadatkaId)
     {
@@ -97,18 +108,30 @@ export class DodajZadatkeComponent {
       }
       else {
         let selectedKorisnici=this._showKorisnici.filter(x=>x.selected===true)
-
-        selectedKorisnici.forEach(korisnik=> {
+        if (selectedKorisnici.length===0)
+        {
+          this.showErrorNemaKorisnika=true;
+        }else {
+          selectedKorisnici.forEach(korisnik => {
 
               this.AddZadatak(korisnik);
+            this.showConfirmationDialog = true;
+            this.showErrorNemaKorisnika=false;
+            this.setAutoHide();
             }
-        );
+          );
+        }
         this.showErrorNijeIzabrano=false;
         this.showErrorObojeIzabrano=false;
-        this.dodajOpstiZadatak.opis="";
+
         this.dodajOpstiZadatak.status=false;
       }
     }
+  }
+  setAutoHide() {
+    setTimeout(() => {
+      this.showConfirmationDialog = false;
+    }, 3000);
   }
   getZaposlenik():GetAllNjegovateljaResponseNjegovatelj | null {
     let korisnik = window.localStorage.getItem("korisnik")??"";
@@ -120,17 +143,36 @@ export class DodajZadatkeComponent {
     }
   }
   private AddZadatak(korisnik: SelectKorisnikeDoma) {
-    this.dodajOpstiZadatak.zaposlenikPostavioId=this.njegovatelj?.zaposlenikId??0;
-    this.dodajOpstiZadatak.korisnikDomaId=korisnik.korisnikDomaID;
-    this.dodajOpstiZadatak.intervalZadatkaId= this._vrstaDnevnogZadatkaId?1:2;
-    let url: string = MyConfig.adresa_servera + `/dodajZadatak`;
-    this.httpClient.post<DodajZadatakResponse>(url, this.dodajOpstiZadatak).subscribe((response:DodajZadatakResponse) => {
-
+    let intervalZadatkaId:number=0;
+    let intervalZadatka=this.zadatakService.GetIntervalZadataka().subscribe(response=> {
+        intervalZadatkaId = response.intervaliZadatka.find(x =>
+            x.jeDnevni === this._vrstaDnevnogZadatkaId)?.intervalZadatkaId ?? 0;
+        this.dodajOpstiZadatak.zaposlenikPostavioId=this.njegovatelj?.zaposlenikId??0;
+        this.dodajOpstiZadatak.korisnikDomaId=korisnik.korisnikDomaID;
+        this.dodajOpstiZadatak.intervalZadatkaId= intervalZadatkaId;
+        this.zadatakService.DodajZadatak(this.dodajOpstiZadatak).subscribe((response:DodajZadatakResponse) => {
+            this.dodajOpstiZadatak.opis="";
+            this._vrstaSedmicnogZadatkaId=false;
+            this._vrstaDnevnogZadatkaId=false;
+            this.dodajOpstiZadatak.status=false;
+        })
     })
+
   }
-  public isSelected:boolean=true
+  public isSelected:boolean=true;
   SelectAll() {
     this._showKorisnici.forEach(x=>x.selected=this.isSelected)
-    this.isSelected=false;
+    this.isSelected = !this.isSelected;
   }
+
+  toggleSwitch() {
+
+  }
+  pretragaNaziv="";
+  SelektirajKorisnike() {
+
+  }
+    public showConfirmationDialog: boolean = false;
+
+
 }

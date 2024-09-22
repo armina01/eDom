@@ -20,7 +20,9 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.DodajKorisnickiNalog
             { 
                 KorisnickoIme = request.KorisnickoIme,
                 Lozinka= BCrypt.Net.BCrypt.EnhancedHashPassword(request.Lozinka, 13),
+                Email= request.Email,
                 JeAdmin= request.JeAdmin,
+                Je2FActive=request.Je2FActive,
                 JeFizioterapeut= request.JeFizioterapeut,
                 JeDoktor= request.JeDoktor,
                 JeNjegovatelj= request.JeNjegovatelj,

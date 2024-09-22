@@ -1,3 +1,61 @@
+
 .profilna-slika{
   width:50px;
+}
+.korisnik-slika {
+  max-width: 150px; /* Podešavanje maksimalne širine slike */
+  max-height: 150px; /* Podešavanje maksimalne visine slike */
+  object-fit: cover; /* Osigurava da slika zadrži proporcije */
+}
+.card-header{
+  background: #2c4f2c;
+}
+.button-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between buttons */
+}
+
+.custom-btn {
+  display: inline-flex;
+
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  color: white;
+  cursor: pointer;
+}
+
+.custom-btn i {
+  margin-right: 8px; /* Space between icon and text */
+}
+li{
+  cursor: pointer;
+}
+.btn-custom-green {
+  background-color: #519151; /* Light green color */
+  border-color: #548c54;     /* Border color matching background */
+  color: #000;               /* Dark text for better contrast */
+}
+
+.btn-custom-green:hover {
+  background-color: #468c46; /* Slightly darker green on hover */
+  border-color: #478f47;
+  color: #000;
+}
+
+/* Optional: Ensuring the text color remains readable */
+.btn-custom-green:focus, .btn-custom-green.focus {
+  box-shadow: 0 0 0 0.2rem rgba(118, 180, 118, 0.5); /* Light green shadow */
+}
+li :hover{
+  background-color: #97a696;
+}
+.card-header{
+  background-color: #a3c4ea;
 }

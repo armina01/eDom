@@ -1,4 +1,4 @@
-import { Routes} from '@angular/router';
+
 import {HeaderComponent} from "./header/header.component";
 import {PregledKorisnikaDomaComponent} from "./pregled-korisnika-doma/pregled-korisnika-doma.component";
 import {OpstinaComponent} from "./opstina/opstina.component";
@@ -18,6 +18,7 @@ import {DijagnozaComponent} from "./dijagnoza/dijagnoza.component";
 import {
   PregledPodatakaFizioterapeutComponent
 } from "./pregled-podataka-fizioterapeut/pregled-podataka-fizioterapeut.component";
+import{NutricionistaComponent} from "./nutricionista/nutricionista.component";
 import {TerapijaComponent} from "./terapija/terapija.component";
 import {LijekComponent} from "./lijek/lijek.component";
 import {NapomenaComponent} from "./napomena/napomena.component";
@@ -32,18 +33,23 @@ import {PregledPodatakaNutricionistaComponent} from "./pregled-podataka-nutricio
 import {PregledPodatakaDoktorComponent} from "./pregled-podataka-doktor/pregled-podataka-doktor.component";
 import {FizioTerapijaComponent} from "./fizio-terapija/fizio-terapija.component";
 
+import{DodajPlanIshraneComponent} from "./dodaj-plan-ishrane/dodaj-plan-ishrane.component";
+import {Enable2FAComponent} from "./enable-2-fa/enable-2-fa.component";
+import {AutorizacijaGuard} from "./Helper/autorizacija-guard.service";
+import {DodajVisePlanovaComponent} from "./dodaj-vise-planova/dodaj-vise-planova.component";
+import {Routes} from "@angular/router";
 
 export const routes: Routes = [
   {path: 'header', component: HeaderComponent},
-  {path: 'pregledKorisnikaDoma', component: PregledKorisnikaDomaComponent},
-  {path: 'opstina', component:OpstinaComponent},
+  {path: 'pregledKorisnikaDoma', component: PregledKorisnikaDomaComponent, canActivate: [AutorizacijaGuard]},
+  {path: 'opstina', component:OpstinaComponent,canActivate: [AutorizacijaGuard]},
   {path: 'korisnkDoma', component:KorisnikComponent},
   {path: 'korisnickiNalog', component:KorisnickiNalogComponent},
-  {path: 'poslovnaPozicija', component:PoslovnaPozicijaComponent},
+  {path: 'poslovnaPozicija', component:PoslovnaPozicijaComponent,canActivate: [AutorizacijaGuard]},
   {path:'njegovatelj',component:NjegovateljComponent},
   {path:'doktor',component:DoktorComponent},
-  {path:'fizioterapeut',component:FizioterapeutComponent},
-  {path:'dijagnoza',component:DijagnozaComponent},
+  {path:'fizioterapeut',component:FizioterapeutComponent,canActivate: [AutorizacijaGuard]},
+  {path:'dijagnoza',component:DijagnozaComponent,canActivate: [AutorizacijaGuard]},
   {path:'login',component:LogInComponent},
   {path:'home',component:HomepageComponent},
   {path:'fizioterapeut/o-meni',component:PregledPodatakaFizioterapeutComponent},
@@ -57,12 +63,19 @@ export const routes: Routes = [
   {path:'pregledsedmicnihzadataka/:id',component:PregledSedmicnihZadatakaComponent},
   {path:'pregledarhivezadataka/:id',component:PregledArhiveZadatakaComponent},
   {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent},
-  {path:'nutricionista/o-meni',component:PregledPodatakaNutricionistaComponent},
   {path:'doktor/o-meni',component:PregledPodatakaDoktorComponent},
   {path:'fizioterapeut/o-meni',component:PregledPodatakaFizioterapeutComponent},
-  {path:'fizioTerapija',component:FizioTerapijaComponent}
-
-
+  {path:'fizioTerapija',component:FizioTerapijaComponent},
+  {path: 'nutricionista',component:NutricionistaComponent},
+  {path:'home',component:HomepageComponent,canActivate: [AutorizacijaGuard]},
+  {path:'pregleddnevnihzadataka/:id',component:GetZadaciComponent,canActivate: [AutorizacijaGuard]},
+  {path:'pregledsedmicnihzadataka/:id',component:PregledSedmicnihZadatakaComponent,canActivate: [AutorizacijaGuard]},
+  {path:'pregledarhivezadataka/:id',component:PregledArhiveZadatakaComponent,canActivate: [AutorizacijaGuard]},
+  {path:'njegovatelj/o-meni',component:PregledPodatakaNjegovateljComponent,canActivate: [AutorizacijaGuard]},
+  {path:'nutricionista/o-meni',component:PregledPodatakaNutricionistaComponent,canActivate: [AutorizacijaGuard]},
+  {path:'dodajplanishrane/:id',component:DodajPlanIshraneComponent,canActivate: [AutorizacijaGuard]},
+  {path:'autorizacija',component:Enable2FAComponent},
+  {path:'dodajPlanoveIshrane', component: DodajVisePlanovaComponent,canActivate: [AutorizacijaGuard]}
 ]
 
 

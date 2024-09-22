@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using static System.Net.Mime.MediaTypeNames;
 using DomZaStaraLicaApi.Helper;
 using Microsoft.Extensions.DependencyInjection;
+using DomZaStaraLicaApi.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +21,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x => x.OperationFilter<AutorizacijaSwaggerHeader>());
 builder.Services.AddTransient<MyAuthService>();
+builder.Services.AddTransient<MyEmailSenderService>();
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,10 +34,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); 
+app.UseStaticFiles();
 
-app.UseAuthorization();
-app.MapControllers();
+
 
 app.UseCors(
     options => options
@@ -44,5 +45,7 @@ app.UseCors(
         .AllowAnyHeader()
         .AllowCredentials()
 ); //This needs to set everything allowed
-
+app.UseAuthorization();
+app.MapControllers();
+app.MapHub<SignalRHub>("/hub-putanja");
 app.Run();

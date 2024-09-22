@@ -1,76 +1,202 @@
-
+<app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
+<br/>
+<div class="card">
+  <div class="card-header">
+    <h3 class="Naslov"><i class="fa-solid fa-list-check"></i>Upravljanje zadacima za korisnika {{korisnik?.imePrezime}}</h3>
+  </div>
 <div class="form-group">
-  <label for="datumZadatka">Datum zadatka</label>
-  <input type="date" class="form-control" id="datumZadatka"
-         [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDatum" (change)="RefreshOpstiZadaci()">
-</div>
-<button class="btn btn-primary" type="submit" (click)="GetAllMedicinskiZadaci()">Pregledaj medicinske zadatke </button>
-<button class="btn btn-primary" type="submit" (click)="GetAllOpstiZadaci()">Pregledaj opste zadatke </button>
-<button class="btn btn-primary" type="submit" (click)="GetAllFizijatrijskiZadaci()">Pregledaj fizijatrijske zadatke </button>
+  <div class="container mt-4">
+    <div class="form-group text-center">
+      <label for="datumZadatka">Odaberite datum zadatka kojim želite upravljati</label>
+      <div class="container" style="max-width: 40%;">
+        <div class="input-group" id="datumZadatkaDiv">
+          <input type="date" class="form-control" id="datumZadatka"
+                 [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniDatum" (change)="RefreshOpstiZadaci()">
+        </div>
+      </div>
+    </div>
 
-
-  <table  *ngIf="showMedicinski===true" class="medicinskiZadaci">
-  <thead>
-  <tr>
-    <th>Opis</th>
-    <th>Status</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let item of getAllMedicinskizadaci()">
-    <td>{{ item.opis }}</td>
-    <input class="form-check-input" type="checkbox" id="gridCheck4" [(ngModel)]="item.status">
-    <label class="form-check-label">
-      Status
-    </label>
-    <td><button type="submit"  class="btn btn-primary" >Izbrisi zadatak</button></td>
-  </tr>
-  </tbody>
-  </table>
-  <table *ngFor="let item of getAllFizijatrijskizadaci()" class="fizijatrijskiZadaci">
-    <thead>
+  </div>
+  <br/>
+  <div class="table-row">
+    <div class="table-container">
+      <button class="btn btn-success" type="submit" >
+        <i class="fas fa-medkit"></i> Pregledaj medicinske zadatke
+      </button>
+    <table  class="table table-striped2 table-bordered medicinskiZadaci mt-4">
+    <thead class="thead-dark">
     <tr>
-      <th>Opis</th>
-      <th>Status</th>
+      <th  class="text-center" scope="col">Opis</th>
+      <th class="text-center" scope="col">Status</th>
+      <th class="text-center" scope="col">Akcije</th>
     </tr>
     </thead>
-  <tbody  *ngIf="showFizijatrijski===true">
-  <tr >
-    <td>{{ item.opis }}</td>
-    <td>
-      <input class="form-check-input" type="checkbox" id="gridCheck1" [(ngModel)]="item.status">
-      <label class="form-check-label">
-        Status
-      </label>
-    </td>
-    <td><button type="submit"  class="btn btn-primary" >Izbrisi zadatak</button></td>
-  </tr>
-  </tbody>
-  </table>
-  <table *ngIf="showOpsti===true" class="opstiZadaci">
-    <thead>
-    <tr>
-      <th>Opis</th>
-      <th>Status</th>
-    </tr>
-    </thead>
-  <tbody>
-  <tr *ngFor="let item of getAllOpstizadaci()">
-    <td>{{ item.opis }}
-
-    </td>
-    <input class="form-check-input" type="checkbox" id="gridCheck8" (change)="UpdateOpstiZadatak(item)" [(ngModel)]="item.status">
-    <td><button type="submit"  class="btn btn-primary" (click)="IzbrisiZadatak(item)">Izbrisi zadatak</button></td>
-  </tr>
-  </tbody>
-    <tbody *ngIf="showDodajOpstiZadatak===true">
-    <tr>
-      <td><input [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.opis" />
-        <label *ngIf="showEmpty">Niste ispunili polje!</label></td>
-      <input class="form-check-input" type="checkbox" id="gridCheck2" [ngModelOptions]="{standalone: true}" [(ngModel)]="dodajOpstiZadatak.status" >
-
-      <td><button type="submit"  class="btn btn-primary"(click)="DodajOpstiZadatak()" >Dodaj zadatak</button></td>
+    <tbody>
+    <tr *ngFor="let item of getAllMedicinskizadaci()">
+      <td class="text-center" >{{ item.opis }}</td>
+      <td class="text-center">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="gridCheck4" [(ngModel)]="item.status"
+                 (change)="UpdateMedicinskiZadatak(item)">
+          <label class="form-check-label" for="gridCheck4"></label>
+        </div>
+      </td>
+      <td class="text-center">
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
+        (click)="IzbrisiZadatak(item)"
+        >
+          <i class="fas fa-trash"></i> Izbrisi zadatak
+        </button>
+      </td>
     </tr>
     </tbody>
-    <Button (click)="PrikaziDodajOpstiZadatak()">Dodaj novi zadatak</Button>
+      <tbody >
+      <tr>
+        <td class="center-content">
+          <div class="input-group">
+            <input type="text" class="form-control" [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="dodajMedicinskiZadatak.opis" placeholder="Unesite opis zadatka"
+                  [disabled]="!jeDoktor"
+            />
+          </div>
+          <label *ngIf="showEmptyMed" class="text-danger">Niste ispunili polje!</label>
+        </td>
+        <td class="text-center">
+          <div class="text-center">
+            <input class="form-check-input" type="checkbox" id="gridCheck2" [ngModelOptions]="{standalone: true}"
+                   [disabled]="!jeDoktor"
+                   [(ngModel)]="dodajMedicinskiZadatak.status">
+
+            <label class="form-check-label" for="gridCheck2"></label>
+          </div>
+        </td>
+        <td class="text-center">
+          <button [disabled]="!jeDoktor"
+            type="button" class="btn btn-primary" (click)="DodajMedicinskiZadatak()">
+            <i class="fas fa-check"></i> Dodaj zadatak
+          </button>
+        </td>
+      </tr>
+      </tbody>
+
+    </table>
+      </div>
+
+    <div class="table-container">
+      <button class="btn btn-warning" type="submit" >
+        <i class="fas fa-tasks"></i> Pregledaj opšte zadatke
+      </button>
+  <table  class="table table-striped1 table-bordered opstiZadaci mt-4">
+    <thead class="thead-dark">
+    <tr>
+      <th class="text-center" scope="col">Opis</th>
+      <th class="text-center" scope="col">Status</th>
+      <th class="text-center" scope="col">Akcije</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of getAllOpstizadaci()">
+      <td class="text-center">{{ item.opis }}</td>
+      <td class="text-center">
+        <div class="text-center">
+          <input class="form-check-input" type="checkbox" id="gridCheck8" (change)="UpdateOpstiZadatak(item)" [(ngModel)]="item.status">
+          <label class="form-check-label" for="gridCheck8"></label>
+        </div>
+      </td>
+      <td class="text-center" >
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" (click)="IzbrisiZadatak(item)">
+          <i class="fas fa-trash"></i> Izbrisi zadatak
+        </button>
+      </td>
+    </tr>
+    <tbody >
+    <tr>
+      <td class="center-content">
+        <div class="input-group">
+          <input type="text" class="form-control" [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="dodajOpstiZadatak.opis" placeholder="Unesite opis zadatka"
+                  [disabled]="!jeNjegovatelj"/>
+        </div>
+        <label *ngIf="showEmpty" class="text-danger">Niste ispunili polje!</label>
+      </td>
+      <td class="text-center">
+        <div class="text-center">
+          <input class="form-check-input" type="checkbox"  [ngModelOptions]="{standalone: true}"
+                 [disabled]="!jeNjegovatelj" [(ngModel)]="dodajOpstiZadatak.status">
+          <label class="form-check-label" ></label>
+        </div>
+      </td>
+      <td class="text-center">
+        <button type="button" class="btn btn-primary" (click)="DodajOpstiZadatak()"
+                [disabled]="!jeNjegovatelj" >
+          <i class="fas fa-check"></i> Dodaj zadatak
+        </button>
+      </td>
+    </tr>
+    </tbody>
+
   </table>
+      </div>
+    <div class="table-container">
+      <button class="btn btn-info" type="submit">
+        <i class="fas fa-wheelchair"></i> Pregledaj fizijatrijske zadatke
+      </button>
+  <table  class="table table-striped3 table-bordered fizijatrijskiZadaci mt-4">
+    <thead class="thead-dark">
+    <tr>
+      <th class="text-center" scope="col">Opis</th>
+      <th class="text-center" scope="col">Status</th>
+      <th class="text-center" scope="col">Akcije</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of getAllFizijatrijskizadaci()">
+      <td class="text-center">{{ item.opis }}</td>
+      <td class="text-center">
+        <div class="text-center">
+          <input class="form-check-input" type="checkbox" id="gridCheck" [(ngModel)]="item.status"
+          (change)="UpdateFizijatrijskiZadatak(item)">
+          <label class="form-check-label" for="gridCheck">Status</label>
+        </div>
+      </td>
+      <td class="text-center">
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
+                (click)="IzbrisiZadatak(item)">
+          <i class="fas fa-trash"></i> Izbrisi zadatak
+        </button>
+      </td>
+    </tr>
+    </tbody>
+    <tbody >
+    <tr>
+      <td class="center-content">
+        <div class="input-group">
+          <input type="text" class="form-control" [ngModelOptions]="{standalone: true}"
+                 [disabled]="!jeFizijatar"
+                 [(ngModel)]="dodajFizijatrijskiZadatak.opis" placeholder="Unesite opis zadatka" />
+        </div>
+
+      </td>
+      <td class="text-center">
+        <div class="text-center">
+          <input class="form-check-input" type="checkbox" id="gridCheck3" [ngModelOptions]="{standalone: true}"
+                 [disabled]="!jeFizijatar"
+                 [(ngModel)]="dodajFizijatrijskiZadatak.status">
+          <label class="form-check-label" for="gridCheck2"></label>
+        </div>
+      </td>
+      <td class="text-center">
+        <button type="button"
+                [disabled]="!jeFizijatar"
+                class="btn btn-primary" (click)="DodajFizijatrijskiZadatak()">
+          <i class="fas fa-check"></i> Dodaj zadatak
+        </button>
+      </td>
+    </tr>
+    </tbody>
+
+  </table>
+      </div>
+  </div>
+</div>
+</div>

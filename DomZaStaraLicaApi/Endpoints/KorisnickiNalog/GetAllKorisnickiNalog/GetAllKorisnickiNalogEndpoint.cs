@@ -26,6 +26,7 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnickiNalog.GetAllKorisnickiNalog
                 NalogId=x.NalogId,
                 KorisnickoIme=x.KorisnickoIme,
                 Lozinka=x.Lozinka,
+                JeAdmin=x.JeAdmin,
                 JeDoktor=x.JeDoktor,
                 JeFizioterapeut=x.JeFizioterapeut,
                 JeNjegovatelj=x.JeNjegovatelj,

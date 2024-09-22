@@ -1,39 +1,105 @@
+<app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">
+        <i class="bi bi-clipboard-check"></i> Pregled aktivnih napomena za korisnika {{korisnik?.imePrezime}}
+      </h2>
+    </div>
+    <div class="card-body">
+      <div *ngFor="let item of aktivneNapomene; let i = index" class="mb-3" [ngClass]="{'bg-lavender': i % 2 === 0, 'bg-light-lavender': i % 2 !== 0}">
+        <div class="card">
+          <div class="card-body">
+            <p class="card-title d-flex align-items-center">
+              <i class="bi bi-info-circle-fill me-2"></i><strong>Opis:</strong> {{ item.opis }}
+            </p>
+            <p class="card-title d-flex align-items-center">
+              <i class="bi bi-calendar-date-fill me-2"></i><strong>Datum postavke:</strong> {{ item.datumPostavke | date: 'medium' }}
+            </p>
+            <p class="card-title d-flex align-items-center">
+              <i class="bi bi-check-circle-fill me-2"></i><strong>Status:</strong> {{ item.isAktivna ? 'Aktivna' : 'Neaktivna' }}
+            </p>
+            <p class="card-title d-flex align-items-center">
+              <i class="bi bi-tag-fill me-2"></i><strong>Vrsta napomene:</strong> {{ item.vrstaNapomeneId }}
+            </p>
+            <p class="card-title d-flex align-items-center">
+              <i class="bi bi-person-fill me-2"></i><strong>Zaposlenik:</strong> {{ item.zaposlenikId }}
+            </p>
+            <div *ngIf="item.prioritet === true" class="d-flex align-items-center text-danger">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>
+              <strong>Važno!</strong>
+            </div>
+            <div *ngIf="jeDoktor">
+            <button type="button" class="btn btn-primary me-2" (click)="Odaberi(item)">
+              <i class="bi bi-pencil me-2"></i> Update napomenu
+            </button>
+            <button type="button" class="btn btn-danger" (click)="Obrisi(item)">
+              <i class="bi bi-trash me-2"></i> Izbriši napomenu
+            </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<h2>Pregled aktivnih napomena</h2>
 
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <th>Opis</th>
-    <th>Datum postavke</th>
-    <th>Status</th>
-    <th>Vrsta napomene</th>
-    <th>Zaposlenik</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let item of aktivneNapomene">
-    <td>{{ item.opis }}</td>
-    <td>{{ item.datumPostavke | date }}</td>
-    <td *ngIf="item.isAktivna; else neaktivna">Aktivna</td>
-    <ng-template #neaktivna><td>Neaktivna</td></ng-template>
-    <td>
-      <span *ngFor="let vrsta of vrsteNapomena">
-          <ng-container *ngIf="vrsta.vrstaNapomeneId===item.vrstaNapomeneId">
-            {{ vrsta.opis}}
-          </ng-container>
-        </span>
-    </td>
-    <td>
-      <span *ngFor="let zaposlenik of zaposlenici">
-          <ng-container *ngIf="zaposlenik.zaposlenikId===item.zaposlenikId">
-            {{ zaposlenik.imePrezime}}
-          </ng-container>
-        </span>
-    </td>
-    <td *ngIf="item.prioritet===true" [ngStyle]="{'background-color': item.prioritet ? 'red' : 'inherit'}">
-      Bitna napomena !
-    </td>
-  </tr>
-  </tbody>
-</table>
+<div *ngIf="OdabranaNapomena">
+  <div class="modal fade show" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-modal="true" role="dialog" style="display: block;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- Updated modal header with blue background -->
+        <div class="modal-header" style="background-color: #007bff; color: white;">
+          <h1 class="modal-title fs-5" id="exampleModalLiveLabel">
+            <i class="fas fa-edit"></i> Update napomene
+          </h1>
+          <button type="button" (click)="OdabranaNapomena = null" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div>
+            <label class="form-label">
+              <i class="fas fa-sticky-note"></i> Napomena:
+            </label>
+            <input class="form-control" [(ngModel)]="OdabranaNapomena.opis">
+          </div>
+
+          <div class="mt-3">
+            <div class="d-flex align-items-center">
+              <label class="me-2"><i class="fas fa-exclamation-circle"></i> Prioritet</label>
+              <input type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="OdabranaNapomena.prioritet">
+            </div>
+            <div class="d-flex align-items-center mt-2">
+              <label class="me-2"><i class="fas fa-check-circle"></i> Aktivna</label>
+              <input type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="OdabranaNapomena.isAktivna">
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label for="cmbVrstaNapomene">
+              <i class="fas fa-list-alt"></i> Izaberite vrstu napomene:
+            </label>
+            <select id="cmbVrstaNapomene" class="form-select" [ngModelOptions]="{standalone: true}" [(ngModel)]="OdabranaNapomena.vrstaNapomeneId">
+              <option *ngFor="let option of vrsteNapomena" [ngValue]="option.vrstaNapomeneId">{{ option.opis }}</option>
+            </select>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label"><i class="fas fa-user"></i> Zaposlenik:</label>
+            <p class="form-control-plaintext">{{ getImeZaposlenika(OdabranaNapomena.zaposlenikId) }}</p>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" (click)="OdabranaNapomena = null" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Close
+          </button>
+          <button type="button" (click)="Update()" class="btn btn-primary">
+            <i class="fas fa-save"></i> Save changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

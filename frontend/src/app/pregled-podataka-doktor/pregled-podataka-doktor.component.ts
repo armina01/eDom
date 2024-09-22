@@ -12,12 +12,14 @@ import {
   ProvjeraPasswordaRequest,
   ProvjeraPasswordaResponse
 } from "../pregled-podataka-njegovatelj/provjeraPasswordaResponse";
+import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
 
 
 @Component({
   selector: 'app-pregled-podataka-doktor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, NavBarNjejgovateljComponent, NavBarDoktorComponent],
   templateUrl: './pregled-podataka-doktor.component.html',
   styleUrl: './pregled-podataka-doktor.component.css'
 })
@@ -32,6 +34,8 @@ export class PregledPodatakaDoktorComponent implements OnInit{
   public novaLozinka:string="";
   public novaLozinkaPotvrda:string="";
   public novoKorisnickoIme:string="";
+  emptyKorIme:boolean=false;
+  uspjesnoPromijenjeniPodaci: boolean=false;
   constructor(public httpClient:HttpClient)
   {
   }
@@ -117,6 +121,7 @@ export class PregledPodatakaDoktorComponent implements OnInit{
         this.httpClient.post(url, this.korisnickiNalog).subscribe(x => {
           console.log("Uspjesno promijenjeno")
         })
+        this.uspjesnoPromijenjeniPodaci=true;
         this.SveFalse();
         this.prikaziDialog=false;
       }

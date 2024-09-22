@@ -18,23 +18,28 @@ import {
 import {jePrazno} from "../Helper/Provjera";
 import {GetAllNutricionistaResponseNutricionista, GetAllNutricionisteResponse} from "./getAllNutricionisteResponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
+import {NutricionistaService} from "../Services/NutricionistaService";
+import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
+import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
 
 @Component({
   selector: 'app-nutricionista',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  providers:[NutricionistaService,KorisnickiNalogService],
   templateUrl: './nutricionista.component.html',
   styleUrls: ['./nutricionista.component.css']
 })
 export class NutricionistaComponent {
   isValid: boolean = false;
-
+  showFirstForm=true;
   validateInput(data:string) {
     const regex = /^\d{13}$/;
     this.isValid = regex.test(data);
   }
-  showError: number=0;
-  constructor(private httpClient: HttpClient,private dialog: MatDialog) {}
+  showError: boolean=false;
+  constructor(private httpClient: HttpClient,private dialog: MatDialog,
+              private nutricionistaService:NutricionistaService,public korisnickiNalogService : KorisnickiNalogService) {}
 
   public poslovnaPozicija: GetAllPoslovnaPozicijaResponsePoslovnaPozicija[] = [];
   GetAllPoslovnaPozicija():Observable<GetAllPoslovnaPozicijaResponsePoslovnaPozicija[]> {
@@ -43,7 +48,17 @@ export class NutricionistaComponent {
         map((response)=>response.poslovnePozicije)
     )
   }
-
+  public korisnickiNalogRequest: KorisnickiNalogRequest = {
+    korisnickoIme: "",
+    lozinka: "",
+    email:"",
+    jeAdmin: false,
+    jeDoktor: false,
+    jeFizioterapeut: false,
+    jeNjegovatelj: false,
+    jeNutricionista: true,
+    je2FActive:true,
+  }
   public dodajNutricionistu: DodajNutricionistuRequest={
     imePrezime:"",
     jmbg:"",
@@ -64,18 +79,24 @@ export class NutricionistaComponent {
         && jePrazno(this.dodajNutricionistu.poslovnaPozicijaId) && jePrazno(this.dodajNutricionistu.nutricionistickiCentar)
     && jePrazno(this.dodajNutricionistu.oblastNutricionizma))
     {
-      let url: string = MyConfig.adresa_servera + `/dodajNutricionistu`;
-      this.httpClient.post(url, this.dodajNutricionistu).subscribe(request => {
+      this.nutricionistaService.DodajNutricionistu(this.dodajNutricionistu).subscribe((request:any) => {
         console.log("Korisnicki nalog dodan za ", request)
-      })}
+        this.showFirstForm=false;
+        this.updatedNutricionista.zaposlenikId= request.zaposlenikId;
+      })
+    }
     else {
-      this.showError=1;
+      this.showError=true;
     }
   }
   public getNutricioniste:GetAllNutricionistaResponseNutricionista[]=[];
+  prikaziTabelu=false;
+  PregledajNutricioniste(){
+    this.prikaziTabelu=true;
+    this.GetAllNutricionisti();
+  }
   GetAllNutricionisti() {
-    let url: string = MyConfig.adresa_servera + `/getAllNutricioniste`;
-    this.httpClient.get<GetAllNutricionisteResponse>(url).subscribe(x => {
+    this.nutricionistaService.GetAllNutricionisti().subscribe(x => {
       this.getNutricioniste = x.nutricionisti;
     })
   }
@@ -87,11 +108,9 @@ export class NutricionistaComponent {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati nutricionistu?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/izbrisiNutricionistu`;
-        const params = new HttpParams().set('ZaposlenikId', item.zaposlenikId);
-        this.httpClient.delete(url, {params}).subscribe(
+        this.nutricionistaService.IzbrisiNutricioniste(item).subscribe(
             response => () => {
-              console.log("Deleted item")
+              this.GetAllNutricionisti();
             },
             (error: any) => {
               console.error('Error:', error);
@@ -133,7 +152,7 @@ export class NutricionistaComponent {
     this.dodajNutricionistu.datumRodjenja=item.datumRodjenja;
     this.dodajNutricionistu.poslovnaPozicijaId=item.poslovnaPozicijaId;
     this.updatedNutricionista.zaposlenikId=item.zaposlenikId;
-
+    this.validateInput(this.updatedNutricionista.jmbg);
   }
   UpdateNutricionistu() {
     if(jePrazno(this.dodajNutricionistu.imePrezime) && jePrazno(this.dodajNutricionistu.jmbg)
@@ -145,13 +164,45 @@ export class NutricionistaComponent {
       this.updatedNutricionista.datumZaposlenja = this.dodajNutricionistu.datumZaposlenja;
       this.updatedNutricionista.datumRodjenja = this.dodajNutricionistu.datumRodjenja;
       this.updatedNutricionista.poslovnaPozicijaId = this.dodajNutricionistu.poslovnaPozicijaId;
-      let url: string = MyConfig.adresa_servera + `/updateNutricionistu`;
-      this.httpClient.post(url, this.updatedNutricionista).subscribe(request => {
+      this.updatedNutricionista.nalogId=this.dodajNutricionistu.nalogId??null;
+      this.nutricionistaService.UpdateNutricionistu(this.updatedNutricionista).subscribe(request => {
         console.log(request)
+        this.showFirstForm=true;
+        this.showError=false;
+        this.GetAllNutricionisti();
+        this.showConfirmationDialog = true;
+        this.setAutoHide();
+        this.Clean();
       })
     }
     else {
-      this.showError=1;
+      this.showError=true;
     }
+  }
+  public showConfirmationDialog: boolean = false;
+  setAutoHide() {
+    setTimeout(() => {
+      this.showConfirmationDialog = false;
+
+    }, 3000);
+  }
+  prikaziErrorNalog:boolean=false
+  AddKorisnickiNalog(): void {
+    this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
+      console.log("Request",request)
+      this.showError=false;
+      this.dodajNutricionistu.nalogId = request.korisnikId
+      this.UpdateNutricionistu();
+    },(error: any) => {
+      console.log("Error")
+      this.prikaziErrorNalog=true;
+    })
+  }
+  private Clean() {
+    this.dodajNutricionistu.imePrezime="";
+    this.dodajNutricionistu.jmbg="";
+    this.dodajNutricionistu.oblastNutricionizma="";
+    this.dodajNutricionistu.nutricionistickiCentar="";
+    this.dodajNutricionistu.poslovnaPozicijaId=0;
   }
 }

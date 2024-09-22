@@ -39,32 +39,26 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnikDoma.Update
                 if (slika_bajtovi == null)
                     throw new Exception("pogresan base64 format");
 
-                byte[]? slika_bajtovi_resized_velika = Slika.resize(slika_bajtovi, 200);
-                if (slika_bajtovi_resized_velika == null)
-                    throw new Exception("pogresan format slike");
-
-                byte[]? slika_bajtovi_resized_mala = Slika.resize(slika_bajtovi, 50);
-                if (slika_bajtovi_resized_mala == null)
-                    throw new Exception("pogresan format slike");
-
-                var folderPath = "slike-korisnika";
+                var folderPath = Path.Combine("wwwroot", "slike-korisnika");
                 if (!Directory.Exists(folderPath))
                 {
-
                     Directory.CreateDirectory(folderPath);
                 }
 
-                await System.IO.File.WriteAllBytesAsync($"{folderPath}/{request.KorisnikDomaID}-velika.jpg", slika_bajtovi_resized_velika);
-                await System.IO.File.WriteAllBytesAsync($"{folderPath}/{korisnik.KorisnikDomaID}-mala.jpg", slika_bajtovi_resized_mala);
+                var filePath = $"{folderPath}/{korisnik.KorisnikDomaID}.jpg";
+                await System.IO.File.WriteAllBytesAsync(filePath, slika_bajtovi);
 
+                // Ažuriraj putanju slike nakon što je slika sačuvana
+                korisnik.SlikaKorisnika = $"https://localhost:7265/slike-korisnika/{korisnik.KorisnikDomaID}.jpg";
 
+                // Sada ponovo ažuriraj korisnika u bazi da sačuvaš novu putanju slike
+                _applicationDbContext.KorisnikDoma.Update(korisnik);
+                await _applicationDbContext.SaveChangesAsync();
             }
-
-            await _applicationDbContext.SaveChangesAsync();
 
             return new KorisnikDomaUpdateResponse
             {
-               KorisnikDomaID=request.KorisnikDomaID
+                KorisnikDomaID = request.KorisnikDomaID
             };
         }
 

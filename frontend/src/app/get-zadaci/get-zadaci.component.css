@@ -1,10 +1,58 @@
-.opstiZadaci{
-  width:100%;
-}
 
+.datumZadatkaDiv{
+  width:20%;
+}
 thead{
-  width:100%;
+  width:70%;
 }
 tbody{
-  widht:100%;
+  widht:70%;
+}
+.button{
+  background: #276027;
+}
+button{
+  justify-content: center;
+}
+.table-striped1 tbody tr:nth-child(odd) td {
+  background-color: #faf2bf; /* Light blue for odd rows */
+}
+
+.table-striped1 tbody tr:nth-child(even) td {
+  background-color: #ffffff; /* Lighter blue for even rows */
+}
+.table-striped2 tbody tr:nth-child(odd) td {
+  background-color: #84cb84; /* Light blue for odd rows */
+}
+
+.table-striped2 tbody tr:nth-child(even) td {
+  background-color: #ffffff; /* Lighter blue for even rows */
+}
+.table-striped3 tbody tr:nth-child(odd) td {
+  background-color: #89b8d5; /* Light blue for odd rows */
+}
+
+.table-striped3 tbody tr:nth-child(even) td {
+  background-color: #ffffff; /* Lighter blue for even rows */
+}
+.table-row {
+  display: flex;
+  justify-content: center; /* Horizontally center content */
+  flex-wrap: nowrap; /* Prevent wrapping of tables */
+  overflow-x: auto; /* Allow horizontal scrolling if tables don't fit */
+
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Adjust spacing between tables */
+}
+.card-header{
+  background-color: #a3c4ea;
+}
+.card{
+  margin-right: 5%;
+  margin-left: 5%;
+  margin-top: 20px;
 }

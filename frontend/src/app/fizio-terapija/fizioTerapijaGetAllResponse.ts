@@ -5,7 +5,7 @@ export interface FizioTerapijaGetAllResponse{
 export interface FizioTerapijaGetAllResponseFizioTerapija{
 fizioTerapijaId:number,
   opis:string,
-  datumPostavke:Date,
+  datumPostavke:string,
   zaposlenikId:number,
   korisnikDomaID:number
 }

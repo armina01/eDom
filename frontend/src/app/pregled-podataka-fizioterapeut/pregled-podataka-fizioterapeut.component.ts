@@ -15,11 +15,12 @@ import {
   FizioterapeutGetAllResponse,
   FizioterapeutGetAllResponseFizioterapeut
 } from "../fizioterapeut/fizioterapeutGetAll";
+import {NavBarFizioterapeutComponent} from "../nav-bar-fizioterapeut/nav-bar-fizioterapeut.component";
 
 @Component({
   selector: 'app-pregled-podataka-fizioterapeut',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, NavBarFizioterapeutComponent],
   templateUrl: './pregled-podataka-fizioterapeut.component.html',
   styleUrl: './pregled-podataka-fizioterapeut.component.css'
 })

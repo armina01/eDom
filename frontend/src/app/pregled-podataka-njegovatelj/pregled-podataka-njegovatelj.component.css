@@ -1,0 +1,87 @@
+/* Add your custom styles here */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.modal-header {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+}
+
+.modal-body {
+  padding: 10px;
+}
+
+.modal-footer {
+  padding: 10px;
+}
+/* Add this CSS to your global styles or component-specific styles */
+
+.custom-modal {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.modal-header {
+  background-color: #778e77;
+  color: #fff;
+  padding: 10px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.modal-title {
+  margin: 0;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.form-control {
+  margin-bottom: 15px;
+}
+
+.error-message {
+  color: #dc3545;
+  margin-top: 5px;
+}
+
+.modal-footer {
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.btn-primary {
+  background-color: #778e77;
+  color: #fff;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.btn-close {
+  color: #fff;
+}
+
+h1 {
+  margin-left: 120px;
+  margin-top: 10px;
+}
+/* Optionally, you can add more styles based on your design */

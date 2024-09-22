@@ -7,3 +7,10 @@
   /* Vaši postojeći stilovi */
   pointer-events: auto; /* Omogući kliktanje unutar dijaloga */
 }
+.card-header{
+  background-color: #a3c4ea;
+}
+.btn-success {
+  background-color: rgb(129, 176, 129); /* Your custom green color */
+  color: #ffffff; /* Text color, change as needed */
+}

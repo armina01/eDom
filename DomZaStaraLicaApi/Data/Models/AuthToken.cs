@@ -13,5 +13,7 @@ namespace DomZaStaraLicaApi.Data.Models
         public KorisnickiNalog korisnickiNalog { get; set; }
         public DateTime vrijemeEvidentiranja { get; set; }
         public string? ipAdresa { get; set; }
+        public string? TwoFKey { get; set; }
+        public bool Is2FOtkljucano { get; set; }
     }
 }

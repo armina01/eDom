@@ -12,3 +12,4 @@ export interface NapomenaGetAllResponseNapomena{
   korisnikDomaID: number
   vrstaNapomeneId: number
 }
+

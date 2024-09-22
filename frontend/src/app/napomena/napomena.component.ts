@@ -1,34 +1,56 @@
 import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
-import {MatDialog} from "@angular/material/dialog";
-import {NapomenaDodajRequest} from "./napomenaDodajRequest";
-import {MyConfig} from "../my-config";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {
   KorisnikDomaGetAllResponse,
   KorisnikDomaGetAllResponseKorisnik
 } from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
-import {VrstaNapomeneGetAllResponse, VrstaNapomeneGetAllResponseVrstaNapomene} from "./vrstaNapomeneGetAllResponse";
+import {VrstaNapomeneGetAllResponseVrstaNapomene} from "./vrstaNapomeneGetAllResponse";
 import {OdabraniKorisnikDoma} from "./odabraniKorisnikDoma";
+import {HttpClient} from "@angular/common/http";
+import {MatDialog} from "@angular/material/dialog";
+import {AlertService} from "../Services/AlertService";
+import {NapomenaDodajRequest} from "./napomenaDodajRequest";
+import {MyConfig} from "../my-config";
+import {KorisnikDomaService} from "../Services/KorisnikDomaService";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
+import {NapomenaService} from "../Services/NapomenaService";
+
+
 
 @Component({
   selector: 'app-napomena',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent], // Ispravno uvezena standalone komponenta
+  providers: [KorisnikDomaService],
   templateUrl: './napomena.component.html',
-  styleUrl: './napomena.component.css'
+  styleUrls: ['./napomena.component.css'] // Ispravljeno na styleUrls
 })
 export class NapomenaComponent implements OnInit{
 
   public korisniciDoma: KorisnikDomaGetAllResponseKorisnik[] = [];
   public vrsteNapomena:VrstaNapomeneGetAllResponseVrstaNapomene[]=[];
   public prikazaniKorisniciDoma:  OdabraniKorisnikDoma[] = [];
+  napomenaForm: FormGroup;
+  public   selectedKorisnici: OdabraniKorisnikDoma[] = [];
+  public upozorenje:boolean=false;
+  zaposlenikId:number=0;
+
     ngOnInit(): void {
       this.getVrsteNapomene();
       this.getAllKorisnici();
+
     }
-    constructor(public httpClient: HttpClient,private dialog: MatDialog) {
+    constructor(public httpClient: HttpClient,private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService,
+                private napomenaService: NapomenaService,private fb: FormBuilder, private myAlert:AlertService) {
+      this.napomenaForm = this.fb.group({
+        opis: ['', Validators.required],
+        prioritet: [false],
+        datumPostavke: ['', Validators.required],
+        isAktivna: [false],
+        vrstaNapomeneId: ['', Validators.required],
+
+      });
     }
 
     public napomenaDodajRequest:NapomenaDodajRequest={
@@ -42,16 +64,14 @@ export class NapomenaComponent implements OnInit{
     }
 
   getAllKorisnici() {
-    let url = MyConfig.adresa_servera + `/korisnikDoma-getAll`
-    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x: KorisnikDomaGetAllResponse) => {
+    this.korisnikDomaService.GetAllKorisnici().subscribe((x: KorisnikDomaGetAllResponse) => {
       this.korisniciDoma = x.korisnici;
       this.PrikaziKorisnikeDoma();
     })
   }
 
   getVrsteNapomene() {
-    let url = MyConfig.adresa_servera + `/vrstaNapomene/getAll`
-    this.httpClient.get<VrstaNapomeneGetAllResponse>(url).subscribe((x: VrstaNapomeneGetAllResponse) => {
+    this.napomenaService.GetVrsteNapomena().subscribe(x=>{
       this.vrsteNapomena=x.vrsteNapomena;
     })
   }
@@ -74,22 +94,39 @@ export class NapomenaComponent implements OnInit{
     return this.prikazaniKorisniciDoma;
   }
 
-  NapomenaPost(korisnik: OdabraniKorisnikDoma) {
+  NapomenaPost(korisnik: OdabraniKorisnikDoma): void {
+    let url = MyConfig.adresa_servera + `/napomena/dodaj`;
+    this.napomenaDodajRequest = {
+      ...this.napomenaForm.value,
+      korisnikDomaID: korisnik.korisnikDomaID
+    };
 
-    let url=MyConfig.adresa_servera + `/napomena/dodaj`;
-    this.napomenaDodajRequest.korisnikDomaID = korisnik.korisnikDomaID;
-    console.log(this.napomenaDodajRequest);
-    this.httpClient.post(url, this.napomenaDodajRequest).subscribe(response=>{
-      console.log("Napomena uspjesno dodana");
+    const korisnikString = window.localStorage.getItem('korisnik');
+
+    let korisnikObjekat = korisnikString ? JSON.parse(korisnikString) : null;
+    this.zaposlenikId = korisnikObjekat ? korisnikObjekat.zaposlenikId : this.zaposlenikId;
+    this.napomenaDodajRequest.zaposlenikId = this.zaposlenikId;
+
+    this.napomenaService.DodajNapomenu(this.napomenaDodajRequest).subscribe(x => {
+      this.myAlert.showSuccess("Napomena uspješno dodana");
     });
-    korisnik.selected=false;
+    korisnik.selected = false;
   }
 
   Dodaj() {
-    let selectedKorisnici=this.prikazaniKorisniciDoma.filter(x=>x.selected===true)
-    selectedKorisnici.forEach(korisnik=> {
-        this.NapomenaPost(korisnik);
-      }
-    );
+    this.selectedKorisnici=this.prikazaniKorisniciDoma.filter(x=>x.selected===true)
+    if (this.napomenaForm.invalid || !this.selectedKorisnici.length) {
+      this.napomenaForm.markAllAsTouched();
+      this.upozorenje=true;
+    }
+    else {
+      this.selectedKorisnici.forEach(korisnik => {
+          this.NapomenaPost(korisnik);
+          this.upozorenje=false;
+        }
+      );
+    }
+
+
   }
 }

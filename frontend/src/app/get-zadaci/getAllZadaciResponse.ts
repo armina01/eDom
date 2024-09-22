@@ -13,3 +13,18 @@ export interface GetAllZadatakResponseZadatak  {
   vrstaZadatkaId: number;
   korisnikDomaId:number;
 }
+export interface GetIntervalZadatakaResponse {
+    intervaliZadatka: GetIntervalZadatakaResponseIntervalZadataka[];
+}
+export interface GetIntervalZadatakaResponseIntervalZadataka{
+  intervalZadatkaId:number;
+  jeDnevni:boolean;
+  jeSedmicni:boolean;
+}
+export interface GetVrstaZadatakaResponse {
+    vrsteZadatka: GetVrstaZadatakaResponseVrstaZadataka[];
+}
+export interface GetVrstaZadatakaResponseVrstaZadataka{
+  vrstaZadatkaId:number;
+  naziv:string;
+}

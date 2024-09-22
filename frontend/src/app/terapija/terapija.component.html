@@ -1,69 +1,4 @@
-<h2>Dodavanje terapije</h2>
-
-<form>
-  <div>
-    <label>Opis</label>
-    <input type="text" name="Opis" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.opis">
-  </div>
-  <div>
-    <label>Način primjene</label>
-    <input type="text" name="nacinPrimjene" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.nacinPrimjene">
-  </div>
-  <div>
-    <label>Vremenski interval</label>
-    <input type="text" name="vremenskiInterval" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.vremenskiInterval">
-  </div>
-
-  <div class="card">
-    <div class="card-body">
-      <div>
-        <div>
-          <label>Pretraga</label>
-          <input type="text" name="naziv" (input)="pretraziLijekove()" placeholder="Unesite naziv lijeka" [(ngModel)]="odabraniNazivLijeka">
-          <div>
-            <label>Odabrani lijekovi: </label>
-            <ul>
-              <li *ngFor="let lijek of odabraniLijekovi">
-                {{ lijek.naziv }}
-              </li>
-            </ul>
-          </div>
-          <table class="table table-striped" *ngIf="odabraniNazivLijeka">
-            <thead>
-            <tr>
-              <th>Naziv</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let lijek of filtriraniLijekovi">
-              <td>{{ lijek.naziv}}</td>
-              <td><button type="submit"  class="btn btn-primary" (click)="DodajListuLijekova(lijek)" >Odaberi</button></td>
-            </tr>
-            </tbody>
-          </table>
-      </div>
-      <div>
-        <button type="button" (click)="DodajNoviLijek()" class="btn btn-primary">Dodaj novi lijek</button>
-        <button type="button" (click)="PregledajLijekove()" class="btn btn-primary">Pregledaj lijekove</button>
-      </div>
-    </div>
-  </div>
-  </div>
-  <div>
-    <label>DoktorId</label>
-    <input type="number" name="doktorId" [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.doktorId">
-  </div>
-  <div>
-    <label for="cmbKorisnik">Izaberite korisnika doma:</label>
-    <select id="cmbKorisnik"  [ngModelOptions]="{standalone: true}" [(ngModel)]="terapijaRequest.korisnikDomaID">
-      <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime}}</option>
-    </select>
-  </div>
-  <button type="submit" class="btn btn-primary mb-2" (click)="Dodaj()">Dodaj</button>
-</form>
-
-
-
+<app-nav-bar-doktor></app-nav-bar-doktor>
 <div *ngIf="odabranaTerapija">
   <div class="overlay" [class.show]="odabranaTerapija" aria-hidden="true"></div>
   <div class="modal fade show" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-modal="true" role="dialog" style="display: block;">
@@ -74,18 +9,10 @@
           <button type="button" (click)="odabranaTerapija=null" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-
-
           <div>
-            <label class="form-label"> ID: </label>
-            <input class="form-control"  [value]="odabranaTerapija.terapijaId" disabled>
-          </div>
-
-          <div>
-            <label class="form-label"> Opis: </label>
+            <label class="form-label"> Opis </label>
             <input class="form-control"  [(ngModel)]="odabranaTerapija.opis">
           </div>
-
           <div>
             <label class="form-label"> Način primjene </label>
             <input class="form-control"  [(ngModel)]="odabranaTerapija.nacinPrimjene">
@@ -101,30 +28,13 @@
             </select>
           </div>
           <div>
-            <label class="form-label"> Lijek </label>
+            <div>
+              <label> Dodani lijekovi: </label>
+              <p>{{getLijekoviZaTerapiju(odabranaTerapija.terapijaId)}}</p>
+            </div>
+            <label class="form-label"> Pretraga lijekova </label>
             <input type="text" name="naziv" (input)="pretraziLijekoveDialog()" placeholder="Unesite naziv lijeka" [(ngModel)]="odabraniNazivLijekaDialog">
-            <div>
-              <label>Odabrani lijekovi: </label>
-              <ul>
-                <li *ngFor="let item of getFiltriraneTerapije()">
-                  {{ item.lijekovi }}
-                </li>
-              </ul>
-            </div>
-            <div>
-              <label>Novi lijekovi: </label>
-              <ul>
-                <li *ngFor="let lijek of odabraniLijekoviDialog">
-                  {{ lijek.naziv }}
-                </li>
-              </ul>
-            </div>
             <table class="table table-striped" *ngIf="odabraniNazivLijekaDialog">
-              <thead>
-              <tr>
-                <th>Naziv</th>
-              </tr>
-              </thead>
               <tbody>
               <tr *ngFor="let lijek of filtriraniLijekovi">
                 <td>{{ lijek.naziv}}</td>
@@ -132,6 +42,14 @@
               </tr>
               </tbody>
             </table>
+          </div>
+          <div>
+            <label>Novi lijekovi: </label>
+            <ul>
+              <li *ngFor="let lijek of odabraniLijekoviDialog">
+                {{ lijek.naziv }}
+              </li>
+            </ul>
           </div>
           <div>
             <label class="form-label"> Doktor </label>
@@ -151,76 +69,187 @@
 </div>
 
 
+<div class="container mt-4">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#dodavanjeTerapije">
+        <i class="bi bi-plus"></i> Dodavanje terapije
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#pretragaTerapija">
+        <i class="bi bi-search"></i> Pretraga terapija
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#dodavanjeLijekova">
+        <i class="bi bi-plus"></i> Dodavanje lijekova
+      </a>
+    </li>
+  </ul>
 
-<h5>Pretraga terapija za korisnika</h5>
-<div>
-  <label for="cmbKorisnikPretraga">Izaberite korisnika doma:</label>
-  <select id="cmbKorisnikPretraga"  [ngModelOptions]="{standalone: true}" [(ngModel)]="pretragaPoKorisniku">
-    <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime}}</option>
-  </select>
-</div>
+  <div class="tab-content mt-3">
+    <!-- Dodavanje terapije -->
+    <div class="tab-pane fade show active" id="dodavanjeTerapije">
+      <div class="container mt-4">
+        <div class="card">
+          <div class="card-header">
+            <h1 class="fs-5"><i class="bi bi-file-plus"></i> Dodavanje terapije</h1>
+          </div>
+          <div class="card-body">
+            <form #terapijaForm="ngForm">
+              <div class="form-group mb-3">
+                <label for="Opis"><i class="bi bi-file-text"></i> Opis</label>
+                <input type="text" id="Opis" class="form-control" name="Opis" [(ngModel)]="terapijaRequest.opis" required>
+                <div *ngIf="!terapijaRequest.opis" class="text-danger small">
+                  * Obavezno polje
+                </div>
+              </div>
 
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <th>Opis</th>
-    <th>Način primjene</th>
-    <th>Vremenski interval</th>
-    <th>Lijek</th>
-    <th>Ime doktora</th>
-    <th>Obriši terapiju</th>
-    <th>Update terapiju</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let item of getFiltriraneTerapije()">
-    <td>{{ item.terapijaLijek.terapija.opis}}</td>
-    <td>{{ item.terapijaLijek.terapija.nacinPrimjene}}</td>
-    <td>{{ item.terapijaLijek.terapija.vremenskiInterval }}</td>
-    <td>{{ item.lijekovi }}</td>
-    <td>
-      <span *ngFor="let doktor of doktori">
-          <ng-container *ngIf="item.terapijaLijek.terapija.doktorId==doktor.zaposlenikId">
-            {{ doktor.imePrezime }}
-          </ng-container>
-        </span>
-    </td>
-    <td><button type="submit"  class="btn btn-primary" style="background-color: red;" (click)="Obrisi(item.terapijaLijek.terapija)" >Izbriši</button></td>
-    <td><button type="submit"  class="btn btn-primary"  (click)="Odaberi(item.terapijaLijek)" >Update</button></td>
-  </tr>
-  </tbody>
-</table>
+              <div class="form-group mb-3">
+                <label for="nacinPrimjene"><i class="bi bi-gear"></i> Način primjene </label>
+                <input type="text" id="nacinPrimjene" class="form-control" name="nacinPrimjene" [(ngModel)]="terapijaRequest.nacinPrimjene" required>
+                <div *ngIf="!terapijaRequest.nacinPrimjene" class="text-danger small">
+                  * Obavezno polje
+                </div>
+              </div>
 
-<div *ngIf="isKliknutoDugme">
+              <div class="form-group mb-3">
+                <label for="vremenskiInterval"><i class="bi bi-clock"></i> Vremenski interval</label>
+                <input type="text" id="vremenskiInterval" class="form-control" name="vremenskiInterval" [(ngModel)]="terapijaRequest.vremenskiInterval">
+              </div>
 
-  <div class="modal fade show" id="exampleModalLive2" tabindex="-1" aria-labelledby="exampleModalLiveLabel2" aria-modal="true" role="dialog" style="display: block;">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLiveLabel2">Dodavanje novog lijeka</h1>
-          <button type="button" (click)="isKliknutoDugme=false" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <div class="card mb-4" style="box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 15px; border-radius: 10px;">
+                <div class="form-group mb-3">
+                  <label for="naziv"><i class="bi bi-search"></i> Pretraga</label>
+                  <div class="input-group">
+                    <input type="text" id="naziv" class="form-control" name="naziv" (input)="pretraziLijekove()" placeholder="Unesite naziv lijeka" [(ngModel)]="odabraniNazivLijeka">
+                  </div>
+                </div>
+                <div class="form-group mb-3">
+                  <label *ngIf="prikaziOdabaneLijekoveLabel">Odabrani lijekovi:</label>
+                  <ul class="list-group">
+                    <li class="list-group-item" *ngFor="let lijek of odabraniLijekovi">
+                      {{ lijek.naziv }}
+                    </li>
+                  </ul>
+                </div>
+                <table class="table table-striped" *ngIf="odabraniNazivLijeka">
+                  <thead>
+                  <tr>
+                    <th>Naziv</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let lijek of filtriraniLijekovi">
+                    <td>{{ lijek.naziv}}</td>
+                    <td><button type="button" class="btn btn-primary" (click)="DodajListuLijekova(lijek)"><i class="bi bi-plus"></i> Odaberi</button></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--
+              <div class="form-group mb-3">
+                <label for="doktorId"><i class="bi bi-person"></i> DoktorId</label>
+                <input type="number" id="doktorId" class="form-control" name="doktorId" [(ngModel)]="terapijaRequest.doktorId">
+              </div>
+              -->
+
+              <div class="form-group mb-3">
+                <label for="cmbKorisnik"><i class="bi bi-person"></i> Izaberite korisnika doma:</label>
+                <select id="cmbKorisnik" class="form-control" name="korisnikDomaID" [(ngModel)]="terapijaRequest.korisnikDomaID" required>
+                  <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime }}</option>
+                </select>
+                <div *ngIf="!terapijaRequest.korisnikDomaID" class="text-danger small">
+                  * Obavezno polje
+                </div>
+              </div>
+
+              <div class="text-center">
+                <button type="button" class="btn btn-success" (click)="Dodaj(terapijaForm)"><i class="far fa-plus-square"></i> Dodaj</button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div class="modal-body">
+      </div>
+    </div>
 
-          <div>
-            <label class="form-label"> Naziv: </label>
-            <input class="form-control"  [(ngModel)]="lijekRequest.naziv">
+    <!-- Pretraga terapija -->
+    <div class="tab-pane fade" id="pretragaTerapija">
+      <div class="container mt-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="bi bi-search">Pretraga terapija za korisnika</h5>
           </div>
-
-          <div>
-            <label class="form-label"> Uputstvo</label>
-            <input class="form-control"  [(ngModel)]="lijekRequest.uputstvo">
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="cmbKorisnikPretraga">Izaberite korisnika doma:</label>
+              <select id="cmbKorisnikPretraga" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="pretragaPoKorisniku">
+                <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime}}</option>
+              </select>
+            </div>
+            <div *ngFor="let item of getFiltriraneTerapije()" class="card mb-3">
+              <div class="card-body">
+                <p class="card-title"><i class="bi bi-file-text"></i><strong> Opis: </strong> {{ item.terapijaLijek.terapija.opis }}</p>
+                <p class="card-text"><i class="bi bi-gear"></i><strong>  Način primjene: </strong>{{ item.terapijaLijek.terapija.nacinPrimjene }}></p>
+                <p class="card-text"><i class="bi bi-clock"></i><strong>  Vremenski interval: </strong>{{ item.terapijaLijek.terapija.vremenskiInterval }}</p>
+                <p class="card-text"><i class="fas fa-pills"></i><strong>  Lijek: </strong>{{ item.lijekovi }}</p>
+                <p class="card-text"><i class="bi bi-person"></i> <strong> Ime doktora: </strong>
+                  <span *ngFor="let doktor of doktori">
+              <ng-container *ngIf="item.terapijaLijek.terapija.doktorId==doktor.zaposlenikId">
+                {{ doktor.imePrezime }}
+                </ng-container>
+            </span>
+                </p>
+                <button type="button" style="margin-right: 15px" class="btn btn-danger" (click)="Obrisi(item.terapijaLijek.terapija)">
+                  <i class="bi bi-trash"></i> Izbriši terapiju
+                </button>
+                <button type="button" class="btn btn-primary" (click)="Odaberi(item.terapijaLijek)">
+                  <i class="bi bi-pencil"></i> Update terapiju
+                </button>
+              </div>
+            </div>
           </div>
+        </div>
+       </div>
+       </div>
 
-        <div class="modal-footer">
-          <button type="button" (click)="isKliknutoDugme=false" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" (click)="DodajLijek()" class="btn btn-primary">Save changes</button>
+    <!-- Dodavanje lijekova -->
+    <div class="tab-pane fade" id="dodavanjeLijekova">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="fs-5"><i class="bi bi-file-plus"></i> Dodavanje novog lijeka</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="lijekForma">
+
+            <div>
+              <label class="form-label"> Naziv: </label>
+              <input class="form-control" formControlName="naziv">
+              <div *ngIf="isKliknutoDugme && lijekForma.get('naziv')?.invalid" class="text-danger small">
+                * Obavezno polje
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label"> Uputstvo: </label>
+              <input class="form-control" formControlName="uputstvo">
+              <div *ngIf="isKliknutoDugme && lijekForma.get('uputstvo')?.invalid" class="text-danger small">
+                * Obavezno polje
+              </div>
+            </div>
+
+            <div class="text-end mt-3">
+              <button type="button" (click)="DodajLijek()" class="btn btn-primary mr-2">
+                <i class="bi bi-plus"></i> Dodaj novi lijek
+              </button>
+              <button type="button" (click)="PregledajLijekove()" class="btn btn-secondary">
+                <i class="bi bi-list"></i> Pregled lijekova
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
-</div>
-</div>
-
-
-
+  </div>

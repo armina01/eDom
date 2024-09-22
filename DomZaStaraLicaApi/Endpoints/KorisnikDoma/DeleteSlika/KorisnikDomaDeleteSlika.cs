@@ -21,24 +21,19 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnikDoma.DeleteSlika
                 var korisnik = await _applicationDbContext.KorisnikDoma.FindAsync(korisnikDomaID);
                 if (korisnik != null && !string.IsNullOrEmpty(korisnik.SlikaKorisnika))
                 {
-                    var folderPath = "slike-korisnika";
-                    var fileNameVelika = $"{folderPath}/{korisnikDomaID}-velika.jpg";
-                    var fileNameMala = $"{folderPath}/{korisnikDomaID}-mala.jpg";
 
-                    // Obriši veliku sliku
-                    if (System.IO.File.Exists(fileNameVelika))
-                    {
-                        System.IO.File.Delete(fileNameVelika);
-                    }
+                    var folderPath = Path.Combine("wwwroot", "slike-korisnika");
+                    var fileName = $"{folderPath}/{korisnikDomaID}.jpg";
+                   
 
-                    // Obriši malu sliku
-                    if (System.IO.File.Exists(fileNameMala))
+                    // Obriši sliku
+                    if (System.IO.File.Exists(fileName))
                     {
-                        System.IO.File.Delete(fileNameMala);
+                        System.IO.File.Delete(fileName);
                     }
 
                     // Ažuriraj putanju u bazi podataka na defaultnu sliku
-                    korisnik.SlikaKorisnika = "https://localhost:7265/profileImage/empty.png";
+                    korisnik.SlikaKorisnika = "https://localhost:7265" + "/ProfileImage" + "/empty.png";
                     await _applicationDbContext.SaveChangesAsync();
                     
 

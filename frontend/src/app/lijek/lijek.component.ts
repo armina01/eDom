@@ -6,11 +6,15 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {LijekService} from "../Services/LijekService";
+import {AlertService} from "../Services/AlertService";
+import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
 
 @Component({
   selector: 'app-lijek',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, NavBarDoktorComponent],
+  providers: [LijekService],
   templateUrl: './lijek.component.html',
   styleUrl: './lijek.component.css'
 })
@@ -22,13 +26,12 @@ export class LijekComponent implements OnInit{
         this.GetAllLijekovi();
     }
 
-    constructor(public httpClient: HttpClient,private dialog: MatDialog) {
+    constructor(public httpClient: HttpClient,private dialog: MatDialog, private lijekService:LijekService, private myAlert:AlertService) {
     }
 
 
   GetAllLijekovi() {
-    let url: string = MyConfig.adresa_servera + `/lijek/getAll`;
-    this.httpClient.get<LijekGetAllResponse>(url).subscribe(x => {
+    this.lijekService.GetAllLijekovi().subscribe(x => {
       this.lijekovi = x.lijekovi;
     })
   }
@@ -37,25 +40,25 @@ export class LijekComponent implements OnInit{
     const dialogRef: MatDialogRef<WarningDialogComponent, boolean> = this.openWarningDialog('Da li ste sigurni da želite izbrisati lijek?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/lijek/obrisi`;
-        const params = new HttpParams().set('lijekId', item.lijekId);
-        this.httpClient.delete(url, {params}).subscribe(
+        this.lijekService.IzbrisiLijek(item).subscribe(
           response => () => {
-            console.log("Deleted item")
+            this.myAlert.showSuccess("Uspješno obrisan lijek")
+            this.ngOnInit();
           },
           (error: any) => {
             console.error('Error:', error);
 
             if (error.status === 500) {
-              alert('Nije moguće izbrisati ovaj lijek');
-              console.error('Handle 500 error here');
+              console.log('Nije moguće izbrisati ovaj lijek');
             } else {
               // Handle other errors
               alert('An error occurred.');
             }
           })
       }
+
     });
+
   }
 
   openWarningDialog = (message: string): MatDialogRef<WarningDialogComponent> => {
@@ -64,13 +67,14 @@ export class LijekComponent implements OnInit{
     });
   };
   Update() {
-    let url: string = MyConfig.adresa_servera + `/lijek/update`;
-    console.log(this.odabraniLijek)
-    this.httpClient.post(url, this.odabraniLijek).subscribe(request => {
-      console.log("Lijek updateovan ", request)
+    this.lijekService.UpdateLijek(this.odabraniLijek).subscribe(request => {
+      this.myAlert.showSuccess("Lijek uspješno ažuriran")
     })
 
     this.odabraniLijek=null;
+    setTimeout(() => {
+      this.ngOnInit();
+    }, 3000);
   }
 
   Odaberi(lijek: LijekGetAllResponseLijek) {
