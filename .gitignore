@@ -361,6 +361,18 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+DomZaStaraLicaApi/wwwroot/ProfileImage/empty.png
+DomZaStaraLicaApi/slike-korisnika/4-velika.jpg
+DomZaStaraLicaApi/slike-korisnika/4-mala.jpg
+DomZaStaraLicaApi/slike-korisnika/2-velika.jpg
+DomZaStaraLicaApi/slike-korisnika/2-mala.jpg
+DomZaStaraLicaApi/slike-korisnika/1-velika.jpg
+DomZaStaraLicaApi/slike-korisnika/1-mala.jpg
+DomZaStaraLicaApi/slike-korisnika/3-mala.jpg
+DomZaStaraLicaApi/slike-korisnika/3-velika.jpg
+
 DomZaStaraLicaApi/wwwroot/uploads/0329c1a9-ee51-4db6-ab59-222c5b46d25e.pdf
 DomZaStaraLicaApi/wwwroot/uploads/083a5b6d-18e1-4594-b673-c6fec0892eba.docx
 DomZaStaraLicaApi/wwwroot/uploads/b2fb5f0a-6020-4623-900d-70545d49f92e.docx
+

@@ -16,13 +16,25 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="SkiaSharp" Version="2.88.6" />
     <PackageReference Include="MimeKit" Version="4.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Endpoints\Napomena\Dodaj\" />
-    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\slike-korisnika\2-mala.jpg" />
+    <None Include="wwwroot\slike-korisnika\2-velika.jpg" />
+    <None Include="wwwroot\slike-korisnika\3-mala.jpg" />
+    <None Include="wwwroot\slike-korisnika\3-velika.jpg" />
+    <None Include="wwwroot\slike-korisnika\6-mala.jpg" />
+    <None Include="wwwroot\slike-korisnika\6-velika.jpg" />
+    <None Include="wwwroot\slike-korisnika\7-mala.jpg" />
+    <None Include="wwwroot\slike-korisnika\7-velika.jpg" />
+    <None Include="wwwroot\slike-korisnika\9.jpg" />
   </ItemGroup>
 
 </Project>

@@ -4,4 +4,5 @@ export interface KorisnikRequest{
     datumRodjenja: string
     brojSobe: number
     opstinaID: number
+    slika_base64_format: string | undefined
 }

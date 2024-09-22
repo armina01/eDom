@@ -14,6 +14,7 @@ namespace DomZaStaraLicaApi.Data.Models
         public int OpstinaID { get; set; }
         [ForeignKey(nameof(OpstinaID))]
         public Opstina Opstina { get; set; }
+        public string SlikaKorisnika { get; set; }
 
     }
 

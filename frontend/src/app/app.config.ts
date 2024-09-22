@@ -17,15 +17,15 @@ export const appConfig: ApplicationConfig = {
 
   providers: [
     MyAuthService,
-      provideRouter(routes),
-      provideAnimations(),
-      { provide: HTTP_INTERCEPTORS, useClass: MyAuthInterceptor, multi: true },
-      { provide: HttpHandler, useClass: MyAuthInterceptor, multi: true },
-      //{ provide: MY_AUTH_SERVICE_TOKEN, useClass: MyAuthService },
-      { provide: MY_ERROR_HANDLER_TOKEN, useClass: CustomErrorHandler },
-      //{ provide: CustomErrorHandler, useFactory: customErrorHandlerFactory, deps: [MY_ERROR_HANDLER_TOKEN] },
+    provideRouter(routes),
+    provideAnimations(),
+    { provide: HTTP_INTERCEPTORS, useClass: MyAuthInterceptor, multi: true },
+    { provide: HttpHandler, useClass: MyAuthInterceptor, multi: true },
+    //c{ provide: MY_AUTH_SERVICE_TOKEN, useClass: MyAuthService },
+    { provide: MY_ERROR_HANDLER_TOKEN, useClass: CustomErrorHandler },
+    //{ provide: CustomErrorHandler, useFactory: customErrorHandlerFactory, deps: [MY_ERROR_HANDLER_TOKEN] },
     AutorizacijaGuard,
-      NjegovateljiService,
-      HttpClient
+    NjegovateljiService,
+    HttpClient
   ]
 };

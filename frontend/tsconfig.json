@@ -19,6 +19,7 @@
     "module": "ES2022",
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "useDefineForClassFields": false,
+    "skipLibCheck": true, //skipLibCheck kako bi zaobišao greške u vanjskim tipovima:
     "lib": [
       "ES2022",
       "dom"

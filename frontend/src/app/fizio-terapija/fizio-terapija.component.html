@@ -1,0 +1,136 @@
+<app-nav-bar-fizioterapeut></app-nav-bar-fizioterapeut>
+<div class="container mt-4">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#dodavanjeTerapije">
+        <i class="bi bi-plus"></i> Dodavanje terapije
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#pretragaTerapija">
+        <i class="bi bi-search"></i> Pretraga terapija
+      </a>
+    </li>
+  </ul>
+
+  <div class="tab-content mt-3">
+    <!-- Dodavanje terapije -->
+    <div class="tab-pane fade show active" id="dodavanjeTerapije">
+      <div class="container mt-4">
+        <div class="card">
+          <div class="card-header">
+            <h1 class="modal-title fs-5"><i class="bi bi-file-plus"></i> Dodavanje fizioterapije</h1>
+          </div>
+          <div class="card-body">
+            <form #terapijaForm="ngForm">
+              <div class="form-group mb-3">
+                <label for="opis"><i class="bi bi-file-text"></i> Opis</label>
+                <input type="text" id="opis" class="form-control" name="opis" [(ngModel)]="terapijaRequest.opis" required>
+                <div *ngIf="!terapijaRequest.opis" class="text-danger small">
+                  * Obavezno polje
+                </div>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="datumPostavke"><i class="bi bi-calendar"></i> Datum postavke</label>
+                <input type="date" id="datumPostavke" class="form-control" name="datumPostavke" [(ngModel)]="terapijaRequest.datumPostavke">
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="cmbKorisnik"><i class="bi bi-person"></i> Izaberite korisnika doma:</label>
+                <select id="cmbKorisnik" class="form-control" name="korisnikDomaID" [(ngModel)]="terapijaRequest.korisnikDomaID" required>
+                  <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime }}</option>
+                </select>
+                <div *ngIf="!terapijaRequest.korisnikDomaID" class="text-danger small">
+                  * Obavezno polje
+                </div>
+              </div>
+
+              <div class="text-center">
+                <button type="button" class="btn btn-success" (click)="Dodaj(terapijaForm)"><i class="far fa-plus-square"></i> Dodaj</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pretraga terapija -->
+    <div class="tab-pane fade" id="pretragaTerapija">
+      <div class="container mt-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="bi bi-search">Pretraga terapija za korisnika</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="cmbKorisnikPretraga">Izaberite korisnika doma:</label>
+              <select id="cmbKorisnikPretraga" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="pretragaPoKorisniku">
+                <option *ngFor="let option of korisniciDoma" [ngValue]="option.korisnikDomaID">{{ option.imePrezime}}</option>
+              </select>
+            </div>
+            <div *ngFor="let item of getFiltriraneTerapije()" class="card mb-3">
+              <div class="card-body">
+                <p class="card-title"><i class="bi bi-file-text"></i><strong> Opis: </strong> {{ item.opis }}</p>
+                <p class="card-text"><i class="bi bi-calendar"></i><strong>  Datum postavke: </strong>{{ item.datumPostavke }}</p>
+                <p class="card-text"><i class="bi bi-person"></i> <strong> Ime fizioterapeuta: </strong>
+                <span *ngFor="let fizio of allFizioterapeuti">
+              <ng-container *ngIf="item.zaposlenikId==fizio.zaposlenikId">
+                {{ fizio.imePrezime }}
+                </ng-container>
+            </span>
+                <td><button type="button" style="margin-right: 15px" class="btn btn-danger" (click)="Obrisi(item)">
+                  <i class="bi bi-trash"></i> Izbriši
+                </button></td>
+                <td><button type="button" class="btn btn-primary" (click)="Odaberi(item)">
+                  <i class="bi bi-pencil"></i> Update
+                </button></td>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Update Modal -->
+<div *ngIf="odabranaTerapija">
+  <div class="overlay" [class.show]="odabranaTerapija" aria-hidden="true"></div>
+  <div class="modal fade show" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-modal="true" role="dialog" style="display: block;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLiveLabel">Update terapije</h1>
+          <button type="button" (click)="odabranaTerapija=null" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <label class="form-label"> Opis </label>
+            <input class="form-control"  [(ngModel)]="odabranaTerapija.opis">
+          </div>
+          <div class="form-label">
+            <label for="datumDijagnoze1" class="form-label">Datum uspostavljanja terapije:</label>
+            <input
+              type="date"
+              id="datumDijagnoze1"
+              [(ngModel)]="odabranaTerapija.datumPostavke"
+              class="form-control"
+            />
+          </div>
+          <div>
+            <label class="form-label"> Fizioterapeut </label>
+            <select class="form-control"  [(ngModel)]="odabranaTerapija.zaposlenikId" disabled>
+              <option *ngFor="let item of allFizioterapeuti" [value]="item.zaposlenikId">{{item.imePrezime}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="odabranaTerapija = null" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" (click)="Update()" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" [class.show]="odabranaTerapija" aria-hidden="true"></div>
+</div>

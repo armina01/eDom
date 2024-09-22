@@ -1,30 +1,30 @@
 import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
-import {MatDialog} from "@angular/material/dialog";
-import {NapomenaDodajRequest} from "./napomenaDodajRequest";
-import {MyConfig} from "../my-config";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {
   KorisnikDomaGetAllResponse,
   KorisnikDomaGetAllResponseKorisnik
 } from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
-import {VrstaNapomeneGetAllResponse, VrstaNapomeneGetAllResponseVrstaNapomene} from "./vrstaNapomeneGetAllResponse";
+import {VrstaNapomeneGetAllResponseVrstaNapomene} from "./vrstaNapomeneGetAllResponse";
 import {OdabraniKorisnikDoma} from "./odabraniKorisnikDoma";
-import {KorisnikDomaService} from "../Services/KorisnikDomaService";
-import {NapomenaService} from "../Services/NapomenaService";
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {HttpClient} from "@angular/common/http";
+import {MatDialog} from "@angular/material/dialog";
 import {AlertService} from "../Services/AlertService";
+import {NapomenaDodajRequest} from "./napomenaDodajRequest";
+import {MyConfig} from "../my-config";
+import {KorisnikDomaService} from "../Services/KorisnikDomaService";
 import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
-import {ZaposlenikGetAllRsponseZaposlenik} from "../pregled-napomena/zaposlenikGetAllRsponse";
+import {NapomenaService} from "../Services/NapomenaService";
+
+
 
 @Component({
   selector: 'app-napomena',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent],
-  providers:[KorisnikDomaService, NapomenaService],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent], // Ispravno uvezena standalone komponenta
+  providers: [KorisnikDomaService],
   templateUrl: './napomena.component.html',
-  styleUrl: './napomena.component.css'
+  styleUrls: ['./napomena.component.css'] // Ispravljeno na styleUrls
 })
 export class NapomenaComponent implements OnInit{
 
@@ -41,7 +41,8 @@ export class NapomenaComponent implements OnInit{
       this.getAllKorisnici();
 
     }
-    constructor(public httpClient: HttpClient,private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService, private napomenaService: NapomenaService,private fb: FormBuilder, private myAlert:AlertService) {
+    constructor(public httpClient: HttpClient,private dialog: MatDialog, private korisnikDomaService:KorisnikDomaService,
+                private napomenaService: NapomenaService,private fb: FormBuilder, private myAlert:AlertService) {
       this.napomenaForm = this.fb.group({
         opis: ['', Validators.required],
         prioritet: [false],

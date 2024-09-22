@@ -2,6 +2,11 @@
 .profilna-slika{
   width:50px;
 }
+.korisnik-slika {
+  max-width: 150px; /* Podešavanje maksimalne širine slike */
+  max-height: 150px; /* Podešavanje maksimalne visine slike */
+  object-fit: cover; /* Osigurava da slika zadrži proporcije */
+}
 .card-header{
   background: #2c4f2c;
 }

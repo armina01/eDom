@@ -1,3 +1,71 @@
+<div *ngIf="odabraniKorisnik != null">
+  <div class="modal fade show" id="updateKorisnikModal" tabindex="-1" aria-labelledby="updateKorisnikModalLabel" aria-modal="true" role="dialog" style="display: block;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="updateKorisnikModalLabel">Ažuriranje korisnika</h1>
+          <button type="button" (click)="odabraniKorisnik = null" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form #updateKorisnikForm="ngForm" (ngSubmit)="UpdateKorisnika()">
+            <div class="mb-3">
+              <label for="imePrezime" class="form-label">Ime i prezime:</label>
+              <input id="imePrezime" type="text" name="imePrezime" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.imePrezime" required class="form-control" />
+              <div *ngIf="updateKorisnikForm.controls['imePrezime']?.invalid && updateKorisnikForm.controls['imePrezime']?.touched" class="text-danger">
+                Ime i prezime su obavezni.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="jmbg" class="form-label">JMBG:</label>
+              <input id="jmbg" type="text" name="jmbg" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.jmbg" required class="form-control" minlength="13" maxlength="13" />
+              <div *ngIf="updateKorisnikForm.controls['jmbg']?.invalid && updateKorisnikForm.controls['jmbg']?.touched" class="text-danger">
+                JMBG mora imati tačno 13 karaktera.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="datumRodjenja" class="form-label">Datum rođenja:</label>
+              <input id="datumRodjenja" type="date" name="datumRodjenja" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.datumRodjenja" required class="form-control" />
+              <div *ngIf="updateKorisnikForm.controls['datumRodjenja']?.invalid && updateKorisnikForm.controls['datumRodjenja']?.touched" class="text-danger">
+                Datum rođenja je obavezan.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="brojSobe" class="form-label">Broj sobe:</label>
+              <input id="brojSobe" type="number" name="brojSobe" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.brojSobe" required class="form-control" />
+              <div *ngIf="updateKorisnikForm.controls['brojSobe']?.invalid && updateKorisnikForm.controls['brojSobe']?.touched" class="text-danger">
+                Broj sobe je obavezan.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="opstina" class="form-label">Opština:</label>
+              <select id="opstina" name="opstina" [ngModelOptions]="{standalone: true}" [(ngModel)]="odabraniKorisnik.opstinaID" required class="form-select">
+                <option value="" disabled>Odaberite opštinu</option>
+                <option *ngFor="let option of options" [value]="option.opstinaID">{{ option.nazivOpstine }}</option>
+              </select>
+              <div *ngIf="updateKorisnikForm.controls['opstina']?.invalid && updateKorisnikForm.controls['opstina']?.touched" class="text-danger">
+                Opština je obavezna.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="slika-input" class="form-label">Slika korisnika:</label>
+              <input id="slika-input" type="file" accept="image/*" (change)="generisi_preview()" class="form-control" />
+              <img style="max-width: 100%; height: 200px" [src]="odabraniKorisnik.slika_base64_format">
+            </div>
+
+            <button type="submit" class="btn btn-primary mb-2" [disabled]="updateKorisnikForm.invalid">Ažuriraj</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div *ngIf="jeNjegovatelj === true">
   <app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
 </div>
@@ -6,6 +74,9 @@
 </div>
 <div *ngIf="jeDoktor === true">
   <app-nav-bar-doktor></app-nav-bar-doktor>
+</div>
+<div *ngIf="jeFizioterapeut === true">
+  <app-nav-bar-fizioterapeut></app-nav-bar-fizioterapeut>
 </div>
 <div class="container mt-4">
   <!-- Glavna kartica -->
@@ -20,13 +91,14 @@
         <input class="form-control" [(ngModel)]="pretragaNaziv" placeholder="Unesite tekst za pretragu">
       </div>
 
-      <!-- Kartice za pojedine korisnike -->
+    <!-- Kartice za pojedine korisnike -->
       <div class="row">
         <div *ngFor="let item of getFiltriraniKorisnici()" class="col-md-6 col-lg-4 mb-3">
           <div class="card">
             <div class="row g-0">
-              <div class="col-md-4 d-flex justify-content-center align-items-center">
-                <img src="assets/MicrosoftTeams-image (8).png" class="img-fluid rounded-start" alt="Korisnik Slika"/>
+              <div class="d-flex justify-content-center">
+                <img [src]="item.slikaKorisnika"
+                     class="img-fluid rounded-start korisnik-slika" alt="Korisnik Slika"/>
               </div>
               <div class="col-md-8">
                 <div class="card-body">
@@ -41,25 +113,30 @@
                   <div class="mt-3">
                     <!-- Admin Actions Dropdown -->
                     <div class="dropdown d-inline-block me-2" *ngIf="jeAdmin">
-                      <button class="btn btn-danger dropdown-toggle" type="button" id="adminActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                      <button class="btn btn-custom-green dropdown-toggle" type="button" id="adminActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         Admin Actions
                       </button>
                       <ul class="dropdown-menu" aria-labelledby="adminActionsDropdown">
+                        <li>
+                          <a class="dropdown-item" (click)="OdaberiKorisnika(item)">
+                            <i class="bi bi-pencil"></i> Update korisnika
+                          </a>
+                        </li>
                         <li>
                           <a class="dropdown-item" (click)="ObrisiKorisnika(item)">
                             <i class="bi bi-trash"></i> Izbriši korisnika
                           </a>
                         </li>
                         <li>
-                          <a class="dropdown-item" (click)="OdaberiKorisnika(item)">
-                            <i class="bi bi-pencil"></i> Update korisnika
+                          <a class="dropdown-item" (click)="ObrisiSlikuKorisnika(item.korisnikDomaID)">
+                            <i class="bi bi-trash"></i> Izbriši sliku
                           </a>
                         </li>
                       </ul>
                     </div>
 
                     <!-- Role-Specific Actions Dropdown -->
-                    <div class="dropdown d-inline-block me-2" *ngIf="jeNutricionista || jeNjegovatelj || jeDoktor">
+                    <div class="dropdown d-inline-block me-2" *ngIf="jeNutricionista || jeNjegovatelj || jeDoktor || jeFizioterapeut">
                       <button class="btn btn-custom-green dropdown-toggle" type="button" id="roleActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         Aktivnosti
                       </button>
@@ -67,6 +144,11 @@
                         <li *ngIf="jeNutricionista || jeNjegovatelj || jeDoktor">
                           <a class="dropdown-item" (click)="PrikaziNapomene(item)">
                             <i class="bi bi-sticky"></i> Prikaži napomene
+                          </a>
+                        </li>
+                        <li *ngIf="jeFizioterapeut">
+                          <a class="dropdown-item" (click)="DodajPregledTerapija()">
+                            <i class="bi bi-pencil"></i> Upravljanje terapijama
                           </a>
                         </li>
                         <li *ngIf="jeNutricionista || jeNjegovatelj || jeDoktor">
@@ -106,3 +188,4 @@
     </div>
   </div>
 </div>
+

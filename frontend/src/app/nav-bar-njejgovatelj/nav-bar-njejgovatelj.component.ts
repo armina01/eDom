@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import {KorisnikDomaGetAllResponseKorisnik} from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
 import {HttpClient} from "@angular/common/http";
 import {MatDialog} from "@angular/material/dialog";
-import {Router} from "@angular/router";
 import {faBell} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {SignalRService} from "../Services/signalR.service";
@@ -11,6 +10,7 @@ import {MyConfig} from "../my-config";
 import {NotifikacijaResponse} from "../Services/notifikacijaRequest";
 import {Subscription} from "rxjs";
 import {GetAllNjegovateljaResponseNjegovatelj} from "../njegovatelj/getAllNjegovateljiResponse";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-nav-bar-njejgovatelj',

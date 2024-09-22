@@ -17,6 +17,7 @@ namespace DomZaStaraLicaApi.Data
         public DbSet<Nutricionista> Nutricionista { get; set; }
         public DbSet<Fizioterapeut> Fizioterapeut { get; set; }
         public DbSet<AuthToken> AuthToken { get; set; }
+        public DbSet<FizioTerapija> FizioTerapija { get; set; }
         public DbSet<VrstaZadatka> VrstaZadatka { get; set; }
         public DbSet<IntervalZadatka> IntervalZadatka { get; set; }
         public DbSet<Zadatak> Zadatak { get; set; }
