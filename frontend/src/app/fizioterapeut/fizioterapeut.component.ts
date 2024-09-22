@@ -33,6 +33,10 @@ import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
 })
 export class FizioterapeutComponent implements OnInit {
 
+  fizioterapeutForm: FormGroup;
+  updateForm: FormGroup;
+
+
   public poslovnePozicije: GetAllPoslovnaPozicijaResponsePoslovnaPozicija[]=[];
   public allFizioterapeuti: FizioterapeutGetAllResponseFizioterapeut[]=[];
   public odabraniFizioterapeut: FizioterapeutGetAllResponseFizioterapeut | null = null;
@@ -44,9 +48,27 @@ export class FizioterapeutComponent implements OnInit {
   zaposlenikUpdNalog:boolean=false;
 
 
-  constructor(public httpClient: HttpClient,private dialog: MatDialog, private fizioterapeutService: FizioterapeutService,
-              private fb: FormBuilder, private myAlert:AlertService, public korisnickiNalogService : KorisnickiNalogService) {
-  constructor(public httpClient: HttpClient,private dialog: MatDialog) {
+  constructor(public httpClient: HttpClient,private dialog: MatDialog,
+              private fizioterapeutService: FizioterapeutService,
+              private fb: FormBuilder, private myAlert:AlertService,
+              public korisnickiNalogService : KorisnickiNalogService) {
+    this.fizioterapeutForm = this.fb.group({
+      imePrezime: ['', Validators.required],
+      jmbg: ['', [Validators.required, Validators.pattern('^[0-9]{13}$')]],
+      datumRodjenja: ['', Validators.required],
+      datumZaposlenja: ['', Validators.required],
+      oblastFizijatrije: ['', Validators.required],
+      poslovnaPozicijaId: ['', Validators.required]
+    });
+
+    this.updateForm = this.fb.group({
+      imePrezime: ['', Validators.required],
+      jmbg: ['', [Validators.required, Validators.pattern('^[0-9]{13}$')]],
+      datumRodjenja: ['', Validators.required],
+      datumZaposlenja: ['', Validators.required],
+      oblastFizijatrije: ['', Validators.required],
+      poslovnaPozicijaId: ['', Validators.required]
+    });
 
   }
 

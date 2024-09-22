@@ -4,7 +4,7 @@ import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpHeaders} from "@angular/common/http";
 import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
 import {FormsModule} from "@angular/forms";
-import {Subscription} from "rxjs";
+import {interval, Subscription, takeWhile} from "rxjs";
 import {MyConfig} from "./my-config";
 import {TokenService} from "./Services/TokenService";
 import {MyAuthService} from "./Services/MyAuthService";
@@ -20,15 +20,15 @@ import {AlertComponent} from "./alert/alert.component";
 export class AppComponent {
   title = 'frontend';
   private logoutSubscription!: Subscription| undefined;
-  constructor(private httpClient: HttpClient,public router: Router) {}
-  private logoutSubscription!: Subscription;
 
   private refreshSubscription: Subscription | undefined;
-  constructor(private httpClient: HttpClient,private tokenService: TokenService, private myAuth:MyAuthService) {}
+  constructor(private httpClient: HttpClient,private tokenService: TokenService,
+              private myAuth:MyAuthService,private router: Router) {}
 
   ngOnInit(): void {
     const oldToken = this.myAuth.getAuthorizationToken()?.vrijednost;
     console.log('Početak intervala za provjeru tokena');
+      window.addEventListener('beforeunload', this.logoutOnUnload.bind(this));
     if (oldToken) {
       this.refreshSubscription = interval( 45*60* 1000) //svakih 30 sec  30 * 1000
         .pipe(
@@ -45,11 +45,6 @@ export class AppComponent {
     if (this.logoutSubscription) {
       this.logoutSubscription.unsubscribe();
     }
-  }
-  ngOnInit(): void {
-    // Start the logout timer when the component initializes
-
-    window.addEventListener('beforeunload', this.logoutOnUnload.bind(this));
   }
 
   logout(): void {
