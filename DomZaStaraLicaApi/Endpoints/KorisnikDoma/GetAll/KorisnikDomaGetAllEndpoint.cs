@@ -29,7 +29,8 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnikDoma.GetAll
                     BrojSobe = x.BrojSobe,
                     OpstinaID = x.OpstinaID,
                     OpstinaNaziv = x.Opstina.NazivOpstine,
-                    OpstinaBroj = x.Opstina.PostanskiBroj
+                    OpstinaBroj = x.Opstina.PostanskiBroj,
+                    SlikaKorisnika=x.SlikaKorisnika
                 })
                 .ToListAsync();
 

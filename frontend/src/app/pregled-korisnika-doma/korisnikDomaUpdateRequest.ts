@@ -6,4 +6,5 @@ export interface KorisnikDomaUpdateRequest
   datumRodjenja: string
   brojSobe: number
   opstinaID: number
+  slika_base64_format: string | undefined
 }

@@ -3,12 +3,14 @@ export interface KorisnikDomaGetAllResponse{
 }
 
 export interface KorisnikDomaGetAllResponseKorisnik{
+  random: any;
   korisnikDomaID: number
   imePrezime: string
   jmbg: string
   datumRodjenja: string
   brojSobe: number
-  opstinaID:number,
+  opstinaID:number
   opstinaNaziv: string
   opstinaBroj: number
+  slikaKorisnika:string
 }

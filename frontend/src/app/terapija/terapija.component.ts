@@ -104,6 +104,7 @@ export class TerapijaComponent implements OnInit {
     if (terapijaForm.valid) {
       this.terapijaRequest.lijekovi = this.Listalijekova;
       this.terapijaRequest.doktorId=this.zaposlenikId;
+      console.log(this.terapijaRequest);
       this.terapijaService.DodajTerapiju(this.terapijaRequest).subscribe(response => {
         this.myAlert.showSuccess('Terapija uspješno dodana');
       }, error => {

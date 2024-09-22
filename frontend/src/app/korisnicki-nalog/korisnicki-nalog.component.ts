@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {KorisnickiNalogRequest, UpdateKorisnickiNalogRequest} from "./korisnickiNalogRequest";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClient, HttpParams} from "@angular/common/http";
 import {MyConfig} from "../my-config";
 import {
   GetAllKorisnickiNalogResponse,
@@ -14,6 +14,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
 import {jePrazno} from "../Helper/Provjera";
 import {NavBarAdminComponent} from "../nav-bar-admin/nav-bar-admin.component";
+import {MyAuthInterceptor} from "../Helper/MyAuthInterceptor";
 @Component({
   selector: 'app-korisnicki-nalog',
   standalone: true,
@@ -52,6 +53,7 @@ export class KorisnickiNalogComponent {
   korisnickiNalog: GetAllKorisnickiNalogResponseKorisnickiNalog[] = [];
 
   AddKorisnickiNalog(): void {
+    console.log(this.korisnickiNalogRequest);
     this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
 
     })
