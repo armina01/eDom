@@ -30,14 +30,15 @@ namespace DomZaStaraLicaApi.Endpoints.GeneratorPodataka
             var vrstaZadatka=new List<Data.Models.VrstaZadatka>();
             var intervalZadatka = new List<Data.Models.IntervalZadatka>();
             nalog.Add(new Data.Models.KorisnickiNalog { 
-                KorisnickoIme="Armina",
+                KorisnickoIme="Sadzida",
                 Lozinka = BCrypt.Net.BCrypt.EnhancedHashPassword("Test123", 13),
                 JeDoktor=false,
                 JeFizioterapeut=false,
                 JeNjegovatelj=false,
                 JeNutricionista=false,
                 JeAdmin= true,
-                Je2FActive=true
+                Je2FActive=true,
+                Email="sadzidadziho@gmail.com"
             });
             vrstaZadatka.Add(new Data.Models.VrstaZadatka { Naziv = "Medicinski zadatak" });
             vrstaZadatka.Add(new Data.Models.VrstaZadatka {  Naziv = "Fizioterapeutski zadatak" });

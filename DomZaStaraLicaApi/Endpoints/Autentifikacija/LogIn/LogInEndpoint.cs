@@ -1,8 +1,11 @@
 ﻿using DomZaStaraLicaApi.Data;
 using DomZaStaraLicaApi.Data.Models;
 using DomZaStaraLicaApi.Helper;
+using DomZaStaraLicaApi.SignalR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
 {
@@ -10,25 +13,27 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
     public class LogInEndpoint : MyBaseEndpoint<LoginRequest, LogInResponse>
     {
         private readonly ApplicationDbContext _applicationDbContext;
-        public LogInEndpoint(ApplicationDbContext applicationDbContext)
+        private readonly IHubContext<SignalRHub> _hubContext;
+        public LogInEndpoint(ApplicationDbContext applicationDbContext, IHubContext<SignalRHub> hubContext)
         {
             _applicationDbContext = applicationDbContext;
+            _hubContext = hubContext;
         }
         [HttpPost]
         public override async Task<LogInResponse> Obradi([FromBody] LoginRequest request)
         {
 
-           var logiraniKorisnik= _applicationDbContext.KorisnickiNalog.FirstOrDefault(
-               x=> x.KorisnickoIme==request.KorisnickoIme
-               && x.JeAdmin==request.JeAdmin && x.JeFizioterapeut==request.JeFizioterapeut
-               && x.JeDoktor==request.JeDoktor && x.JeNjegovatelj==request.JeNjegovatelj &&
-               x.JeNutricionista==request.JeNutricionista);
-            if(logiraniKorisnik==null )
+            var logiraniKorisnik = _applicationDbContext.KorisnickiNalog.FirstOrDefault(
+                x => x.KorisnickoIme == request.KorisnickoIme
+                && x.JeAdmin == request.JeAdmin && x.JeFizioterapeut == request.JeFizioterapeut
+                && x.JeDoktor == request.JeDoktor && x.JeNjegovatelj == request.JeNjegovatelj &&
+                x.JeNutricionista == request.JeNutricionista);
+            if (logiraniKorisnik == null)
             {
                 throw new Exception("nije pronadjen korisnicki nalog za korisnicko ime = " + request.KorisnickoIme);
 
             }
-            if (!BCrypt.Net.BCrypt.EnhancedVerify(request.Lozinka,logiraniKorisnik.Lozinka))
+            if (!BCrypt.Net.BCrypt.EnhancedVerify(request.Lozinka, logiraniKorisnik.Lozinka))
             {
                 throw new Exception("Lozinka ne odgovara nalogu " + request.KorisnickoIme);
             }
@@ -42,15 +47,15 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija.LogIn
                 vrijemeEvidentiranja = DateTime.Now
             };
             _applicationDbContext.Add(noviToken);
-             await _applicationDbContext.SaveChangesAsync();
+            await _applicationDbContext.SaveChangesAsync();
 
-          await _hubContext.Groups.AddToGroupAsync(
-          request.SignalRConnectionID,
-          noviToken.korisnickiNalog.KorisnickoIme
-          );
+            await _hubContext.Groups.AddToGroupAsync(
+            request.SignalRConnectionID,
+            noviToken.korisnickiNalog.KorisnickoIme
+            );
 
             return new LogInResponse { LogInInformacija = new MyAuthInfo(noviToken) };
         }
-        
+
     }
 }

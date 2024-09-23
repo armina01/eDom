@@ -13,6 +13,7 @@ import {GetAllNjegovateljaResponseNjegovatelj} from "../njegovatelj/getAllNjegov
 export class SignalRService {
     public notificationsUpdated: EventEmitter<void> = new EventEmitter<void>();
     public not:any;
+    public static ConnectionId:string | null;
     constructor(private httpClient: HttpClient) {}
     getZaposlenik():GetAllNjegovateljaResponseNjegovatelj | null {
         let korisnik = window.localStorage.getItem("korisnik")??"";
@@ -29,23 +30,33 @@ export class SignalRService {
             .build();
 
         connection.on("dodan_novi_zadatak", (p) => {
-         // Check if the notification is different from the last one
+            // Check if the notification is different from the last one
             this.not = p;
             var notifikacija: NotifikacijaRequest = {poruka: p.message};
             this.notificationsUpdated.emit();
-            if(p.userId===this.getZaposlenik()?.zaposlenikId) {
-                console.log("Zaposlenici",p.userId.zaposlenikId,this.getZaposlenik()?.zaposlenikId)
+            if (p.userId === this.getZaposlenik()?.zaposlenikId) {
+                console.log("Zaposlenici", p.userId.zaposlenikId, this.getZaposlenik()?.zaposlenikId)
                 const url: string = MyConfig.adresa_servera + '/dodaj-notifikaciju'
-                this.httpClient.post(url, notifikacija).subscribe(() => {});
+                this.httpClient.post(url, notifikacija).subscribe(() => {
+                });
             }
+
         });
+
+            connection.on("dodana_nova_napomena", (napomena) => {
+                alert("Dodana je nova napomena: " + napomena);
+            });
 
         connection
             .start()
             .then(() => {
+
+                SignalRService.ConnectionId=connection.connectionId;
+
                 console.log("konekcija otvorena " + connection.connectionId);
 
             });
+
     }
 
     public GetAllNotifikacija(): Observable<NotifikacijaResponse> {

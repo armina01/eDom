@@ -211,19 +211,19 @@ export class FizioterapeutComponent implements OnInit {
 
   }
 
-    Update() {
+  Update() {
 
-      if(this.zaposlenikUpdNalog) {
-        this.fizioterapeutUpdateRequest.zaposlenikId = this.zaposlenikUpdId;
-        this.fizioterapeutUpdateRequest.imePrezime = this.fizioterapeutRequest.imePrezime;
-        this.fizioterapeutUpdateRequest.jmbg = this.fizioterapeutRequest.jmbg;
-        this.fizioterapeutUpdateRequest.datumRodjenja = this.fizioterapeutRequest.datumRodjenja;
-        this.fizioterapeutUpdateRequest.datumZaposlenja = this.fizioterapeutRequest.datumZaposlenja;
-        this.fizioterapeutUpdateRequest.oblastFizijatrije = this.fizioterapeutRequest.oblastFizijatrije;
-        this.fizioterapeutUpdateRequest.poslovnaPozicijaId = this.fizioterapeutRequest.poslovnaPozicijaId;
+    if(this.zaposlenikUpdNalog) {
+      this.fizioterapeutUpdateRequest.zaposlenikId = this.zaposlenikUpdId;
+      this.fizioterapeutUpdateRequest.imePrezime = this.fizioterapeutRequest.imePrezime;
+      this.fizioterapeutUpdateRequest.jmbg = this.fizioterapeutRequest.jmbg;
+      this.fizioterapeutUpdateRequest.datumRodjenja = this.fizioterapeutRequest.datumRodjenja;
+      this.fizioterapeutUpdateRequest.datumZaposlenja = this.fizioterapeutRequest.datumZaposlenja;
+      this.fizioterapeutUpdateRequest.oblastFizijatrije = this.fizioterapeutRequest.oblastFizijatrije;
+      this.fizioterapeutUpdateRequest.poslovnaPozicijaId = this.fizioterapeutRequest.poslovnaPozicijaId;
 
-        console.log(this.fizioterapeutUpdateRequest);
-        this.fizioterapeutService.UpdateFizioterapeuta(this.fizioterapeutUpdateRequest).subscribe(
+      console.log(this.fizioterapeutUpdateRequest);
+      this.fizioterapeutService.UpdateFizioterapeuta(this.fizioterapeutUpdateRequest).subscribe(
           response => {
             this.myAlert.showSuccess("Uspješno ažuriran fizioterapeut");
             this.showFirstForm = true;
@@ -232,41 +232,26 @@ export class FizioterapeutComponent implements OnInit {
           error => {
             this.myAlert.showError("Greška prilikom ažuriranja");
           }
-        );
-      }
-      else {
-        if (this.updateForm.invalid) {
-          this.updateForm.markAllAsTouched();
-          return;
-        }
-        this.fizioterapeutUpdateRequest.imePrezime=this.fizioterapeutRequest.imePrezime
-        this.fizioterapeutUpdateRequest.jmbg=this.fizioterapeutRequest.jmbg
-        this.fizioterapeutUpdateRequest.datumRodjenja=this.fizioterapeutRequest.datumRodjenja
-        this.fizioterapeutUpdateRequest.datumZaposlenja=this.fizioterapeutRequest.datumZaposlenja
-        this.fizioterapeutUpdateRequest.oblastFizijatrije=this.fizioterapeutRequest.oblastFizijatrije
-        this.fizioterapeutUpdateRequest.poslovnaPozicijaId=this.fizioterapeutRequest.poslovnaPozicijaId
-
-        let url: string = MyConfig.adresa_servera + `/Fizioterapeut-update`;
-        console.log(this.fizioterapeutUpdateRequest)
-        this.httpClient.post(url, this.fizioterapeutUpdateRequest).subscribe(request => {
-            console.log("Fizioterapeut updateovan ", request)
-        })
-        this.OcistiFormu();
-
+      );
     }
-}
-        if (this.odabraniFizioterapeut !== null) {
-          this.fizioterapeutUpdateRequest.zaposlenikId = this.odabraniFizioterapeut.zaposlenikId;
-          this.fizioterapeutUpdateRequest.imePrezime = this.updateForm.get('imePrezime')?.value || '';
-          this.fizioterapeutUpdateRequest.jmbg = this.updateForm.get('jmbg')?.value || '';
-          this.fizioterapeutUpdateRequest.datumRodjenja = this.updateForm.get('datumRodjenja')?.value || '';
-          this.fizioterapeutUpdateRequest.datumZaposlenja = this.updateForm.get('datumZaposlenja')?.value || '';
-          this.fizioterapeutUpdateRequest.oblastFizijatrije = this.updateForm.get('oblastFizijatrije')?.value || '';
-          this.fizioterapeutUpdateRequest.poslovnaPozicijaId = this.updateForm.get('poslovnaPozicijaId')?.value || '';
-          this.fizioterapeutUpdateRequest.nalogId = this.odabraniFizioterapeut.nalogId;
+    else {
+      if (this.updateForm.invalid) {
+        this.updateForm.markAllAsTouched();
+        return;
+      }
+
+      if (this.odabraniFizioterapeut !== null) {
+        this.fizioterapeutUpdateRequest.zaposlenikId = this.odabraniFizioterapeut.zaposlenikId;
+        this.fizioterapeutUpdateRequest.imePrezime = this.updateForm.get('imePrezime')?.value || '';
+        this.fizioterapeutUpdateRequest.jmbg = this.updateForm.get('jmbg')?.value || '';
+        this.fizioterapeutUpdateRequest.datumRodjenja = this.updateForm.get('datumRodjenja')?.value || '';
+        this.fizioterapeutUpdateRequest.datumZaposlenja = this.updateForm.get('datumZaposlenja')?.value || '';
+        this.fizioterapeutUpdateRequest.oblastFizijatrije = this.updateForm.get('oblastFizijatrije')?.value || '';
+        this.fizioterapeutUpdateRequest.poslovnaPozicijaId = this.updateForm.get('poslovnaPozicijaId')?.value || '';
+        this.fizioterapeutUpdateRequest.nalogId = this.odabraniFizioterapeut.nalogId;
 
 
-          this.fizioterapeutService.UpdateFizioterapeuta(this.fizioterapeutUpdateRequest).subscribe(
+        this.fizioterapeutService.UpdateFizioterapeuta(this.fizioterapeutUpdateRequest).subscribe(
             response => {
               this.myAlert.showSuccess("Uspješno ažuriran fizioterapeut");
               this.OcistiFormu();
@@ -276,10 +261,10 @@ export class FizioterapeutComponent implements OnInit {
             error => {
               this.myAlert.showError("Greška prilikom ažuriranja");
             }
-          );
-        }
+        );
       }
     }
+  }
   AddKorisnickiNalog(): void {
     console.log(this.korisnickiNalogRequest);
     this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {

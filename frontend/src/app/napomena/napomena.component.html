@@ -1,95 +1,109 @@
-
-
+<app-nav-bar-doktor></app-nav-bar-doktor>
 <div class="container mt-4">
   <div class="d-flex justify-content-between" style="margin-bottom: 20px;">
-  <!-- Prva kartica -->
-  <div class="card mt-4 me-4" style="width: 48%;">
-    <div class="card-header">
-      <h5 class="card-title">
-        <i class="bi bi-file-earmark-medical"></i> Dodaj napomenu
-      </h5>
-    </div>
-    <div class="card-body">
-      <form #NapomenaForma="ngForm">
-        <div class="mb-3">
-          <label for="opis" class="form-label">
-            <i class="bi bi-file-text"></i> Opis
-          </label>
-          <input type="text" id="opis" name="opis" class="form-control" [(ngModel)]="napomenaDodajRequest.opis">
-          <div *ngIf="!napomenaDodajRequest.opis" class="text-danger small">
-            * Obavezno polje
-          </div>
-        </div>
-        <div class="mb-3 form-check">
-          <input id="prioritet" type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="napomenaDodajRequest.prioritet">
-          <label for="prioritet" class="form-check-label">
-            <i class="bi bi-exclamation-circle"></i> Prioritet
-          </label>
-        </div>
-        <div class="mb-3">
-          <label for="datumPostavke" class="form-label">
-            <i class="bi bi-calendar"></i> Datum postavke
-          </label>
-          <input type="date" id="datumPostavke" name="datumPostavke" class="form-control" [(ngModel)]="napomenaDodajRequest.datumPostavke">
-        </div>
-        <div class="mb-3 form-check">
-          <input id="isAktivna" type="checkbox" [ngModelOptions]="{standalone:true}" [(ngModel)]="napomenaDodajRequest.isAktivna">
-          <label for="isAktivna" class="form-check-label">
-            <i class="bi bi-exclamation-circle"></i> Aktivna
-          </label>
-        </div>
-        <div class="mb-3">
-          <label for="zaposlenikId" class="form-label">
-            <i class="bi bi-person"></i> Zaposlenik ID
-          </label>
-          <input type="number" id="zaposlenikId" name="zaposlenikId" class="form-control" [(ngModel)]="napomenaDodajRequest.zaposlenikId">
-        </div>
-        <div class="mb-3">
-          <label for="cmbVrstaNapomene" class="form-label">
-            <i class="bi bi-list"></i> Izaberite vrstu napomene:
-          </label>
-          <select id="cmbVrstaNapomene" class="form-select" [(ngModel)]="napomenaDodajRequest.vrstaNapomeneId">
-            <option *ngFor="let option of vrsteNapomena" [ngValue]="option.vrstaNapomeneId">{{ option.opis }}</option>
-          </select>
-        </div>
-      </form>
-    </div>
-    <button type="submit" class="btn btn-primary mx-auto" (click)="Dodaj()">
-      <i class="bi bi-plus-circle"></i> Dodaj
-    </button>
-  </div>
-
-
-
-  <!-- Druga kartica s scrollbarom -->
-  <div class="card mt-4" style="width: 48%;">
-    <div class="card-body overflow-auto" style="max-height: 300px;">
-      <div class="d-flex align-items-center">
-        <i class="bi bi-person me-2"></i>
-        <label class="mb-0" style="color: rebeccapurple">Odaberite korisnike kojima želite dodati napomenu</label>
+    <!-- Prva kartica -->
+    <div class="card mt-4 me-4" style="width: 48%;">
+      <div class="card-header">
+        <h1 class="fs-5"><i class="bi bi-file-plus"></i> Dodavanje napomene</h1>
       </div>
-      <table class="table table-striped mt-2">
-        <thead>
-        <tr>
-          <th>Oznaci</th>
-          <th>Ime i prezime</th>
-          <th>JMBG</th>
-          <th>Datum rođenja</th>
-          <th>Broj sobe</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let item of getKorisnici()">
-          <td><input type="checkbox" [(ngModel)]="item.selected" /></td>
-          <td>{{ item.imePrezime }}</td>
-          <td>{{ item.jmbg}}</td>
-          <td>{{ item.datumRodjenja | date }}</td>
-          <td>{{ item.brojSobe }}</td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="card-body">
+        <form [formGroup]="napomenaForm" (ngSubmit)="Dodaj()">
+          <div class="mb-3">
+            <label for="opis" class="form-label">
+              <i class="bi bi-file-text"></i> Opis
+            </label>
+            <input type="text" id="opis" formControlName="opis" class="form-control">
+            <div *ngIf="napomenaForm.get('opis')?.invalid && napomenaForm.get('opis')?.touched" class="text-danger small">
+              * Obavezno polje
+            </div>
+          </div>
+          <div class="mb-3 form-check">
+            <input id="prioritet" type="checkbox" formControlName="prioritet" class="form-check-input">
+            <label for="prioritet" class="form-check-label">
+              <i class="bi bi-exclamation-circle"></i> Prioritet
+            </label>
+          </div>
+          <div class="mb-3">
+            <label for="datumPostavke" class="form-label">
+              <i class="bi bi-calendar"></i> Datum postavke
+            </label>
+            <input type="date" id="datumPostavke" formControlName="datumPostavke" class="form-control">
+            <div *ngIf="napomenaForm.get('datumPostavke')?.invalid && napomenaForm.get('datumPostavke')?.touched" class="text-danger small">
+              * Obavezno polje
+            </div>
+          </div>
+          <div class="mb-3 form-check">
+            <input id="isAktivna" type="checkbox" formControlName="isAktivna" class="form-check-input">
+            <label for="isAktivna" class="form-check-label">
+              <i class="bi bi-exclamation-circle"></i> Aktivna
+            </label>
+          </div>
+          <!--
+          <div class="mb-3">
+            <label for="zaposlenikId" class="form-label">
+              <i class="bi bi-person"></i> Zaposlenik ID
+            </label>
+            <input type="number" id="zaposlenikId" formControlName="zaposlenikId" class="form-control">
+            <div *ngIf="napomenaForm.get('zaposlenikId')?.invalid && napomenaForm.get('zaposlenikId')?.touched" class="text-danger small">
+              * Obavezno polje
+            </div>
+          </div>
+          -->
+          <div class="mb-3">
+            <label for="cmbVrstaNapomene" class="form-label">
+              <i class="bi bi-list"></i> Izaberite vrstu napomene:
+            </label>
+            <select id="cmbVrstaNapomene" formControlName="vrstaNapomeneId" class="form-select">
+              <option *ngFor="let option of vrsteNapomena" [ngValue]="option.vrstaNapomeneId">{{ option.opis }}</option>
+            </select>
+            <div *ngIf="napomenaForm.get('vrstaNapomeneId')?.invalid && napomenaForm.get('vrstaNapomeneId')?.touched" class="text-danger small">
+              * Obavezno polje
+            </div>
+          </div>
+          <div class="text-center" >
+            <Button type="submit" class="btn btn-success">
+              <i class="far fa-plus-square"></i>
+              Dodaj
+            </Button>
+            <div *ngIf="upozorenje" class="text-danger small ms-3">
+              * Potrebno je označiti barem jednog korisnika.
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+
+    <!-- Druga kartica s scrollbarom -->
+    <div class="card mt-4" style="width: 48%;">
+      <div class="card-body overflow-auto" style="max-height: 300px;">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-person me-2"></i>
+          <label class="mb-0" style="color: rebeccapurple">Odaberite korisnike kojima želite dodati napomenu</label>
+        </div>
+        <table class="table table-striped mt-2">
+          <thead>
+          <tr>
+            <th>Oznaci</th>
+            <th>Ime i prezime</th>
+            <th>JMBG</th>
+            <th>Datum rođenja</th>
+            <th>Broj sobe</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of getKorisnici()">
+            <td><input type="checkbox" [(ngModel)]="item.selected" /></td>
+            <td>{{ item.imePrezime }}</td>
+            <td>{{ item.jmbg}}</td>
+            <td>{{ item.datumRodjenja | date }}</td>
+            <td>{{ item.brojSobe }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
 </div>
 

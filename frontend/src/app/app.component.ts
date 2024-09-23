@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {Router, RouterLink, RouterOutlet} from '@angular/router';
+import {RouterLink, RouterOutlet} from '@angular/router';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpHeaders} from "@angular/common/http";
 import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
 import {FormsModule} from "@angular/forms";
@@ -13,22 +13,20 @@ import {AlertComponent} from "./alert/alert.component";
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, HttpClientModule, FormsModule],
+  imports: [CommonModule, RouterOutlet, RouterLink, HttpClientModule, FormsModule, AlertComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent  implements OnInit, OnDestroy{
   title = 'frontend';
-  private logoutSubscription!: Subscription| undefined;
+  private logoutSubscription!: Subscription;
 
   private refreshSubscription: Subscription | undefined;
-  constructor(private httpClient: HttpClient,private tokenService: TokenService,
-              private myAuth:MyAuthService,private router: Router) {}
+  constructor(private httpClient: HttpClient,private tokenService: TokenService, private myAuth:MyAuthService) {}
 
   ngOnInit(): void {
     const oldToken = this.myAuth.getAuthorizationToken()?.vrijednost;
     console.log('Početak intervala za provjeru tokena');
-      window.addEventListener('beforeunload', this.logoutOnUnload.bind(this));
     if (oldToken) {
       this.refreshSubscription = interval( 45*60* 1000) //svakih 30 sec  30 * 1000
         .pipe(
@@ -39,11 +37,15 @@ export class AppComponent {
           console.log('Provjera tokena završena. Odgovor: ', resp);
         });
     }
-    }
+  }
   ngOnDestroy(): void {
-    // Unsubscribe from logout HTTP request to prevent memory leaks
+    // Unsubscribe from logout HTTP request to prevent memory leaks dodalo samo
     if (this.logoutSubscription) {
       this.logoutSubscription.unsubscribe();
+    }
+
+    if (this.refreshSubscription) { //dodala ja
+      this.refreshSubscription.unsubscribe();
     }
   }
 
@@ -62,31 +64,5 @@ export class AppComponent {
         console.error('Logout failed:', error);
       }
     );
-  }
-
-  private logoutTimer: any;
-
-
-  logoutUser(): void {
-    let token = window.localStorage.getItem("my-auth-token")??"";
-
-    // Call your logout endpoint here
-    let url: string = MyConfig.adresa_servera + `/logout`;
-    this.httpClient.post(url, {}, {
-      headers:{
-        "my-auth-token": token
-      }
-    }).subscribe(x=>{
-      console.log("logout uspjesan")
-      window.localStorage.setItem("my-auth-token","");
-      this.router.navigate(['/home']);
-    })
-
-  }
-  logoutOnUnload(event: BeforeUnloadEvent): void {
-    // Reset the timer to prevent automatic logout if user navigates back or refreshes the page
-
-    window.localStorage.setItem('my-auth-token', '');
-    this.logoutUser(); // Perform logout when the page is unloaded
   }
 }

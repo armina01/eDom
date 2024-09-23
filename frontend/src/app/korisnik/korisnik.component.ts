@@ -52,8 +52,8 @@ export class KorisnikComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.GetAllOpstine().subscribe((data) => {
-            this.options = data;
+        this.opstinaService.GetAllOpstine().subscribe((data) => {
+            this.options = data.opstine;
         });
 
     }

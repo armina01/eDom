@@ -1,18 +1,25 @@
 ﻿using DomZaStaraLicaApi.Data;
+using DomZaStaraLicaApi.Data.Models;
 using DomZaStaraLicaApi.Endpoints.Doktor.Dodaj;
 using DomZaStaraLicaApi.Helper;
+using DomZaStaraLicaApi.SignalR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace DomZaStaraLicaApi.Endpoints.Napomena.Dodaj
 {
     [Route("napomena/dodaj")]
-    public class NapomenaDodajEndpoint:MyBaseEndpoint<NapomenaDodajRequest, NapomenaDodajResponse>
+    public class NapomenaDodajEndpoint : MyBaseEndpoint<NapomenaDodajRequest, NapomenaDodajResponse>
     {
         private readonly ApplicationDbContext _applicationDbContext;
+        private readonly IHubContext<SignalRHub> _hubContext;
 
-        public NapomenaDodajEndpoint(ApplicationDbContext applicationDbContext)
+        public NapomenaDodajEndpoint(ApplicationDbContext applicationDbContext, IHubContext<SignalRHub> hubContext)
         {
             _applicationDbContext = applicationDbContext;
+            _hubContext = hubContext;
         }
 
         [HttpPost]
@@ -22,12 +29,12 @@ namespace DomZaStaraLicaApi.Endpoints.Napomena.Dodaj
             {
                 Opis = request.Opis,
                 Prioritet = request.Prioritet,
-                isAktivna=request.isAktivna,
+                isAktivna = request.isAktivna,
                 DatumPostavke = request.DatumPostavke,
                 ZaposlenikId = request.ZaposlenikId,
-                KorisnikDomaID=request.KorisnikDomaID,
-                VrstaNapomeneId=request.VrstaNapomeneId
-                
+                KorisnikDomaID = request.KorisnikDomaID,
+                VrstaNapomeneId = request.VrstaNapomeneId
+
             };
 
 
@@ -48,7 +55,7 @@ namespace DomZaStaraLicaApi.Endpoints.Napomena.Dodaj
 
             return new NapomenaDodajResponse
             {
-                NapomenaId= newObj.NapomenaId
+                NapomenaId = newObj.NapomenaId
             };
 
         }
