@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpHeaders} from "@angular/common/http";
 import {MyAuthInterceptor} from "./Helper/MyAuthInterceptor";
@@ -9,6 +8,8 @@ import {MyConfig} from "./my-config";
 import {TokenService} from "./Services/TokenService";
 import {MyAuthService} from "./Services/MyAuthService";
 import {AlertComponent} from "./alert/alert.component";
+import {CommonModule} from "@angular/common";
+
 
 @Component({
   selector: 'app-root',

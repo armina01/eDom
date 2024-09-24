@@ -20,11 +20,12 @@ import {DijagnozaService} from "../Services/DijagnozaService";
 import {DijagnozaUpdateRequest} from "./DijagnozaUpdateRequest";
 import {AlertService} from "../Services/AlertService";
 import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
+import {AlertComponent} from "../alert/alert.component";
 
 @Component({
   selector: 'app-dijagnoza',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent, AlertComponent],
   providers:[KorisnikDomaService, DoktorService, DijagnozaService],
   templateUrl: './dijagnoza.component.html',
   styleUrl: './dijagnoza.component.css'
@@ -90,7 +91,6 @@ export class DijagnozaComponent implements  OnInit{
   GetAllKorisnike()
   {
     this.korisnikDomaService.GetAllKorisnici().subscribe((data)=>{
-      console.log(data);
       this.korisniciDoma=data.korisnici;
     });
   }
@@ -98,7 +98,6 @@ export class DijagnozaComponent implements  OnInit{
   GetAllDoktore()
   {
     this.doktorService.GetAllDoktori().subscribe((data)=>{
-      console.log(data);
       this.doktori=data.doktori;
     });
   }
@@ -109,7 +108,6 @@ export class DijagnozaComponent implements  OnInit{
 
     let korisnikObjekat = korisnikString ? JSON.parse(korisnikString) : null;
     this.zaposlenikId = korisnikObjekat ? korisnikObjekat.zaposlenikId : this.zaposlenikId;
-    console.log(this.zaposlenikId);
     if (this.dijagnozaForm.valid) {
 
       const formData: FormData = new FormData();
@@ -125,8 +123,8 @@ export class DijagnozaComponent implements  OnInit{
 
       this.dijagnozaService.DodajDijagozu(formData).subscribe(x => {
         this.myAlert.showSuccess("Uspješno dodana dijagnoza");
-      });
 
+      });
       setTimeout(() => {
         this.GetAllDijagnoze();
       }, 3000);
@@ -163,6 +161,7 @@ export class DijagnozaComponent implements  OnInit{
         this.dijagnozaService.IzbrisiDijagnozu(item).subscribe(
           response => () => {
             this.myAlert.showSuccess("Uspješno obrisana dijagnoza")
+
           },
           (error: any) => {
             console.error('Error:', error);
@@ -176,6 +175,9 @@ export class DijagnozaComponent implements  OnInit{
             }
           })
       }
+      setTimeout(() => {
+        this.GetAllDijagnoze();
+      }, 3000);
     });
   }
 
@@ -238,6 +240,7 @@ export class DijagnozaComponent implements  OnInit{
     this.odabranaDijagnoza=null;
     setTimeout(() => {
       this.GetAllDijagnoze();
+      this.getFiltriraneDijagnoze();
     }, 3000);
   }
 
@@ -264,12 +267,12 @@ export class DijagnozaComponent implements  OnInit{
     document.body.removeChild(link);
   }
 
-  //dugme uklonjeno za potrebe hci-a postaviti opet gdje bude potrebno
+
   deleteFile(dijagnozaId: number) {
     const url = `${MyConfig.adresa_servera}/dijagnoza/deleteFile/${dijagnozaId}`;
     this.httpClient.delete(url, { responseType: 'text' }).subscribe(
       () => {
-        this.myAlert.showSuccess('Fajl uspešno obrisan.');
+        this.myAlert.showSuccess('Fajl uspješno obrisan.');
 
       },
       (error) => {

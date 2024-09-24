@@ -55,6 +55,8 @@ namespace DomZaStaraLicaApi.Endpoints.KorisnikDoma.Update
                 _applicationDbContext.KorisnikDoma.Update(korisnik);
                 await _applicationDbContext.SaveChangesAsync();
             }
+            _applicationDbContext.KorisnikDoma.Update(korisnik);
+            await _applicationDbContext.SaveChangesAsync();
 
             return new KorisnikDomaUpdateResponse
             {

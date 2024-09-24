@@ -17,11 +17,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {AlertService} from "../Services/AlertService";
 import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
 import {ZaposlenikGetAllRsponseZaposlenik} from "../pregled-napomena/zaposlenikGetAllRsponse";
+import {AlertComponent} from "../alert/alert.component";
 
 @Component({
   selector: 'app-napomena',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent, AlertComponent],
   providers:[KorisnikDomaService, NapomenaService],
   templateUrl: './napomena.component.html',
   styleUrl: './napomena.component.css'

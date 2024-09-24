@@ -25,7 +25,7 @@ export class KorisnikDomaService {
   }
   IzbrisiKorisnikaDoma(item:any){
     let url: string = MyConfig.adresa_servera + `/korisnikDoma-obrisi`
-    const params = new HttpParams().set('ZaposlenikId', item.zaposlenikId);
+    const params = new HttpParams().set('KorisnikDomaID', item);
     return this.httpClient.delete(url, {params})
   }
   UpdateKorisnikaDoma(korisnikUpdateRequest:any){

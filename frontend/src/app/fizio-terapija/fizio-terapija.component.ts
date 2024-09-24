@@ -19,17 +19,19 @@ import {FizioTerapijaService} from "../Services/FizioTerapijaService";
 import {KorisnikDomaService} from "../Services/KorisnikDomaService";
 import {AlertService} from "../Services/AlertService";
 import {NavBarFizioterapeutComponent} from "../nav-bar-fizioterapeut/nav-bar-fizioterapeut.component";
+import {AlertComponent} from "../alert/alert.component";
+import {FizioterapeutService} from "../Services/FizioterapeutService";
 
 @Component({
   selector: 'app-fizio-terapija',
   standalone: true,
-  imports: [
-    FormsModule,
-    NgForOf,
-    NgIf,
-    ReactiveFormsModule, NavBarFizioterapeutComponent
-  ],
-    providers: [FizioTerapijaService, AlertService],
+    imports: [
+        FormsModule,
+        NgForOf,
+        NgIf,
+        ReactiveFormsModule, NavBarFizioterapeutComponent, AlertComponent
+    ],
+    providers: [FizioTerapijaService, AlertService, KorisnikDomaService, FizioterapeutService],
   templateUrl: './fizio-terapija.component.html',
   styleUrl: './fizio-terapija.component.css'
 })
@@ -50,7 +52,8 @@ export class FizioTerapijaComponent implements OnInit{
        this.GetAllFizioterapeuti();
     }
     constructor(public httpClient: HttpClient, private dialog: MatDialog, private fb: FormBuilder,
-                private fizioTerapijaService:FizioTerapijaService, private myAlert:AlertService) {
+                private fizioTerapijaService:FizioTerapijaService, private myAlert:AlertService,
+                private korisnikDomaService: KorisnikDomaService, private fizioterapeutService: FizioterapeutService) {
       this.fizioTerapijaForm = this.fb.group({
         opis: ['', Validators.required],
         datumPostavke: ['', Validators.required],
@@ -85,14 +88,12 @@ export class FizioTerapijaComponent implements OnInit{
 
   }
   GetAllKorisnike() {
-    let url = MyConfig.adresa_servera + `/korisnikDoma-getAll`
-    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x: KorisnikDomaGetAllResponse) => {
+    this.korisnikDomaService.GetAllKorisnici().subscribe((x: KorisnikDomaGetAllResponse) => {
       this.korisniciDoma = x.korisnici;
     })
   }
   GetAllFizioterapeuti() {
-    let url: string = MyConfig.adresa_servera + `/fizioterapeut-getAll`;
-    this.httpClient.get<FizioterapeutGetAllResponse>(url).subscribe(x => {
+    this.fizioterapeutService.GetAllFizioterapeuti().subscribe(x => {
       this.allFizioterapeuti= x.fizioterapeuti
     })
   }
@@ -106,7 +107,7 @@ export class FizioTerapijaComponent implements OnInit{
 
       if (terapijaForm.valid) {
           this.terapijaRequest.zaposlenikId=this.zaposlenikId;
-          console.log(this.terapijaRequest);
+
           this.fizioTerapijaService.DodajTerapiju(this.terapijaRequest).subscribe(response => {
               this.myAlert.showSuccess('Terapija uspješno dodana');
           }, error => {
@@ -118,10 +119,6 @@ export class FizioTerapijaComponent implements OnInit{
       setTimeout(() => {
           this.GetAllFizioTerapije();
       }, 3000);
-
-    setTimeout(() => {
-      this.GetAllFizioTerapije();
-    }, 3000);
 
   }
   Obrisi(item: FizioTerapijaGetAllResponseFizioTerapija) {
@@ -146,11 +143,11 @@ export class FizioTerapijaComponent implements OnInit{
                         alert('An error occurred.');
                     }
                 })
-            setTimeout(() => {
-                this.GetAllFizioTerapije();
-                this.getFiltriraneTerapije();
-            }, 3000);
         }
+      setTimeout(() => {
+        this.GetAllFizioTerapije();
+        this.getFiltriraneTerapije();
+      }, 3000);
     });
   }
 
@@ -182,10 +179,10 @@ export class FizioTerapijaComponent implements OnInit{
     };
   }
 
-    formatDate(dateString: string): string {
-        const date = new Date(dateString);
-        return date.toISOString().split('T')[0]; // Vraća datum u formatu yyyy-MM-dd
-    }
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-CA'); // 'en-CA' koristi format yyyy-MM-dd
+  }
   Update() {
     if(this.odabranaTerapija)
     {
@@ -198,7 +195,6 @@ export class FizioTerapijaComponent implements OnInit{
       }
     }
 
-
       this.fizioTerapijaService.UpdateTerapiju(this.terapijaUpdateRequest).subscribe(request => {
           this.myAlert.showSuccess("Terapija uspješno ažurirana ")
       })
@@ -206,8 +202,8 @@ export class FizioTerapijaComponent implements OnInit{
       this.odabranaTerapija=null;
 
     setTimeout(() => {
-      this.ngOnInit();
-    }, 5000);
+      this.GetAllFizioTerapije();
+    }, 3000);
   }
 
 }

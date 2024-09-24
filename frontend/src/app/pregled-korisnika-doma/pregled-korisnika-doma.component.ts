@@ -23,13 +23,14 @@ import {faBell, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AlertService} from "../Services/AlertService";
 import {NavBarFizioterapeutComponent} from "../nav-bar-fizioterapeut/nav-bar-fizioterapeut.component";
+import {AlertComponent} from "../alert/alert.component";
 
 
 @Component({
   selector: 'app-pregled-korisnika-doma',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarNjejgovateljComponent, NavBarNutricionistaComponent,
-    NavBarDoktorComponent, FaIconComponent, FontAwesomeModule, NavBarFizioterapeutComponent],
+    NavBarDoktorComponent, FaIconComponent, FontAwesomeModule, NavBarFizioterapeutComponent, AlertComponent],
   providers: [MyAuthService, SignalRService, KorisnikDomaService],
   templateUrl: './pregled-korisnika-doma.component.html',
   styleUrls: ['./pregled-korisnika-doma.component.css']  // Ispravljeno u styleUrls
@@ -89,7 +90,6 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   {
     this.korisnikDomaService.GetAllKorisnici().subscribe({
       next: (data) => {
-        console.log(data);
         this.korisnici = data.korisnici;
         this.korisnici.forEach(k => {
           k.random = this.getRandomNumber();
@@ -111,7 +111,8 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati opštinu?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.korisnikDomaService.IzbrisiKorisnikaDoma(data).subscribe(
+        console.log(data);
+        this.korisnikDomaService.IzbrisiKorisnikaDoma(data.korisnikDomaID).subscribe(
           response => () => {
             alert("Deleted item")
           },
@@ -127,6 +128,9 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
             }
           })
       }
+      setTimeout(() => {
+        this.getAllKorisnici();
+      }, 3000);
     });
   }
 
@@ -139,30 +143,38 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
 
   UpdateKorisnika() {
     let podaci=this.odabraniKorisnik
-    console.log(podaci);
     this.korisnikDomaService.UpdateKorisnikaDoma(podaci).subscribe((res) =>
       this.myAlert.showSuccess("Korisnik doma uspješno ažuriran"))
     this.odabraniKorisnik=null;
-    this.getAllKorisnici();
+    setTimeout(() => {
+      this.ngOnInit();
+    }, 3000);
 
   }
 
   OdaberiKorisnika(item: KorisnikDomaGetAllResponseKorisnik) {
+    const datumRodjenja = item.datumRodjenja;
+    const formattedDatum = this.formatDate(datumRodjenja);
+
     this.odabraniKorisnik={
       korisnikDomaID:item.korisnikDomaID,
       imePrezime: item.imePrezime,
       jmbg: item.jmbg,
-      datumRodjenja: item.datumRodjenja,
+      datumRodjenja: formattedDatum,
       brojSobe: item.brojSobe,
       opstinaID:item.opstinaID,
       slika_base64_format:""
 
     }
-    console.log(this.odabraniKorisnik);
+
     this.GetAllOpstine().subscribe((data)=>{
       this.options=data;
     });
 
+  }
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-CA'); // 'en-CA' koristi format yyyy-MM-dd
   }
   GetAllOpstine(): Observable<OpsinaGetAllResponseOpstina[]>{
     let url=MyConfig.adresa_servera + `/opstina-getAll`
@@ -237,6 +249,7 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
             }
           })
       }
+      this.getAllKorisnici();
     });
   }
   DodajPlanIshrane(item: KorisnikDomaGetAllResponseKorisnik) {

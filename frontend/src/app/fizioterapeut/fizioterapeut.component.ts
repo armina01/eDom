@@ -20,13 +20,14 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import {AlertService} from "../Services/AlertService";
 import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
 import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
+import {AlertComponent} from "../alert/alert.component";
 
 
 
 @Component({
   selector: 'app-fizioterapeut',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, AlertComponent],
     providers: [FizioterapeutService, KorisnickiNalogService],
   templateUrl: './fizioterapeut.component.html',
   styleUrl: './fizioterapeut.component.css'
@@ -118,16 +119,9 @@ export class FizioterapeutComponent implements OnInit {
 
 
   Dodaj() {
-    let url=MyConfig.adresa_servera + `/Fizioterapeut-dodaj`;
-    console.log(this.fizioterapeutRequest);
-    this.httpClient.post(url, this.fizioterapeutRequest).subscribe(response=>{
-      console.log("Fizioterapeut uspjesno dodan");
-    });
-    this.OcistiFormu();
 
     if (this.fizioterapeutForm.valid) {
 
-      console.log("tus sam");
       this.fizioterapeutRequest.imePrezime=this.fizioterapeutForm.get('imePrezime')?.value || '';
       this.fizioterapeutRequest.jmbg=this.fizioterapeutForm.get('jmbg')?.value || '';
       this.fizioterapeutRequest.datumRodjenja=this.fizioterapeutForm.get('datumRodjenja')?.value || '';
@@ -135,12 +129,12 @@ export class FizioterapeutComponent implements OnInit {
       this.fizioterapeutRequest.poslovnaPozicijaId=this.fizioterapeutForm.get('poslovnaPozicijaId')?.value || '';
       this.fizioterapeutRequest.oblastFizijatrije=this.fizioterapeutForm.get('oblastFizijatrije')?.value || '';
 
-      console.log(this.fizioterapeutRequest);
+
       this.fizioterapeutService.DodajFizioterapeuta(this.fizioterapeutRequest).subscribe((request: any) => {
         this.myAlert.showSuccess("Uspjesšno dodan fizioterapeut");
         this.showFirstForm= false;
         this.zaposlenikUpdId=request.zaposlenikID;
-        console.log("zap id", this.zaposlenikUpdId);
+
       });
     } else {
       this.myAlert.showError("Podaci za unos nisu validni");
@@ -157,8 +151,7 @@ export class FizioterapeutComponent implements OnInit {
     this.fizioterapeutRequest.poslovnaPozicijaId=0
   }
   GetAllFizioterapeuti() {
-    let url: string = MyConfig.adresa_servera + `/fizioterapeut-getAll`;
-    this.httpClient.get<FizioterapeutGetAllResponse>(url).subscribe(x => {
+    this.fizioterapeutService.GetAllFizioterapeuti().subscribe(x => {
       this.allFizioterapeuti= x.fizioterapeuti
     })
   }
@@ -168,6 +161,7 @@ export class FizioterapeutComponent implements OnInit {
   }
   Prikazi() {
      this.GetAllFizioterapeuti();
+     this.prikaziTabelu=true;
   }
 
   IzbrisiFizioterapeuta(item: FizioterapeutGetAllResponseFizioterapeut) {
@@ -178,7 +172,7 @@ export class FizioterapeutComponent implements OnInit {
         const params = new HttpParams().set('ZaposlenikId', item.zaposlenikId);
         this.httpClient.delete(url, {params}).subscribe(
           response => () => {
-            console.log("Deleted item")
+            alert("Deleted item")
           },
           (error: any) => {
             console.error('Error:', error);
@@ -192,6 +186,9 @@ export class FizioterapeutComponent implements OnInit {
             }
           })
       }
+      setTimeout(() => {
+        this.Prikazi();
+      }, 3000);
     });
   }
 
@@ -201,16 +198,26 @@ export class FizioterapeutComponent implements OnInit {
         });
     };
   Odaberi(item: FizioterapeutGetAllResponseFizioterapeut) {
-      this.fizioterapeutRequest.imePrezime=item.imePrezime
-      this.fizioterapeutRequest.jmbg=item.jmbg
-      this.fizioterapeutRequest.datumRodjenja=item.datumRodjenja
-      this.fizioterapeutRequest.datumZaposlenja=item.datumZaposlenja
-      this.fizioterapeutRequest.oblastFizijatrije=item.oblastFizijatrije
-      this.fizioterapeutRequest.poslovnaPozicijaId=item.poslovnaPozicijaId
-      this.fizioterapeutUpdateRequest.zaposlenikId=item.zaposlenikId
+    this.odabraniFizioterapeut = item;
+
+    const formattedDatumRodjenja = this.formatDate(item.datumRodjenja);
+    const formattedDatumZaposlenja = this.formatDate(item.datumZaposlenja);
+
+    this.updateForm.patchValue({
+      imePrezime: this.odabraniFizioterapeut.imePrezime,
+      jmbg: this.odabraniFizioterapeut.jmbg,
+      datumRodjenja: formattedDatumRodjenja,
+      datumZaposlenja: formattedDatumZaposlenja,
+      poslovnaPozicijaId:this.odabraniFizioterapeut.poslovnaPozicijaId,
+      oblastFizijatrije: this.odabraniFizioterapeut.oblastFizijatrije
+    });
 
   }
 
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-CA'); // 'en-CA' koristi format yyyy-MM-dd
+  }
   Update() {
 
     if(this.zaposlenikUpdNalog) {
@@ -256,7 +263,6 @@ export class FizioterapeutComponent implements OnInit {
               this.myAlert.showSuccess("Uspješno ažuriran fizioterapeut");
               this.OcistiFormu();
               this.odabraniFizioterapeut = null;
-              this.ngOnInit();
             },
             error => {
               this.myAlert.showError("Greška prilikom ažuriranja");
@@ -264,11 +270,13 @@ export class FizioterapeutComponent implements OnInit {
         );
       }
     }
+    setTimeout(() => {
+      this.Prikazi();
+    }, 3000);
   }
   AddKorisnickiNalog(): void {
     console.log(this.korisnickiNalogRequest);
     this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
-      console.log("Request",request)
       this.prikaziErrorNalog=false;
       this.showError=false;
       this.fizioterapeutUpdateRequest.nalogId = request.korisnikId

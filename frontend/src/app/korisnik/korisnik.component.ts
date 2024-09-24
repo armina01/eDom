@@ -12,12 +12,13 @@ import {SignalRService} from "../Services/signalR.service";
 import {KorisnikDomaService} from "../Services/KorisnikDomaService";
 import {OpstinaServiceService} from "../Services/OpstinaService";
 import {AlertService} from "../Services/AlertService";
+import {AlertComponent} from "../alert/alert.component";
 
 
 @Component({
   selector: 'app-korisnik',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, AlertComponent],
   providers: [KorisnikDomaService, OpstinaServiceService],
   templateUrl: './korisnik.component.html',
   styleUrls: ['./korisnik.component.css'] // Fixed styleUrls key

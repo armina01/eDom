@@ -1,4 +1,5 @@
-<app-nav-bar-doktor></app-nav-bar-doktor>
+
+<app-alert></app-alert>
 <div *ngIf="showFirstForm"  style="width: 80%; margin: 0 auto;">
   <ul class="nav nav-tabs" id="korisniciTabs" role="tablist">
     <li class="nav-item" role="presentation">
@@ -118,8 +119,8 @@
             <tbody>
             <tr *ngFor="let item of getAllDoktori()">
               <td>{{ item.imePrezime }}</td>
-              <td>{{ item.datumRodjenja }}</td>
-              <td>{{ item.datumZaposlenja }}</td>
+              <td>{{ formatDate(item.datumRodjenja) }}</td>
+              <td>{{ formatDate(item.datumZaposlenja) }}</td>
               <td>{{ item.jmbg }}</td>
               <td>{{ item.nazivKlinike }}</td>
               <td>{{ item.oblastMedicine }}</td>
@@ -164,15 +165,15 @@
               </div>
             </div>
             <div class="mb-3">
-              <label for="datumRodjenja" class="form-label">Datum rodjenja:</label>
-              <input id="datumRodjenja" formControlName="datumRodjenja" class="form-control" />
+              <label for="datumRodjenja1" class="form-label">Datum zaposlenja:</label>
+              <input type="date" id="datumRodjenja1" formControlName="datumRodjenja" class="form-control" />
               <div *ngIf="updateForm.controls['datumRodjenja'].invalid && updateForm.controls['datumRodjenja'].touched" class="text-danger">
-                Datum rođenja je obavezan.
+                Datum rodjenja je obavezan.
               </div>
             </div>
             <div class="mb-3">
-              <label for="datumZaposlenja" class="form-label">Datum zaposlenja:</label>
-              <input id="datumZaposlenja" formControlName="datumZaposlenja" class="form-control" />
+              <label for="datumZaposlenja1" class="form-label">Datum zaposlenja:</label>
+              <input type="date" id="datumZaposlenja1" formControlName="datumZaposlenja" class="form-control" />
               <div *ngIf="updateForm.controls['datumZaposlenja'].invalid && updateForm.controls['datumZaposlenja'].touched" class="text-danger">
                 Datum zaposlenja je obavezan.
               </div>

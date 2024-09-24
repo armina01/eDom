@@ -1,4 +1,5 @@
 <app-nav-bar-doktor></app-nav-bar-doktor>
+<app-alert></app-alert>
 <div *ngIf="odabranaTerapija">
   <div class="overlay" [class.show]="odabranaTerapija" aria-hidden="true"></div>
   <div class="modal fade show" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" aria-modal="true" role="dialog" style="display: block;">
@@ -93,7 +94,7 @@
     <div class="tab-pane fade show active" id="dodavanjeTerapije">
       <div class="container mt-4">
         <div class="card">
-          <div class="card-header bg-primary text-white">
+          <div class="card-header">
             <h1 class="fs-5"><i class="bi bi-file-plus"></i> Dodavanje terapije</h1>
           </div>
           <div class="card-body">
@@ -148,11 +149,12 @@
                   </tbody>
                 </table>
               </div>
-
+              <!--
               <div class="form-group mb-3">
                 <label for="doktorId"><i class="bi bi-person"></i> DoktorId</label>
                 <input type="number" id="doktorId" class="form-control" name="doktorId" [(ngModel)]="terapijaRequest.doktorId">
               </div>
+              -->
 
               <div class="form-group mb-3">
                 <label for="cmbKorisnik"><i class="bi bi-person"></i> Izaberite korisnika doma:</label>
@@ -165,7 +167,7 @@
               </div>
 
               <div class="text-center">
-                <button type="button" class="btn btn-primary" (click)="Dodaj(terapijaForm)"><i class="bi bi-plus"></i> Dodaj</button>
+                <button type="button" class="btn btn-success" (click)="Dodaj(terapijaForm)"><i class="far fa-plus-square"></i> Dodaj</button>
               </div>
             </form>
           </div>
@@ -177,8 +179,8 @@
     <div class="tab-pane fade" id="pretragaTerapija">
       <div class="container mt-4">
         <div class="card">
-          <div class="card-header bg-primary text-white">
-            <h5 class="text-center">Pretraga terapija za korisnika</h5>
+          <div class="card-header">
+            <h5 class="bi bi-search">Pretraga terapija za korisnika</h5>
           </div>
           <div class="card-body">
             <div class="mb-3">
@@ -201,22 +203,22 @@
             </span>
                 </p>
                 <button type="button" style="margin-right: 15px" class="btn btn-danger" (click)="Obrisi(item.terapijaLijek.terapija)">
-                  <i class="bi bi-trash"></i> Izbriši terapiju
+                  <i class="bi bi-trash"></i> Izbriši
                 </button>
                 <button type="button" class="btn btn-primary" (click)="Odaberi(item.terapijaLijek)">
-                  <i class="bi bi-pencil"></i> Update terapiju
+                  <i class="bi bi-pencil"></i> Update
                 </button>
               </div>
             </div>
           </div>
         </div>
-       </div>
-       </div>
+      </div>
+    </div>
 
     <!-- Dodavanje lijekova -->
     <div class="tab-pane fade" id="dodavanjeLijekova">
       <div class="card">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header">
           <h5 class="fs-5"><i class="bi bi-file-plus"></i> Dodavanje novog lijeka</h5>
         </div>
         <div class="card-body">
@@ -251,4 +253,4 @@
       </div>
     </div>
   </div>
-  </div>
+</div>

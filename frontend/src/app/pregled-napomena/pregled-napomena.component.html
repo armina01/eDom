@@ -4,11 +4,11 @@
 <div *ngIf="jeDoktor===true">
   <app-nav-bar-doktor></app-nav-bar-doktor>
 </div>
+<app-alert></app-alert>
 <div class="container mt-4">
   <div class="card">
     <div class="card-header">
       <h2 class="mb-0">
-        <i class="bi bi-clipboard-check"></i> Pregled aktivnih napomena
         <i class="bi bi-clipboard-check me-2"></i> Pregled napomena za korisnika {{korisnik?.imePrezime}}
       </h2>
     </div>
@@ -38,10 +38,10 @@
             <div *ngIf="jeDoktor">
             <div class="mt-3">
               <button type="button" class="btn btn-primary me-2" (click)="Odaberi(item)">
-                <i class="bi bi-pencil me-2"></i> Update napomenu
+                <i class="bi bi-pencil me-2"></i> Update
               </button>
               <button type="button" class="btn btn-danger" (click)="Obrisi(item)">
-                <i class="bi bi-trash me-2"></i> Izbriši napomenu
+                <i class="bi bi-trash me-2"></i> Izbriši
               </button>
             </div>
             </div>

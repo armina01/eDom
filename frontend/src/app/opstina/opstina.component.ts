@@ -1,38 +1,66 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MyConfig} from "../my-config";
 import {HttpClient, HttpClientModule, HttpParams} from "@angular/common/http";
 import {OpstinaGetAllResponse, OpsinaGetAllResponseOpstina} from "./opstina-getAll";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
+import {OpstinaServiceService} from "../Services/OpstinaService";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {AlertService} from "../Services/AlertService";
+import {AlertComponent} from "../alert/alert.component";
+
 
 
 
 @Component({
   selector: 'app-opstina',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, ReactiveFormsModule, AlertComponent],
+  providers: [OpstinaServiceService, AlertService],
   templateUrl: './opstina.component.html',
   styleUrl: './opstina.component.css'
 })
-export class OpstinaComponent {
+export class OpstinaComponent implements OnInit{
   opstine: OpsinaGetAllResponseOpstina[]=[];
+  public prikaziOpstine:boolean=false;
+  public odabranaOpstina: OpsinaGetAllResponseOpstina | null=null;
+  opstinaForm: FormGroup;
+  constructor(public httpClient:HttpClient, private dialog: MatDialog,
+              private opstinaService: OpstinaServiceService, private fb: FormBuilder, private myAlert:AlertService) {
 
-  constructor(public httpClient:HttpClient, private dialog: MatDialog) {
+    this.opstinaForm = this.fb.group({
+      nazivOpstine: ['', Validators.required],
+      postanskiBroj: ['', [Validators.required, Validators.pattern('^[0-9]{13}$')]],
+
+    });
 
   }
 
-  Dodaj(opstina: {nazivOpstine:string, postanskiBroj:number}) {
-    let url=MyConfig.adresa_servera + `/opstina-dodaj`
-    console.log(opstina);
-    this.httpClient.post(url, opstina).subscribe((res)=>
-      console.log("Opština dodana"))
+  ngOnInit(): void {
+    this.opstinaForm = this.fb.group({
+      nazivOpstine: ['', Validators.required],
+      postanskiBroj: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]]
+    });
+  }
+
+
+
+  Dodaj(): void {
+    if (this.opstinaForm.valid) {
+      const formValue = this.opstinaForm.value;
+      this.opstinaService.DodajOpstinu(formValue).subscribe((res)=>
+        this.myAlert.showSuccess("Opština dodana"))
+    } else {
+      this.opstinaForm.markAllAsTouched();
+      this.myAlert.showError('Forma nije validna.');
+    }
   }
 
   GetAllOpstine() {
-    let url=MyConfig.adresa_servera + `/opstina-getAll`
-    this.httpClient.get<OpstinaGetAllResponse>(url).subscribe((x:OpstinaGetAllResponse)=> {
+    this.prikaziOpstine=true;
+    this.opstinaService.GetAllOpstine().subscribe((x:OpstinaGetAllResponse)=> {
       this.opstine = x.opstine;
     })
   }
@@ -45,11 +73,9 @@ export class OpstinaComponent {
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati opštinu?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        let url: string = MyConfig.adresa_servera + `/opstina-obrisi`;
-        const params = new HttpParams().set('OpstinaID', data.opstinaID);
-        this.httpClient.delete(url, {params}).subscribe(
+        this.opstinaService.IzbrisiOpstinu(data).subscribe(
           response => () => {
-            console.log("Deleted item")
+            alert("Deleted item")
           },
           (error: any) => {
             console.error('Error:', error);
@@ -63,6 +89,7 @@ export class OpstinaComponent {
             }
           })
       }
+      this.prikaziOpstine=true;
     });
   }
   openWarningDialog = (message: string): MatDialogRef<WarningDialogComponent> => {
@@ -71,6 +98,22 @@ export class OpstinaComponent {
     });
   };
 
+  Odaberi(item: OpsinaGetAllResponseOpstina) {
+    this.odabranaOpstina={
+      nazivOpstine:item.nazivOpstine,
+      opstinaID:item.opstinaID,
+      postanskiBroj:item.postanskiBroj
+    };
+  }
+
+  Update() {
+    this.opstinaService.UpdateOpstinu(this.odabranaOpstina).subscribe(x=>{
+      this.myAlert.showSuccess("Uspješno ažurirana opština")
+      this.odabranaOpstina=null;
+    });
+    this.prikaziOpstine=true;
+
+  }
 }
 
 

@@ -7,8 +7,8 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {MyConfig} from "../my-config";
 import {TerapijaGetAllResponse, TerapijaGetAllResponseTerapija} from "./TerapijaGetAllResponse";
 import {
-    KorisnikDomaGetAllResponse,
-    KorisnikDomaGetAllResponseKorisnik
+  KorisnikDomaGetAllResponse,
+  KorisnikDomaGetAllResponseKorisnik
 } from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
 import {DoktorGetAllResponse, DoktorGetAllResponseDoktor} from "../doktor/doktorGetAllResponse";
 import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component";
@@ -25,14 +25,15 @@ import {LijekService} from "../Services/LijekService";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {AlertService} from "../Services/AlertService";
 import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
+import {AlertComponent} from "../alert/alert.component";
 
 
 
 @Component({
   selector: 'app-terapija',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent],
-    providers: [KorisnikDomaService, DoktorService, TerapijaService, LijekService],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarDoktorComponent, AlertComponent],
+  providers: [KorisnikDomaService, DoktorService, TerapijaService, LijekService, AlertService],
   templateUrl: './terapija.component.html',
   styleUrl: './terapija.component.css'
 })
@@ -56,7 +57,8 @@ export class TerapijaComponent implements OnInit {
   zaposlenikId:number=0;
 
 
-  constructor(public httpClient: HttpClient, private dialog: MatDialog, public router: Router, private korisnikDomaService: KorisnikDomaService, private doktorService: DoktorService, private terapijaService: TerapijaService, private lijekService:LijekService, private fb: FormBuilder, private myAlert:AlertService, private formBuilder: FormBuilder) {
+  constructor(public httpClient: HttpClient, private dialog: MatDialog, public router: Router, private korisnikDomaService: KorisnikDomaService, private doktorService: DoktorService, private terapijaService: TerapijaService,
+              private lijekService:LijekService, private fb: FormBuilder, private myAlert:AlertService, private formBuilder: FormBuilder) {
     this.lijekForma = this.formBuilder.group({
       naziv: ['', Validators.required],
       uputstvo: ['', Validators.required]
@@ -104,7 +106,6 @@ export class TerapijaComponent implements OnInit {
     if (terapijaForm.valid) {
       this.terapijaRequest.lijekovi = this.Listalijekova;
       this.terapijaRequest.doktorId=this.zaposlenikId;
-      console.log(this.terapijaRequest);
       this.terapijaService.DodajTerapiju(this.terapijaRequest).subscribe(response => {
         this.myAlert.showSuccess('Terapija uspješno dodana');
       }, error => {
@@ -173,10 +174,6 @@ export class TerapijaComponent implements OnInit {
         this.terapijaService.IzbrisiTerapiju(item).subscribe(
           response => () => {
             this.myAlert.showSuccess("Uspješno obrisana terapija")
-            setTimeout(() => {
-              this.GetAllTerapijeLijekovi();
-              this.getFiltriraneTerapije();
-            }, 3000);
           },
           (error: any) => {
             console.error('Error:', error);
@@ -188,10 +185,10 @@ export class TerapijaComponent implements OnInit {
               alert('An error occurred.');
             }
           })
-        setTimeout(() => {
-          this.GetAllTerapijeLijekovi();
-        }, 3000);
       }
+      setTimeout(() => {
+        this.GetAllTerapijeLijekovi();
+      }, 3000);
     });
   }
 

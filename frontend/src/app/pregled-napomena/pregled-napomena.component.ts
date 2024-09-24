@@ -22,11 +22,12 @@ import {
   KorisnikDomaGetAllResponse,
   KorisnikDomaGetAllResponseKorisnik
 } from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
+import {AlertComponent} from "../alert/alert.component";
 
 @Component({
   selector: 'app-pregled-napomena',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, NavBarDoktorComponent, NavBarNjejgovateljComponent, NavBarNutricionistaComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, NavBarDoktorComponent, NavBarNjejgovateljComponent, NavBarNutricionistaComponent, AlertComponent],
   providers: [NapomenaService],
   templateUrl: './pregled-napomena.component.html',
   styleUrl: './pregled-napomena.component.css'
@@ -163,7 +164,7 @@ export class PregledNapomenaComponent implements OnInit{
         vrstaNapomeneId:this.OdabranaNapomena.vrstaNapomeneId
       };
     }
-    console.log(this.napomenaUpdateRequest)
+
     this.napomenaService.UpdateNapomenu(this.napomenaUpdateRequest).subscribe(request => {
       this.myAlert.showSuccess("Napomena uspješno ažurirana")
     })

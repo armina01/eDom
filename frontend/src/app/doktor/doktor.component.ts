@@ -20,11 +20,12 @@ import {NjegovateljiService} from "../Services/NjegovateljService";
 import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
 import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
 import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
+import {AlertComponent} from "../alert/alert.component";
 
 @Component({
   selector: 'app-doktor',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, NavBarDoktorComponent],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, NavBarDoktorComponent, AlertComponent],
     providers: [DoktorService, KorisnickiNalogService],
   templateUrl: './doktor.component.html',
   styleUrl: './doktor.component.css'
@@ -178,6 +179,9 @@ export class DoktorComponent implements OnInit{
               }
             })
         }
+        setTimeout(() => {
+          this.Prikazi();
+        }, 3000);
       });
     }
 
@@ -190,11 +194,14 @@ export class DoktorComponent implements OnInit{
 
       this.odabraniDoktor = item;
 
+      const formattedDatumRodjenja = this.formatDate(item.datumRodjenja);
+      const formattedDatumZaposlenja = this.formatDate(item.datumZaposlenja);
+
       this.updateForm.patchValue({
         imePrezime: this.odabraniDoktor.imePrezime,
         jmbg: this.odabraniDoktor.jmbg,
-        datumRodjenja: this.odabraniDoktor.datumRodjenja,
-        datumZaposlenja: this.odabraniDoktor.datumZaposlenja,
+        datumRodjenja: formattedDatumRodjenja,
+        datumZaposlenja: formattedDatumZaposlenja,
         nazivKlinike: this.odabraniDoktor.nazivKlinike,
         oblastMedicine: this.odabraniDoktor.oblastMedicine,
         specijalizacija: this.odabraniDoktor.specijalizacija,
@@ -202,6 +209,11 @@ export class DoktorComponent implements OnInit{
       });
 
     }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-CA'); // 'en-CA' koristi format yyyy-MM-dd
+  }
 
   Update() {
 
@@ -216,7 +228,7 @@ export class DoktorComponent implements OnInit{
         this.updateDoktorRequest.specijalizacija = this.doktorRequest.specijalizacija;
         this.updateDoktorRequest.poslovnaPozicijaId = this.doktorRequest.poslovnaPozicijaId;
 
-        console.log(this.updateDoktorRequest);
+
         this.doktorService.UpdateDoktora(this.updateDoktorRequest).subscribe(
           response => {
             this.myAlert.showSuccess("Uspješno ažuriran doktor");
@@ -249,7 +261,6 @@ export class DoktorComponent implements OnInit{
           this.updateDoktorRequest.poslovnaPozicijaId = this.updateForm.get('poslovnaPozicijaId')?.value || '';
           this.updateDoktorRequest.nalogId=this.odabraniDoktor.nalogId;
 
-          console.log("upd",this.updateDoktorRequest);
           this.doktorService.UpdateDoktora(this.updateDoktorRequest).subscribe(
             response => {
               this.myAlert.showSuccess("Uspješno ažuriran doktor");
@@ -263,6 +274,9 @@ export class DoktorComponent implements OnInit{
           );
         }
       }
+    setTimeout(() => {
+      this.Prikazi();
+    }, 3000);
 
   }
 
@@ -270,7 +284,6 @@ export class DoktorComponent implements OnInit{
   AddKorisnickiNalog(): void {
     console.log(this.korisnickiNalogRequest);
     this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
-      console.log("Request",request)
       this.prikaziErrorNalog=false;
       this.showError=false;
       this.updateDoktorRequest.nalogId = request.korisnikId

@@ -21,11 +21,12 @@ import {
   KorisnikDomaGetAllResponse,
   KorisnikDomaGetAllResponseKorisnik
 } from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
+import {AlertComponent} from "../alert/alert.component";
 
 @Component({
   selector: 'app-pregled-aktivnih-napomena',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AlertComponent, NavBarDoktorComponent, NavBarNjejgovateljComponent],
   providers: [NapomenaService],
   templateUrl: './pregled-aktivnih-napomena.component.html',
   styleUrl: './pregled-aktivnih-napomena.component.css'
@@ -45,16 +46,14 @@ export class PregledAktivnihNapomenaComponent implements OnInit{
   public OdabranaNapomena: NapomenaGetAllResponseNapomena | null=null
   korisnik:KorisnikDomaGetAllResponseKorisnik|undefined=undefined;
     ngOnInit(): void {
-    console.log("Tokeeen",this._myAuthService.getAuthorizationToken());
+
         this.GetAllNapomene();
         this.getVrsteNapomene();
         this.GetAllZaposlenike();
       if(this._myAuthService.jeNjegovatelj())
       {
-        console.log("ovdje sam")
         this.jeNjegovatelj=true;
       }else if (this._myAuthService.jeNutricionista()) {
-        console.log("ovdje sam")
         this.jeNutricionista=true;
       }else if(this._myAuthService.jeDoktor())
       {
@@ -177,7 +176,7 @@ export class PregledAktivnihNapomenaComponent implements OnInit{
         vrstaNapomeneId:this.OdabranaNapomena.vrstaNapomeneId
       };
     }
-    console.log(this.napomenaUpdateRequest)
+
     this.napomenaService.UpdateNapomenu(this.napomenaUpdateRequest).subscribe(request => {
       this.myAlert.showSuccess("Napomena uspješno ažurirana")
     })

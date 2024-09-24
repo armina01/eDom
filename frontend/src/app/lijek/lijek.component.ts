@@ -45,7 +45,6 @@ export class LijekComponent implements OnInit{
         this.httpClient.delete(url, {params}).subscribe(
           response => () => {
             this.myAlert.showSuccess("Uspješno obrisan lijek")
-            this.ngOnInit();
           },
           (error: any) => {
             console.error('Error:', error);
@@ -59,6 +58,9 @@ export class LijekComponent implements OnInit{
             }
           })
       }
+      setTimeout(() => {
+        this.GetAllLijekovi();
+      }, 3000);
     });
   }
 

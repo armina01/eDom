@@ -1,3 +1,10 @@
+<div *ngIf="jeNjegovatelj === true">
+  <app-nav-bar-njejgovatelj></app-nav-bar-njejgovatelj>
+</div>
+<div *ngIf="jeDoktor===true">
+  <app-nav-bar-doktor></app-nav-bar-doktor>
+</div>
+<app-alert></app-alert>
 <div class="container mt-4">
   <div class="card">
     <div class="card-header">
@@ -30,10 +37,10 @@
             </div>
             <div *ngIf="jeDoktor">
             <button type="button" class="btn btn-primary me-2" (click)="Odaberi(item)">
-              <i class="bi bi-pencil me-2"></i> Update napomenu
+              <i class="bi bi-pencil me-2"></i> Update
             </button>
             <button type="button" class="btn btn-danger" (click)="Obrisi(item)">
-              <i class="bi bi-trash me-2"></i> Izbriši napomenu
+              <i class="bi bi-trash me-2"></i> Izbriši
             </button>
             </div>
           </div>
