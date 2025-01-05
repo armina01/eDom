@@ -20,7 +20,6 @@ export class AlertComponent {
   ngOnInit(): void {
 
     this.myAlert.alertState.subscribe(alert => {
-      console.log(alert);
       this.alertMessage = alert.message;
       this.alertClass = `alert alert-${alert.type}`;// 'alert-success' ili 'alert-danger'
       this.alertVisible = true;

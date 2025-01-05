@@ -53,7 +53,6 @@ export class KorisnickiNalogComponent {
   korisnickiNalog: GetAllKorisnickiNalogResponseKorisnickiNalog[] = [];
 
   AddKorisnickiNalog(): void {
-    console.log(this.korisnickiNalogRequest);
     this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
 
     })

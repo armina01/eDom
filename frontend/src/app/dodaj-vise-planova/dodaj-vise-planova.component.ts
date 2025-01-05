@@ -72,7 +72,6 @@ export class DodajVisePlanovaComponent {
       (response) => {
         // Handle the response here
         this.planIshraneResponse = response.planoviIshrane;
-        console.log(response);
       },
       (error) => {
         // Handle errors here
@@ -145,7 +144,6 @@ export class DodajVisePlanovaComponent {
   public _showKorisnici:SelectKorisnikeDoma[]=[];
   korisnici:KorisnikDomaGetAllResponseKorisnik[]=[];
   ShowAllKorisnici(){
-    console.log(this.korisnici)
     this.korisnici.forEach(x => {
       let _selectedKorisnikDoma: SelectKorisnikeDoma = {
         selected: false,
@@ -169,6 +167,12 @@ export class DodajVisePlanovaComponent {
   SelectAll() {
     this._showKorisnici.forEach(x=>x.selected=this.isSelected)
     this.isSelected = !this.isSelected;
+  }
+
+  PrikaziImeKorisnikaDoma(korisnikId:number){
+   // return this.nutricionisti.find((nut:any)=>nut.zaposlenikId===nutricionistaId)?.imePrezime??"";
+
+    return this.korisnici.find((x:any)=> x.korisnikDomaID === korisnikId)?.imePrezime??"";
   }
   public isSelected:boolean=true;
   downloadFile(file:number) {
@@ -222,7 +226,6 @@ export class DodajVisePlanovaComponent {
   nutricionistaIme="";
   showErrorNemaKorisnika =false;
   PrikaziImeDodavaca(nutricionistaId: number):string {
-    console.log(this.nutricionisti);
     return this.nutricionisti.find((nut:any)=>nut.zaposlenikId===nutricionistaId)?.imePrezime??"";
 
   }

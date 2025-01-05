@@ -81,11 +81,8 @@ export class NjegovateljComponent {
     brojPacijenata:0,
   }
   ngOnInit() {
-    if(this._myAuthService.jeAdmin())
+    if(!this._myAuthService.jeAdmin())
     {
-      console.log("Okay")
-    }else {
-      console.log(this._myAuthService.getAuthorizationToken())
       this.router.navigate(["/login"])
     }
 

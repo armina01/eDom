@@ -53,7 +53,6 @@ export class NavBarNjejgovateljComponent {
         "my-auth-token": token
       }
     }).subscribe(x=>{
-      console.log("logout uspjesan")
     })
 
     this.router.navigate(['/home']);
@@ -66,10 +65,8 @@ export class NavBarNjejgovateljComponent {
     this.signalRService.otvori_ws_konekciju()
     this.GetNotifications();
     this.signalRService.notificationsUpdated.subscribe(() => {
-      console.log("Updateovano")
       this.hasNewNotification = true;
       this.refreshNotifications();
-      // Set flag to true when a new notification is received
     });
 
   }
@@ -79,11 +76,9 @@ export class NavBarNjejgovateljComponent {
     this.signalRService.GetAllNotifikacija().subscribe(
       (response) => {
         this.obavijesti = response.notifikacije;
-        console.log(this.korisnik,this.signalRService.not.userId)
         if (this.korisnik.zaposlenikId===this.signalRService.not.userId) {
-          console.log("Usli")
-          this.hasNewNotification = false; // Exclude all currently logged-in users from being marked with a new notification
-        }
+          this.hasNewNotification = false; 
+          }
       },
       (error) => {
         console.error('Error fetching notifications:', error);
@@ -107,9 +102,7 @@ export class NavBarNjejgovateljComponent {
     this.signalRService.GetAllNotifikacija().subscribe(
         (notifications) => {
           this.obavijesti = notifications.notifikacije;
-          console.log(this.korisnik,this.obavijesti.userId)
           if (this.korisnik===this.obavijesti.userId) {
-            console.log("Usli")
             this.hasNewNotification = false; // Exclude all currently logged-in users from being marked with a new notification
           }
         },

@@ -138,7 +138,6 @@ export class DoktorComponent implements OnInit{
           this.myAlert.showSuccess("Doktor uspješno dodan");
           this.showFirstForm= false;
           this.zaposlenikUpdId=request.zaposlenikID;
-          console.log("zap id", this.zaposlenikUpdId);
         });
       } else {
         this.myAlert.showError("Podaci za unos nisu validni");
@@ -282,7 +281,6 @@ export class DoktorComponent implements OnInit{
 
 
   AddKorisnickiNalog(): void {
-    console.log(this.korisnickiNalogRequest);
     this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
       this.prikaziErrorNalog=false;
       this.showError=false;

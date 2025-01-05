@@ -26,21 +26,37 @@
 
       <!-- File List -->
       <div class="mt-4">
-        <div *ngFor="let planIshrane of planIshraneResponse" class="plan-item text-center">
-          <div class="file-id">
-            <i class="fas fa-file-alt"></i>  Naziv plana: {{ PrikaziImeFajla(planIshrane.fileId) }}
-          </div>
-          <div class="file-name">
-            <i class="fas fa-file"></i> File dodao: {{ PrikaziImeDodavaca(planIshrane.nutricionistaId) }}
-          </div>
-          <button class="btn btn-primary download-button" (click)="downloadFile(planIshrane.fileId)">
-            <i class="fas fa-download"></i> Download
-          </button>
-          <button class="btn btn-danger delete-button" (click)="deletePlanIshrane(planIshrane)">
-            <i class="fas fa-trash"></i> Izbrisi
-          </button>
-        </div>
+        <table class="table table-bordered table-striped text-center">
+          <thead class="thead-dark">
+            <tr>
+              <th>Naziv plana</th>
+              <th>File dodao</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let planIshrane of planIshraneResponse">
+              <td>
+                <i class="fas fa-file-alt"></i>
+                {{ PrikaziImeFajla(planIshrane.fileId) }}
+              </td>
+              <td>
+                <i class="fas fa-file"></i>
+                {{ PrikaziImeDodavaca(planIshrane.nutricionistaId) }}
+              </td>
+              <td>
+                <button class="btn btn-primary download-button" (click)="downloadFile(planIshrane.fileId)">
+                  <i class="fas fa-download"></i> Download
+                </button>
+                <button class="btn btn-danger delete-button" (click)="deletePlanIshrane(planIshrane)">
+                  <i class="fas fa-trash"></i> Izbrisi
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+      
     </div>
   </div>
 </div>

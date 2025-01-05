@@ -72,32 +72,35 @@
   <button type="submit" class="btn btn-primary text-center" style="background-color: #1d361e; border:0px" (click)="UpdateNjegovatelj()"><i class="fas fa-sync"></i> Update</button>
   </div>
 </form>
-<form *ngIf="!showFirstForm">
-
+<div class="d-flex justify-content-center align-items-center vh-100">
+  <form class="FirstForm p-4 border rounded shadow-lg bg-light" style="width: 500px;" *ngIf="!showFirstForm">
     <div class="container">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-12">
           <div class="form-group">
-            <label >Korisnicko ime</label>
+            <label>Korisnicko ime</label>
             <input type="email" class="form-control" placeholder="Unesite korisnicko ime"
                    [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.korisnickoIme">
           </div>
           <div class="form-group">
-            <label >Email</label>
-            <input type="email" class="form-control" placeholder="Unesite email" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.email">
+            <label>Email</label>
+            <input type="email" class="form-control" placeholder="Unesite email"
+                   [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.email">
           </div>
           <div class="form-group">
-            <label >Lozinka</label>
-            <input type="password" class="form-control" placeholder="Unesite lozinku" [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.lozinka">
+            <label>Lozinka</label>
+            <input type="password" class="form-control" placeholder="Unesite lozinku"
+                   [ngModelOptions]="{standalone: true}" [(ngModel)]="korisnickiNalogRequest.lozinka">
           </div>
         </div>
-
       </div>
-      <label *ngIf="prikaziErrorNalog">Korisnicki podaci su vec koristeni</label>
-      <button type="submit" class="btn btn-primary mt-3" (click)="AddKorisnickiNalog()">Submit</button>
+      <label class="text-danger mt-2" *ngIf="prikaziErrorNalog">Korisnicki podaci su vec koristeni</label>
+      <button type="submit" class="btn btn-primary mt-3 w-100" (click)="AddKorisnickiNalog()">Submit</button>
     </div>
+  </form>
+</div>
 
-</form>
+
 <table class="table table-striped" *ngIf="prikaziNjegovatelje">
   <thead>
   <tr>

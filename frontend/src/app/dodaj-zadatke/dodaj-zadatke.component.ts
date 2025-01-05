@@ -13,18 +13,19 @@ import {DodajZadatakResponse} from "../get-zadaci/DodajZadatakResponse";
 import {SelectKorisnikeDoma} from "./SelectKorisnikeDoma";
 import {ZadaciService} from "../Services/ZadaciService";
 import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
+import { SignalRService } from '../Services/signalR.service';
 
 @Component({
   selector: 'app-dodaj-zadatke',
   standalone: true,
     imports: [CommonModule, FormsModule, NavBarNjejgovateljComponent],
-  providers :[ZadaciService],
+  providers :[ZadaciService,SignalRService],
   templateUrl: './dodaj-zadatke.component.html',
   styleUrl: './dodaj-zadatke.component.css'
 })
 export class DodajZadatkeComponent {
 
-  constructor(public httpClient:HttpClient,private zadatakService:ZadaciService) {
+  constructor(public httpClient:HttpClient,private zadatakService:ZadaciService,private signalRService : SignalRService) {
   }
 
   public _showKorisnici:SelectKorisnikeDoma[]=[];
@@ -59,7 +60,6 @@ export class DodajZadatkeComponent {
   }
 
   ShowAllKorisnici(){
-    console.log(this.korisnici)
     this.korisnici.forEach(x => {
       let _selectedKorisnikDoma: SelectKorisnikeDoma = {
         selected: false,

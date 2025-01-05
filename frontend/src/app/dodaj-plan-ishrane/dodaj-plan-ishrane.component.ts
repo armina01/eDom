@@ -69,7 +69,6 @@ export class DodajPlanIshraneComponent {
                 // Handle the response here
                 this.planIshraneResponse = response.planoviIshrane.filter(x=>
                     x.korisnikDomaId===this._korisnikDomaId);
-                console.log(response);
             },
             (error) => {
                 // Handle errors here
@@ -178,7 +177,6 @@ export class DodajPlanIshraneComponent {
     }
     nutricionistaIme="";
   PrikaziImeDodavaca(nutricionistaId: number):string {
-    console.log(this.nutricionisti);
       return this.nutricionisti.find((nut:any)=>nut.zaposlenikId===nutricionistaId)?.imePrezime??"";
 
   }

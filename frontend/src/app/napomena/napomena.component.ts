@@ -77,7 +77,6 @@ export class NapomenaComponent implements OnInit{
   }
 
   PrikaziKorisnikeDoma(){
-    console.log(this.korisniciDoma)
     this.korisniciDoma.forEach(x => {
       let odabraniKorisnikDoma: OdabraniKorisnikDoma = {
         selected: false,

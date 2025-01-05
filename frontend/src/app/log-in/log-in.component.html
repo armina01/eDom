@@ -20,7 +20,7 @@
     </div>
 
   <div class="forgot-password">
-    <a href="#" (click)="Enable2FA()">Zaboravili ste lozinku?</a>
+    <a (click)="Enable2FA()">Zaboravili ste lozinku?</a>
   </div>
   <label *ngIf="lozinkaNeTacna" class="error-message">Netačno korisničko ime ili lozinka</label>
   <button type="submit" (click)="signIn()" class="btn btn-primary">Log In</button>

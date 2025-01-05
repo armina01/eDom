@@ -2,7 +2,7 @@
   <nav class="navbar">
     <div class="logo">
       <fa-icon [icon]="faBell" [ngClass]="{ 'text-danger': hasNewNotification }" [size]="'2x'" (click)="markNotificationAsRead()"></fa-icon>
-      <div class="dropdown-content" *ngIf="obavijetUkljucena">
+      <div class="dropdown-content" [ngClass]="{ 'show': obavijetUkljucena }">
         <table class="table table-striped">
           <thead>
           <tr>

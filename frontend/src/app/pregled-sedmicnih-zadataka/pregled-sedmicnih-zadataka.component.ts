@@ -14,12 +14,13 @@ import {WarningDialogComponent} from "../warning-dialog/warning-dialog.component
 import {finalize} from "rxjs";
 import {ZadaciService} from "../Services/ZadaciService";
 import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
+import { SignalRService } from '../Services/signalR.service';
 
 @Component({
   selector: 'app-pregled-sedmicnih-zadataka',
   standalone: true,
     imports: [CommonModule, FormsModule, NavBarNjejgovateljComponent],
-  providers: [ZadaciService],
+  providers: [ZadaciService,SignalRService],
   templateUrl: './pregled-sedmicnih-zadataka.component.html',
   styleUrl: './pregled-sedmicnih-zadataka.component.css'
 })

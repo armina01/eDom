@@ -78,13 +78,11 @@ export class GetZadaciComponent {
     this.PronadjiKorisnika();
   }
   PronadjiKorisnika(){
-    let url =MyConfig.adresa_servera +`/korisnikDoma-getAll`
-    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x:KorisnikDomaGetAllResponse)=>{
-      this.korisnik=x.korisnici.find(x=>x.korisnikDomaID===this._korisnikDomaId) ;
-    })
-
-    this.PronadjiKorisnika();
-  }
+    let url = MyConfig.adresa_servera + `/korisnikDoma-getAll`;
+    this.httpClient.get<KorisnikDomaGetAllResponse>(url).subscribe((x: KorisnikDomaGetAllResponse) => {
+        this.korisnik = x.korisnici.find(k => k.korisnikDomaID === this._korisnikDomaId);
+    });
+}
 
   showOpsti:boolean=false;
   showFizijatrijski=false;
@@ -204,8 +202,7 @@ export class GetZadaciComponent {
         zadatak.vrstaZadatkaId === this.FizijatrijskiZadatakId &&
         zadatak.korisnikDomaId === this._korisnikDomaId
       );
-      console.log("Zadaci:", this.zadaci, "Opsti zadaci:", this.opstiZadatak,"Medicinski", this.medicinskiZadatak,this.MedicinskiZadatakId,this.OpstiZadatakId);
-    })
+      })
   }
   getAllMedicinskizadaci(){
     return this.medicinskiZadatak
@@ -277,7 +274,6 @@ export class GetZadaciComponent {
 
     this.zadaciService.UpdateZadatak(this.updateFizijatrijskiZadatak).subscribe(
       () => {
-        console.log("Medicinski zadatak updateovan")
       });
   }
 
@@ -291,10 +287,8 @@ export class GetZadaciComponent {
     this.updateMedicinskiZadatak.datumPostavke=item.datumPostavke;
     this.updateMedicinskiZadatak.zaposlenikEditovaoId=this.getZaposlenik()?.zaposlenikId??null;
     this.updateMedicinskiZadatak.korisnikDomaId=this._korisnikDomaId;
-    console.log(this.updateMedicinskiZadatak);
     this.zadaciService.UpdateZadatak(this.updateMedicinskiZadatak).subscribe(
       () => {
-        console.log("Medicinski zadatak updateovan")
       });
   }
   RefreshOpstiZadaci() {

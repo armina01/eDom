@@ -35,7 +35,7 @@ export class SignalRService {
             var notifikacija: NotifikacijaRequest = {poruka: p.message};
             this.notificationsUpdated.emit();
             if (p.userId === this.getZaposlenik()?.zaposlenikId) {
-                console.log("Zaposlenici", p.userId.zaposlenikId, this.getZaposlenik()?.zaposlenikId)
+                console.log("Zaposlenici", p, this.getZaposlenik()?.zaposlenikId)
                 const url: string = MyConfig.adresa_servera + '/dodaj-notifikaciju'
                 this.httpClient.post(url, notifikacija).subscribe(() => {
                 });

@@ -13,12 +13,13 @@ import {GetAllZadatakResponse, GetAllZadatakResponseZadatak} from "../get-zadaci
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ZadaciService} from "../Services/ZadaciService";
 import {NavBarNjejgovateljComponent} from "../nav-bar-njejgovatelj/nav-bar-njejgovatelj.component";
+import { SignalRService } from '../Services/signalR.service';
 
 @Component({
   selector: 'app-pregled-arhive-zadataka',
   standalone: true,
     imports: [CommonModule, ReactiveFormsModule, FormsModule, NavBarNjejgovateljComponent],
-    providers: [ZadaciService],
+    providers: [ZadaciService,SignalRService],
   templateUrl: './pregled-arhive-zadataka.component.html',
   styleUrl: './pregled-arhive-zadataka.component.css'
 })

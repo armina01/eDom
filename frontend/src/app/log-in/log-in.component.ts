@@ -59,44 +59,29 @@ export class LogInComponent {
     SignalRConnectionID:""
   }
   public lozinkaNeTacna=false;
-  signIn() {
-    this.GetAllKorisnickiNalog();
-
-    let url=MyConfig.adresa_servera+`/login`;
-
-    this.logInRequest.SignalRConnectionID=SignalRService.ConnectionId;
-
-    this.httpClient.post<AuthLogInResponse>(url, this.logInRequest).subscribe((x)=>{
-
-          if (!x.logInInformacija.isLogiran){
-            this.lozinkaNeTacna=true;
-          }
-          else{
-            let korisnikNalogId=x.logInInformacija.autentifikacijaToken.korisnickiNalogId
-            console.log(korisnikNalogId)
-            let _korisnik=this.korisnik.find(
-                item=>item.nalogId===korisnikNalogId)
-            this.myAuthService.setLogiraniKorisnik(x.logInInformacija.autentifikacijaToken,_korisnik);
-
-            this.router.navigate(["/pregledKorisnikaDoma"])
-          }
-        },
-        (error) => {
-          this.lozinkaNeTacna=true;
-        });
-    this.signalRService.otvori_ws_konekciju();
-
+  async signIn() {
+      await this.GetAllKorisnickiNalog();
   }
-  GetAllKorisnickiNalog() {
+  
+  
+  
+  async GetAllKorisnickiNalog() {
     let url: string = MyConfig.adresa_servera + `/get-all-KorisnickiNalog`;
-    this.httpClient.get<GetAllKorisnickiNalogResponse>(url).subscribe(
+    await this.signalRService.otvori_ws_konekciju();
+  
+        if (!SignalRService.ConnectionId) {
+          console.error('SignalR Connection ID is not ready.');
+          this.lozinkaNeTacna = true;
+          return;
+        }
+        this.logInRequest.SignalRConnectionID = SignalRService.ConnectionId;
 
+    this.httpClient.get<GetAllKorisnickiNalogResponse>(url).subscribe(
+      
         response => {
-          console.log(response.korisnickiNalozi);
           this._korisnickiNalog = response.korisnickiNalozi.find(nalog =>
               nalog.korisnickoIme === this.logInRequest.korisnickoIme
           );
-          console.log(this._korisnickiNalog)
           if (this._korisnickiNalog) {
             this.logInRequest.jeAdmin = this._korisnickiNalog.jeAdmin;
             this.logInRequest.jeNutricionista = this._korisnickiNalog.jeNutricionista;
@@ -111,7 +96,6 @@ export class LogInComponent {
                   }
                   else{
                     let korisnikNalogId=x.logInInformacija.autentifikacijaToken.korisnickiNalogId
-                    console.log(korisnikNalogId)
                     let _korisnik=this.korisnik.find(
                         item=>item.nalogId===korisnikNalogId)
                     this.myAuthService.setLogiraniKorisnik(x.logInInformacija.autentifikacijaToken,_korisnik);

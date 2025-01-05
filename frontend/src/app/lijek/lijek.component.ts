@@ -71,9 +71,7 @@ export class LijekComponent implements OnInit{
   };
   Update() {
     let url: string = MyConfig.adresa_servera + `/lijek/update`;
-    console.log(this.odabraniLijek)
     this.httpClient.post(url, this.odabraniLijek).subscribe(request => {
-      console.log("Lijek updateovan ", request)
     })
 
     this.odabraniLijek=null;

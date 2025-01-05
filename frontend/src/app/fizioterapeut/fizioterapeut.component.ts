@@ -229,7 +229,6 @@ export class FizioterapeutComponent implements OnInit {
       this.fizioterapeutUpdateRequest.oblastFizijatrije = this.fizioterapeutRequest.oblastFizijatrije;
       this.fizioterapeutUpdateRequest.poslovnaPozicijaId = this.fizioterapeutRequest.poslovnaPozicijaId;
 
-      console.log(this.fizioterapeutUpdateRequest);
       this.fizioterapeutService.UpdateFizioterapeuta(this.fizioterapeutUpdateRequest).subscribe(
           response => {
             this.myAlert.showSuccess("Uspješno ažuriran fizioterapeut");
@@ -275,7 +274,6 @@ export class FizioterapeutComponent implements OnInit {
     }, 3000);
   }
   AddKorisnickiNalog(): void {
-    console.log(this.korisnickiNalogRequest);
     this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
       this.prikaziErrorNalog=false;
       this.showError=false;

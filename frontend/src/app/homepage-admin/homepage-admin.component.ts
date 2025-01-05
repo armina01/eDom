@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {NavBarAdminComponent} from "../nav-bar-admin/nav-bar-admin.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-homepage-admin',
@@ -10,5 +11,13 @@ import {NavBarAdminComponent} from "../nav-bar-admin/nav-bar-admin.component";
   styleUrl: './homepage-admin.component.css'
 })
 export class HomepageAdminComponent {
+  constructor(public router: Router) {
+  }
+  PregledNjegovatelja() {
+    this.router.navigate(['/njegovatelj']);
+  }
 
+  PregledNutricionista() {
+    this.router.navigate(['/nutricionista']);
+  }
 }
