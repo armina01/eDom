@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DomZaStaraLicaApi.Endpoints.Autentifikacija._2FAuth
 {
-    public class Auth2FOtklucajEndpoint:MyBaseEndpoint<Auth2FOtkljucajRequest, AuthToken>
+    public class Auth2FOtklucajEndpoint : MyBaseEndpoint<Auth2FOtkljucajRequest, AuthToken>
     {
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly MyAuthService _authService;
@@ -20,7 +20,7 @@ namespace DomZaStaraLicaApi.Endpoints.Autentifikacija._2FAuth
         [HttpPost("2f-otklucaj")]
         public override async Task<AuthToken> Obradi([FromBody] Auth2FOtkljucajRequest request)
         {
-            
+
             var token = _applicationDbContext.AuthToken
                         .Include(x => x.korisnickiNalog)
                         .Where(x => x.korisnickiNalog.KorisnickoIme == request.username)

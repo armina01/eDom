@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DomZaStaraLicaApi.Migrations
 {
     /// <inheritdoc />
-    public partial class korisnikUpd : Migration
+    public partial class First : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,11 +33,13 @@ namespace DomZaStaraLicaApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     KorisnickoIme = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Lozinka = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     JeAdmin = table.Column<bool>(type: "bit", nullable: false),
                     JeNjegovatelj = table.Column<bool>(type: "bit", nullable: false),
                     JeFizioterapeut = table.Column<bool>(type: "bit", nullable: false),
                     JeNutricionista = table.Column<bool>(type: "bit", nullable: false),
-                    JeDoktor = table.Column<bool>(type: "bit", nullable: false)
+                    JeDoktor = table.Column<bool>(type: "bit", nullable: false),
+                    Je2FActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,6 +58,33 @@ namespace DomZaStaraLicaApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Lijek", x => x.LijekId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MyFiles",
+                columns: table => new
+                {
+                    FileId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ImeFile = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MojFile = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MyFiles", x => x.FileId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NotifikacijaZadatak",
+                columns: table => new
+                {
+                    NotifikacijaId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Poruka = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NotifikacijaZadatak", x => x.NotifikacijaId);
                 });
 
             migrationBuilder.CreateTable(
@@ -122,7 +151,9 @@ namespace DomZaStaraLicaApi.Migrations
                     vrijednost = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     KorisnickiNalogId = table.Column<int>(type: "int", nullable: false),
                     vrijemeEvidentiranja = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ipAdresa = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ipAdresa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TwoFKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Is2FOtkljucano = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -208,7 +239,8 @@ namespace DomZaStaraLicaApi.Migrations
                     opis = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     datumDijagnoze = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ZaposlenikId = table.Column<int>(type: "int", nullable: false),
-                    KorisnikDomaID = table.Column<int>(type: "int", nullable: false)
+                    KorisnikDomaID = table.Column<int>(type: "int", nullable: false),
+                    NalazFilePath = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -287,6 +319,40 @@ namespace DomZaStaraLicaApi.Migrations
                     table.ForeignKey(
                         name: "FK_Napomena_Zaposlenik_ZaposlenikId",
                         column: x => x.ZaposlenikId,
+                        principalTable: "Zaposlenik",
+                        principalColumn: "ZaposlenikId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlanIshrane",
+                columns: table => new
+                {
+                    PlanIshraneId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DatumPostavke = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FileId = table.Column<int>(type: "int", nullable: false),
+                    NutricionistaId = table.Column<int>(type: "int", nullable: false),
+                    KorisnikDomaId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlanIshrane", x => x.PlanIshraneId);
+                    table.ForeignKey(
+                        name: "FK_PlanIshrane_KorisnikDoma_KorisnikDomaId",
+                        column: x => x.KorisnikDomaId,
+                        principalTable: "KorisnikDoma",
+                        principalColumn: "KorisnikDomaID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlanIshrane_MyFiles_FileId",
+                        column: x => x.FileId,
+                        principalTable: "MyFiles",
+                        principalColumn: "FileId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlanIshrane_Zaposlenik_NutricionistaId",
+                        column: x => x.NutricionistaId,
                         principalTable: "Zaposlenik",
                         principalColumn: "ZaposlenikId",
                         onDelete: ReferentialAction.Cascade);
@@ -447,6 +513,21 @@ namespace DomZaStaraLicaApi.Migrations
                 column: "ZaposlenikId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PlanIshrane_FileId",
+                table: "PlanIshrane",
+                column: "FileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlanIshrane_KorisnikDomaId",
+                table: "PlanIshrane",
+                column: "KorisnikDomaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlanIshrane_NutricionistaId",
+                table: "PlanIshrane",
+                column: "NutricionistaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Terapija_DoktorId",
                 table: "Terapija",
                 column: "DoktorId");
@@ -518,6 +599,12 @@ namespace DomZaStaraLicaApi.Migrations
                 name: "Napomena");
 
             migrationBuilder.DropTable(
+                name: "NotifikacijaZadatak");
+
+            migrationBuilder.DropTable(
+                name: "PlanIshrane");
+
+            migrationBuilder.DropTable(
                 name: "TerapijaLijek");
 
             migrationBuilder.DropTable(
@@ -525,6 +612,9 @@ namespace DomZaStaraLicaApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "VrstaNapomene");
+
+            migrationBuilder.DropTable(
+                name: "MyFiles");
 
             migrationBuilder.DropTable(
                 name: "Lijek");
