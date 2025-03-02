@@ -68,8 +68,8 @@ namespace DomZaStaraLicaApi.Endpoints.ProvjeriTrajanjeTokena
                     });
                 }
             }
-
         }
+
     }
 
 }

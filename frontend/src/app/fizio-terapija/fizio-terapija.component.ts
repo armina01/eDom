@@ -45,11 +45,13 @@ export class FizioTerapijaComponent implements OnInit{
   fizioTerapijaForm: FormGroup;
   updateFizioTerapijaForm:FormGroup;
   zaposlenikId:number=0;
+  public prijavljeniKorisnikId:number=0;
 
     ngOnInit(): void {
        this.GetAllKorisnike();
        this.GetAllFizioTerapije();
        this.GetAllFizioterapeuti();
+       this.getPrijavljeniKorisnik();
     }
     constructor(public httpClient: HttpClient, private dialog: MatDialog, private fb: FormBuilder,
                 private fizioTerapijaService:FizioTerapijaService, private myAlert:AlertService,
@@ -204,6 +206,18 @@ export class FizioTerapijaComponent implements OnInit{
     setTimeout(() => {
       this.GetAllFizioTerapije();
     }, 3000);
+  }
+
+  getPrijavljeniKorisnik()
+  {
+    const korisnikStr = window.localStorage.getItem("korisnik");
+    const korisnik = korisnikStr ? JSON.parse(korisnikStr) : null;
+
+    if (korisnik && korisnik.zaposlenikId) {
+      this.prijavljeniKorisnikId = korisnik.zaposlenikId;
+    } else {
+      this.prijavljeniKorisnikId = 0;
+    }
   }
 
 }

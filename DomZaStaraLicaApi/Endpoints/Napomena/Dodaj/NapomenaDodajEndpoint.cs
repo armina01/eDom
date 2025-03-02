@@ -48,10 +48,10 @@ namespace DomZaStaraLicaApi.Endpoints.Napomena.Dodaj
             .Where(zaposlenik => zaposlenik.JeNjegovatelj).Select(x => x.KorisnickoIme)
             .ToListAsync();
 
-            foreach (var njegovatelj in njegovatelji)
-            {
-                await _hubContext.Clients.Group(njegovatelj).SendAsync("dodana_nova_napomena", newObj.Opis + " za korisnika " + korisnik.ImePrezime);
-            }
+            //foreach (var njegovatelj in njegovatelji)
+            //{
+                await _hubContext.Clients.Group("Njegovatelji").SendAsync("dodana_nova_napomena", newObj.Opis + " za korisnika " + korisnik.ImePrezime);
+            //}
 
             return new NapomenaDodajResponse
             {

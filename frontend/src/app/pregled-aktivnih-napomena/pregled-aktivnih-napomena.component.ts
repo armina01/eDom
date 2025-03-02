@@ -45,6 +45,7 @@ export class PregledAktivnihNapomenaComponent implements OnInit{
   public vrsteNapomena:VrstaNapomeneGetAllResponseVrstaNapomene[]=[];
   public OdabranaNapomena: NapomenaGetAllResponseNapomena | null=null
   korisnik:KorisnikDomaGetAllResponseKorisnik|undefined=undefined;
+  public prijavljeniKorisnikId:number=0;
     ngOnInit(): void {
 
         this.GetAllNapomene();
@@ -59,7 +60,6 @@ export class PregledAktivnihNapomenaComponent implements OnInit{
       {
         this.jeDoktor=true;
       }
-      console.log(this.jeNjegovatelj,this.jeDoktor, this.jeNutricionista);
       this.PronadjiKorisnika();
     }
    constructor(public httpClient:HttpClient, private dialog: MatDialog, public route: ActivatedRoute,
@@ -91,7 +91,6 @@ export class PregledAktivnihNapomenaComponent implements OnInit{
     this.napomenaService.GetAllNapomene().subscribe((x: NapomenaGetAllResponse) => {
       this.napomeneAll = x.napomene;
       this.odabraneNapomene = this.napomeneAll.filter(x => x.korisnikDomaID === this.korisnikId);
-      console.log(this.odabraneNapomene);
       this.GetAktivneNapomene();
 
     })
@@ -120,8 +119,9 @@ export class PregledAktivnihNapomenaComponent implements OnInit{
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.napomenaService.IzbrisiNapomenu(item).subscribe(
-          response => () => {
-            console.log("Deleted item")
+          response => {
+            this.myAlert.showSuccess("Uspješno obrisana napomena");
+            this.ngOnInit();
           },
           (error: any) => {
             console.error('Error:', error);
@@ -135,9 +135,6 @@ export class PregledAktivnihNapomenaComponent implements OnInit{
             }
           })
       }
-      setTimeout(() => {
-        this.ngOnInit();
-      }, 3000);
     });
   }
 
@@ -189,6 +186,18 @@ export class PregledAktivnihNapomenaComponent implements OnInit{
   getImeZaposlenika(zaposlenikId: number) {
     const zaposlenik = this.zaposlenici.find(n => n.zaposlenikId===zaposlenikId);
     return zaposlenik ? zaposlenik.imePrezime : undefined;
+  }
+
+  getPrijavljeniKorisnik()
+  {
+    const korisnikStr = window.localStorage.getItem("korisnik");
+    const korisnik = korisnikStr ? JSON.parse(korisnikStr) : null;
+
+    if (korisnik && korisnik.zaposlenikId) {
+      this.prijavljeniKorisnikId = korisnik.zaposlenikId;
+    } else {
+      this.prijavljeniKorisnikId = 0;
+    }
   }
 
 }

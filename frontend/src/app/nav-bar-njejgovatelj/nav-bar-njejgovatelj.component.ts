@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {KorisnikDomaGetAllResponseKorisnik} from "../pregled-korisnika-doma/korisnikDoma-getAll-response";
 import {HttpClient} from "@angular/common/http";
@@ -19,10 +19,14 @@ import {Router} from "@angular/router";
   templateUrl: './nav-bar-njejgovatelj.component.html',
   styleUrl: './nav-bar-njejgovatelj.component.css'
 })
-export class NavBarNjejgovateljComponent {
+export class NavBarNjejgovateljComponent implements OnDestroy {
 
   constructor(public httpClient:HttpClient, private dialog: MatDialog,public router: Router,private signalRService: SignalRService) {
   }
+
+  ngOnDestroy(): void {
+    this.signalRService.closeConnection();
+    }
 
   isMenuOpen: boolean = false;
 
@@ -62,7 +66,7 @@ export class NavBarNjejgovateljComponent {
     this.router.navigate(['/njegovatelj/o-meni']);
   }
   ngOnInit(): void {
-    this.signalRService.otvori_ws_konekciju()
+    this.signalRService.otvori_ws_konekciju();
     this.GetNotifications();
     this.signalRService.notificationsUpdated.subscribe(() => {
       this.hasNewNotification = true;
@@ -77,7 +81,7 @@ export class NavBarNjejgovateljComponent {
       (response) => {
         this.obavijesti = response.notifikacije;
         if (this.korisnik.zaposlenikId===this.signalRService.not.userId) {
-          this.hasNewNotification = false; 
+          this.hasNewNotification = false;
           }
       },
       (error) => {
@@ -112,4 +116,6 @@ export class NavBarNjejgovateljComponent {
     );
   }
     protected readonly faBell = faBell;
+
+
 }

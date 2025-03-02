@@ -10,6 +10,7 @@ import {OpstinaServiceService} from "../Services/OpstinaService";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {AlertService} from "../Services/AlertService";
 import {AlertComponent} from "../alert/alert.component";
+import {NavBarAdminComponent} from "../nav-bar-admin/nav-bar-admin.component";
 
 
 
@@ -17,7 +18,7 @@ import {AlertComponent} from "../alert/alert.component";
 @Component({
   selector: 'app-opstina',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, ReactiveFormsModule, AlertComponent],
+    imports: [CommonModule, FormsModule, HttpClientModule, ReactiveFormsModule, AlertComponent, NavBarAdminComponent],
   providers: [OpstinaServiceService, AlertService],
   templateUrl: './opstina.component.html',
   styleUrl: './opstina.component.css'

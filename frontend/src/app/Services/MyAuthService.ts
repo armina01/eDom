@@ -51,11 +51,11 @@ export class MyAuthService{
       window.localStorage.setItem("my-auth-token", JSON.stringify(x));
       if(korisnik===null)
       {
-          console.log("Korisnik",korisnik)
+          //console.log("Korisnik",korisnik)
           window.localStorage.setItem("korisnik", JSON.stringify(korisnik));
       }
       else{
-        console.log("Korisnik",korisnik)
+        //console.log("Korisniik",korisnik)
           window.localStorage.setItem("korisnik", JSON.stringify(korisnik));
       }
     }

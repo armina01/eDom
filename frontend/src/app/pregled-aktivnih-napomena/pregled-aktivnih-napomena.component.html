@@ -29,19 +29,22 @@
               <i class="bi bi-tag-fill me-2"></i><strong>Vrsta napomene:</strong> {{ item.vrstaNapomeneId }}
             </p>
             <p class="card-title d-flex align-items-center">
-              <i class="bi bi-person-fill me-2"></i><strong>Zaposlenik:</strong> {{ item.zaposlenikId }}
+              <i class="bi bi-person-fill me-2"></i><strong>Zaposlenik:</strong> {{ getImeZaposlenika(item.zaposlenikId) }}
             </p>
             <div *ngIf="item.prioritet === true" class="d-flex align-items-center text-danger">
               <i class="bi bi-exclamation-triangle-fill me-1"></i>
               <strong>Važno!</strong>
             </div>
             <div *ngIf="jeDoktor">
+              {{getPrijavljeniKorisnik()}}
+              <div *ngIf="item.zaposlenikId==prijavljeniKorisnikId" class="mt-3">
             <button type="button" class="btn btn-primary me-2" (click)="Odaberi(item)">
               <i class="bi bi-pencil me-2"></i> Update
             </button>
             <button type="button" class="btn btn-danger" (click)="Obrisi(item)">
               <i class="bi bi-trash me-2"></i> Izbriši
             </button>
+              </div>
             </div>
           </div>
         </div>

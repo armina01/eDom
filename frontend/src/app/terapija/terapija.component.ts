@@ -52,6 +52,7 @@ export class TerapijaComponent implements OnInit {
   public odabraniLijekovi:LijekGetAllResponseLijek[] = [];
   public odabraniLijekoviDialog:LijekGetAllResponseLijek[] = [];
   public prikaziOdabaneLijekoveLabel:boolean=false;
+  public prijavljeniKorisnikId:number=0;
 
   lijekForma: FormGroup;
   zaposlenikId:number=0;
@@ -70,6 +71,7 @@ export class TerapijaComponent implements OnInit {
     this.GetAllTerapijeLijekovi();
     this.GetAllDoktore();
     this.GetAllLijekovi();
+    this.getPrijavljeniKorisnik();
   }
 
   public terapijaRequest: TerapijaDodajRequest = {
@@ -172,8 +174,9 @@ export class TerapijaComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.terapijaService.IzbrisiTerapiju(item).subscribe(
-          response => () => {
+          response => {
             this.myAlert.showSuccess("Uspješno obrisana terapija")
+            this.GetAllTerapijeLijekovi();
           },
           (error: any) => {
             console.error('Error:', error);
@@ -186,9 +189,6 @@ export class TerapijaComponent implements OnInit {
             }
           })
       }
-      setTimeout(() => {
-        this.GetAllTerapijeLijekovi();
-      }, 3000);
     });
   }
 
@@ -312,6 +312,17 @@ export class TerapijaComponent implements OnInit {
       this.filtriraniLijekovi = [];
     }
 
+  }
+  getPrijavljeniKorisnik()
+  {
+    const korisnikStr = window.localStorage.getItem("korisnik");
+    const korisnik = korisnikStr ? JSON.parse(korisnikStr) : null;
+
+    if (korisnik && korisnik.zaposlenikId) {
+      this.prijavljeniKorisnikId = korisnik.zaposlenikId;
+    } else {
+      this.prijavljeniKorisnikId = 0;
+    }
   }
 
 }

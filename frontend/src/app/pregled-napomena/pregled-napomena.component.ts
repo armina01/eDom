@@ -43,6 +43,7 @@ export class PregledNapomenaComponent implements OnInit{
   public vrsteNapomena:VrstaNapomeneGetAllResponseVrstaNapomene[]=[];
   public OdabranaNapomena: NapomenaGetAllResponseNapomena | null=null
   korisnik:KorisnikDomaGetAllResponseKorisnik|undefined=undefined;
+  public prijavljeniKorisnikId:number=0;
 
 
     ngOnInit(): void {
@@ -108,8 +109,9 @@ export class PregledNapomenaComponent implements OnInit{
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.napomenaService.IzbrisiNapomenu(item).subscribe(
-          response => () => {
-            console.log("Deleted item")
+          response => {
+            this.myAlert.showSuccess("Uspješno obrisana napomena");
+            this.GetAllNpomene();
           },
           (error: any) => {
             console.error('Error:', error);
@@ -123,9 +125,7 @@ export class PregledNapomenaComponent implements OnInit{
             }
           })
       }
-      setTimeout(() => {
-        this.ngOnInit();
-      }, 3000);
+
     });
   }
 
@@ -184,5 +184,15 @@ export class PregledNapomenaComponent implements OnInit{
     return zaposlenik ? zaposlenik.imePrezime : undefined;
   }
 
+  getPrijavljeniKorisnik()
+  {
+    const korisnikStr = window.localStorage.getItem("korisnik");
+    const korisnik = korisnikStr ? JSON.parse(korisnikStr) : null;
 
+    if (korisnik && korisnik.zaposlenikId) {
+      this.prijavljeniKorisnikId = korisnik.zaposlenikId;
+    } else {
+      this.prijavljeniKorisnikId = 0;
+    }
+  }
 }

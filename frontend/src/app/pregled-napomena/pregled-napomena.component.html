@@ -36,7 +36,8 @@
               <strong>Važno!</strong>
             </div>
             <div *ngIf="jeDoktor">
-            <div class="mt-3">
+              {{getPrijavljeniKorisnik()}}
+            <div *ngIf="item.zaposlenikId==prijavljeniKorisnikId" class="mt-3">
               <button type="button" class="btn btn-primary me-2" (click)="Odaberi(item)">
                 <i class="bi bi-pencil me-2"></i> Update
               </button>

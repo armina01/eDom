@@ -59,7 +59,7 @@ export const routes: Routes = [
   {path:'fizioterapeut/o-meni',component:PregledPodatakaFizioterapeutComponent},
   {path:'terapija',component:TerapijaComponent, canActivate: [AutorizacijaGuard]},
   {path:'lijek',component:LijekComponent, canActivate: [AutorizacijaGuard]},
-  {path:'napomena',component:NapomenaComponent},
+  {path:'napomena',component:NapomenaComponent, canActivate: [AutorizacijaGuard]},
   {path:'pregledNapomena/:id', component: PregledNapomenaComponent},
   {path:'pregledAktivnihNapomena/:id', component: PregledAktivnihNapomenaComponent},
   {path:'pregleddnevnihzadataka/:id',component:GetZadaciComponent},

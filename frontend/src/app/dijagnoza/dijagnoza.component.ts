@@ -39,6 +39,7 @@ export class DijagnozaComponent implements  OnInit{
   filtriraneDijagnoze:DijagnozaGetAllResponseDijagnoza[]=[];
   public odabranaDijagnoza: DijagnozaGetAllResponseDijagnoza | null = null;
   public showConfirmationDialog:boolean=false;
+  public prijavljeniKorisnikId:number=0;
 
   fileSelected = false;
   selectedFile: File | null = null;
@@ -67,6 +68,7 @@ export class DijagnozaComponent implements  OnInit{
       this.GetAllDoktore();
       this.GetAllKorisnike();
       this.GetAllDijagnoze();
+      this.getPrijavljeniKorisnik();
 
     }
 
@@ -159,7 +161,7 @@ export class DijagnozaComponent implements  OnInit{
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.dijagnozaService.IzbrisiDijagnozu(item).subscribe(
-          response => () => {
+          response => {
             this.myAlert.showSuccess("Uspješno obrisana dijagnoza")
 
           },
@@ -256,16 +258,38 @@ export class DijagnozaComponent implements  OnInit{
 
   downloadFile(dijagnozaId: number) {
     const url = `${MyConfig.adresa_servera}/dijagnoza/downloadFile/${dijagnozaId}`;
-    const link = document.createElement('a');
-    link.href = url;
-    link.target = '_blank';
-    link.download = `Dijagnoza_${dijagnozaId}.dat`;
 
-    document.body.appendChild(link);
-    link.click();
+    fetch(url)
+      .then(response => {
+        if (response.status === 404) {
+          alert('Nalaz nije dodan za ovu dijagnozu!');
+          return;
+        }
 
-    document.body.removeChild(link);
+        if (response.ok) {
+          response.blob().then(blob => {
+            const link = document.createElement('a');
+            const url = window.URL.createObjectURL(blob);
+            link.href = url;
+            link.target = '_blank';
+            link.download = `Dijagnoza_${dijagnozaId}.dat`;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            window.URL.revokeObjectURL(url); // Očisti URL objekat nakon preuzimanja
+          });
+        } else {
+          alert('Došlo je do greške prilikom preuzimanja fajla.');
+        }
+      })
+      .catch(error => {
+        console.error('Greška prilikom slanja zahteva:', error);
+        alert('Došlo je do greške prilikom preuzimanja fajla.');
+      });
   }
+
 
 
   deleteFile(dijagnozaId: number) {
@@ -279,6 +303,18 @@ export class DijagnozaComponent implements  OnInit{
         this.myAlert.showError('Greška prilikom brisanja fajla:');
       }
     );
+  }
+
+  getPrijavljeniKorisnik()
+  {
+    const korisnikStr = window.localStorage.getItem("korisnik");
+    const korisnik = korisnikStr ? JSON.parse(korisnikStr) : null;
+
+    if (korisnik && korisnik.zaposlenikId) {
+      this.prijavljeniKorisnikId = korisnik.zaposlenikId;
+    } else {
+      this.prijavljeniKorisnikId = 0;
+    }
   }
 }
 

@@ -21,11 +21,13 @@ import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
 import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
 import {NavBarDoktorComponent} from "../nav-bar-doktor/nav-bar-doktor.component";
 import {AlertComponent} from "../alert/alert.component";
+import {NavBarAdminComponent} from "../nav-bar-admin/nav-bar-admin.component";
+import {GetAllKorisnickiNalogResponseKorisnickiNalog} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
 
 @Component({
   selector: 'app-doktor',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, NavBarDoktorComponent, AlertComponent],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, NavBarDoktorComponent, AlertComponent, NavBarAdminComponent],
     providers: [DoktorService, KorisnickiNalogService],
   templateUrl: './doktor.component.html',
   styleUrl: './doktor.component.css'
@@ -75,6 +77,8 @@ export class DoktorComponent implements OnInit{
     prikaziErrorNalog:boolean=false
     zaposlenikUpdId:number=0;
     zaposlenikUpdNalog:boolean=false;
+    public allKorisnickiNalog: GetAllKorisnickiNalogResponseKorisnickiNalog[]=[];
+    korisnickiNalog: GetAllKorisnickiNalogResponseKorisnickiNalog | undefined = undefined;
 
     public doktorRequest: DoktorRequest = {
     imePrezime: "",
@@ -162,9 +166,11 @@ export class DoktorComponent implements OnInit{
       dialogRef.afterClosed().subscribe(res => {
         if (res) {
           this.doktorService.IzbrisiDoktora(item).subscribe(
-            response => () => {
-              this.getAllDoktori(); // ili samo ispisat da je uspjesno izgrisano
+            response  => {
               this.myAlert.showSuccess("Uspješno obrisan doktor");
+              this.Prikazi();
+              this.korisnickiNalog = this.allKorisnickiNalog.find(x=>x.nalogId==item.nalogId);
+              this.korisnickiNalogService.ObrisiKorisnickiNalog(this.korisnickiNalog);
             },
             (error: any) => {
               console.error('Error:', error);
@@ -178,9 +184,6 @@ export class DoktorComponent implements OnInit{
               }
             })
         }
-        setTimeout(() => {
-          this.Prikazi();
-        }, 3000);
       });
     }
 
@@ -279,7 +282,11 @@ export class DoktorComponent implements OnInit{
 
   }
 
-
+  GetAllKorisnickiNalog(): void {
+    this.korisnickiNalogService.GetAllKorisnickiNalog().subscribe(x => {
+      this.allKorisnickiNalog = x.korisnickiNalozi
+    })
+  }
   AddKorisnickiNalog(): void {
     this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
       this.prikaziErrorNalog=false;
@@ -287,6 +294,7 @@ export class DoktorComponent implements OnInit{
       this.updateDoktorRequest.nalogId = request.korisnikId
       this.zaposlenikUpdNalog=true;
       this.Update();
+      this.GetAllKorisnickiNalog();
 
     },(error: any) => {
       console.error("err", error);

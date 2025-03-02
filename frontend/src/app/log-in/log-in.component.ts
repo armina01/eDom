@@ -36,7 +36,7 @@ export class LogInComponent {
         response => {
           this.korisnik = response;
         });
-    //this.signalRService.otvori_ws_konekciju();
+
   }
   GetAllzaposlenici(): Observable<GetAllZaposlenikResponseZaposlenik[]> {
     let url: string = MyConfig.adresa_servera + `/getAllZaposlenici`;
@@ -62,13 +62,13 @@ export class LogInComponent {
   async signIn() {
       await this.GetAllKorisnickiNalog();
   }
-  
-  
-  
+
+
+
   async GetAllKorisnickiNalog() {
     let url: string = MyConfig.adresa_servera + `/get-all-KorisnickiNalog`;
     await this.signalRService.otvori_ws_konekciju();
-  
+
         if (!SignalRService.ConnectionId) {
           console.error('SignalR Connection ID is not ready.');
           this.lozinkaNeTacna = true;
@@ -77,7 +77,7 @@ export class LogInComponent {
         this.logInRequest.SignalRConnectionID = SignalRService.ConnectionId;
 
     this.httpClient.get<GetAllKorisnickiNalogResponse>(url).subscribe(
-      
+
         response => {
           this._korisnickiNalog = response.korisnickiNalozi.find(nalog =>
               nalog.korisnickoIme === this.logInRequest.korisnickoIme
@@ -111,7 +111,9 @@ export class LogInComponent {
                   this.lozinkaNeTacna=true;
                 });
           }
+
         }
+
     );
 
   }

@@ -18,7 +18,6 @@ export class NjegovateljiService {
   public allNjegovatelji: GetAllNjegovateljaResponseNjegovatelj[]=[];
   GetAllNjegovatelji(): Observable<GetAllNjegovateljiResponse> {
     const authToken = this._myAuthService.getAuthorizationToken();
-    console.log('Authentication Token:', authToken);
     let url: string = MyConfig.adresa_servera + `/getAllNjegovatelji`;
     return this.httpClient.get<GetAllNjegovateljiResponse>(url);
   }

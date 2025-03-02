@@ -20,4 +20,25 @@ export class HomepageAdminComponent {
   PregledNutricionista() {
     this.router.navigate(['/nutricionista']);
   }
+
+  PregledDoktora() {
+    this.router.navigate(['/doktor']);
+  }
+
+  PregledFizioterapeuta() {
+    this.router.navigate(['/fizioterapeut']);
+  }
+
+  DodajKorisnikaDoma() {
+    this.router.navigate(['/korisnkDoma']);
+  }
+  PregledKorisnikaDoma() {
+    this.router.navigate(['/pregledKorisnikaDoma']);
+  }
+  PregledOpstine() {
+    this.router.navigate(['/opstina']);
+  }
+  PregledPoslovnePozicije() {
+    this.router.navigate(['/poslovnaPozicija']);
+  }
 }

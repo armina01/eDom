@@ -24,13 +24,14 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AlertService} from "../Services/AlertService";
 import {NavBarFizioterapeutComponent} from "../nav-bar-fizioterapeut/nav-bar-fizioterapeut.component";
 import {AlertComponent} from "../alert/alert.component";
+import {NavBarAdminComponent} from "../nav-bar-admin/nav-bar-admin.component";
 
 
 @Component({
   selector: 'app-pregled-korisnika-doma',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NavBarNjejgovateljComponent, NavBarNutricionistaComponent,
-    NavBarDoktorComponent, FaIconComponent, FontAwesomeModule, NavBarFizioterapeutComponent, AlertComponent],
+    NavBarDoktorComponent, FaIconComponent, FontAwesomeModule, NavBarFizioterapeutComponent, AlertComponent, NavBarAdminComponent],
   providers: [MyAuthService, SignalRService, KorisnikDomaService],
   templateUrl: './pregled-korisnika-doma.component.html',
   styleUrls: ['./pregled-korisnika-doma.component.css']  // Ispravljeno u styleUrls
@@ -93,6 +94,7 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
         this.korisnici = data.korisnici;
         this.korisnici.forEach(k => {
           k.random = this.getRandomNumber();
+          k.slikaKorisnika = k.slikaKorisnika + '?random=' + k.random;
         });
       },
       error: (err) => {
@@ -111,10 +113,10 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     const dialogRef:MatDialogRef<WarningDialogComponent, boolean>=this.openWarningDialog('Da li ste sigurni da želite izbrisati opštinu?');
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(data);
         this.korisnikDomaService.IzbrisiKorisnikaDoma(data.korisnikDomaID).subscribe(
-          response => () => {
-            alert("Deleted item")
+          response => {
+              this.myAlert.showSuccess("Korisnik doma uspješno obrisan");
+              this.ngOnInit();
           },
           (error: any) => {
             console.error('Error:', error);
@@ -123,14 +125,11 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
               alert('Nije moguće izbrisati korisnika');
               console.error('Handle 500 error here');
             } else {
-              // Handle other errors
               alert('An error occurred.');
             }
           })
       }
-      setTimeout(() => {
-        this.getAllKorisnici();
-      }, 3000);
+
     });
   }
 
@@ -141,16 +140,27 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
   };
 
 
-  UpdateKorisnika() {
-    let podaci=this.odabraniKorisnik
-    this.korisnikDomaService.UpdateKorisnikaDoma(podaci).subscribe((res) =>
-      this.myAlert.showSuccess("Korisnik doma uspješno ažuriran"))
-    this.odabraniKorisnik=null;
-    setTimeout(() => {
-      this.ngOnInit();
-    }, 3000);
+    UpdateKorisnika() {
+        if (!this.odabraniKorisnik) {
+            console.warn("Nema odabranog korisnika za ažuriranje.");
+            return;
+        }
 
-  }
+        this.korisnikDomaService.UpdateKorisnikaDoma(this.odabraniKorisnik).subscribe({
+            next: (res) => {
+
+                this.myAlert.showSuccess("Korisnik doma uspješno ažuriran");
+                this.getAllKorisnici();
+            },
+            error: (error) => {
+                console.error("Greška pri ažuriranju korisnika:", error);
+                this.myAlert.showError("Došlo je do greške prilikom ažuriranja.");
+            }
+        });
+
+        this.odabraniKorisnik = null;
+    }
+
 
   OdaberiKorisnika(item: KorisnikDomaGetAllResponseKorisnik) {
     const datumRodjenja = item.datumRodjenja;
@@ -233,8 +243,8 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.korisnikDomaService.IzbrisiSlikuKorisnika(korisnikDomaID).subscribe(
-          response => () => {
-            alert("Deleted item")
+          response  => {
+            this.myAlert.showSuccess("Slika uspješno obrisana")
             this.getAllKorisnici();
           },
           (error: any) => {
@@ -249,7 +259,6 @@ export class PregledKorisnikaDomaComponent implements  OnInit{
             }
           })
       }
-      this.getAllKorisnici();
     });
   }
   DodajPlanIshrane(item: KorisnikDomaGetAllResponseKorisnik) {

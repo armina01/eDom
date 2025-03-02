@@ -190,6 +190,7 @@
                       <button class="btn btn-light border border-primary" style="margin-right: 15px;" (click)="downloadFile(item.dijagnozaId)">
                         <i class="bi bi-download"></i> Preuzmi nalaz
                       </button>
+                      <div *ngIf="item.zaposlenikId==prijavljeniKorisnikId">
                       <button type="submit" class="btn btn-danger"  style="margin-right: 15px" (click)="deleteFile(item.dijagnozaId)">
                         <i class="bi bi-x"></i> Izbriši nalaz
                       </button>
@@ -199,6 +200,7 @@
                       <button type="button" style="margin-right: 15px" class="btn btn-danger" (click)="Obrisi(item)">
                         <i class="bi bi-trash"></i> Izbriši dijagnozu
                       </button>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -13,12 +13,13 @@ import {KorisnikDomaService} from "../Services/KorisnikDomaService";
 import {OpstinaServiceService} from "../Services/OpstinaService";
 import {AlertService} from "../Services/AlertService";
 import {AlertComponent} from "../alert/alert.component";
+import {NavBarAdminComponent} from "../nav-bar-admin/nav-bar-admin.component";
 
 
 @Component({
   selector: 'app-korisnik',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, AlertComponent],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, AlertComponent, NavBarAdminComponent],
   providers: [KorisnikDomaService, OpstinaServiceService],
   templateUrl: './korisnik.component.html',
   styleUrls: ['./korisnik.component.css'] // Fixed styleUrls key

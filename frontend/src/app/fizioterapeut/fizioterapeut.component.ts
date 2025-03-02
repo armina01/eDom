@@ -21,13 +21,18 @@ import {AlertService} from "../Services/AlertService";
 import {KorisnickiNalogRequest} from "../korisnicki-nalog/korisnickiNalogRequest";
 import {KorisnickiNalogService} from "../Services/KorisnickiNalogService";
 import {AlertComponent} from "../alert/alert.component";
+import {NavBarAdminComponent} from "../nav-bar-admin/nav-bar-admin.component";
+import {
+  GetAllKorisnickiNalogResponse,
+  GetAllKorisnickiNalogResponseKorisnickiNalog
+} from "../korisnicki-nalog/getAllKorisnickiNalogResponse";
 
 
 
 @Component({
   selector: 'app-fizioterapeut',
   standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, AlertComponent],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, AlertComponent, NavBarAdminComponent],
     providers: [FizioterapeutService, KorisnickiNalogService],
   templateUrl: './fizioterapeut.component.html',
   styleUrl: './fizioterapeut.component.css'
@@ -47,6 +52,8 @@ export class FizioterapeutComponent implements OnInit {
   prikaziErrorNalog:boolean=false
   zaposlenikUpdId:number=0;
   zaposlenikUpdNalog:boolean=false;
+  public allKorisnickiNalog: GetAllKorisnickiNalogResponseKorisnickiNalog[]=[];
+  korisnickiNalog: GetAllKorisnickiNalogResponseKorisnickiNalog | undefined = undefined;
 
 
   constructor(public httpClient: HttpClient,private dialog: MatDialog,
@@ -131,7 +138,7 @@ export class FizioterapeutComponent implements OnInit {
 
 
       this.fizioterapeutService.DodajFizioterapeuta(this.fizioterapeutRequest).subscribe((request: any) => {
-        this.myAlert.showSuccess("Uspjesšno dodan fizioterapeut");
+        this.myAlert.showSuccess("Uspješno dodan fizioterapeut");
         this.showFirstForm= false;
         this.zaposlenikUpdId=request.zaposlenikID;
 
@@ -171,8 +178,10 @@ export class FizioterapeutComponent implements OnInit {
         let url: string = MyConfig.adresa_servera + `/Fizioterapeut-obrisi`;
         const params = new HttpParams().set('ZaposlenikId', item.zaposlenikId);
         this.httpClient.delete(url, {params}).subscribe(
-          response => () => {
-            alert("Deleted item")
+          response  => {
+            this.myAlert.showSuccess("Uspješno obrisan fizioterapeut");
+            this.korisnickiNalog = this.allKorisnickiNalog.find(x=>x.nalogId==item.nalogId);
+            this.korisnickiNalogService.ObrisiKorisnickiNalog(this.korisnickiNalog);
           },
           (error: any) => {
             console.error('Error:', error);
@@ -273,6 +282,11 @@ export class FizioterapeutComponent implements OnInit {
       this.Prikazi();
     }, 3000);
   }
+  GetAllKorisnickiNalog(): void {
+    this.korisnickiNalogService.GetAllKorisnickiNalog().subscribe(x => {
+      this.allKorisnickiNalog = x.korisnickiNalozi
+    })
+  }
   AddKorisnickiNalog(): void {
     this.korisnickiNalogService.DodajKorisnickiNalog( this.korisnickiNalogRequest).subscribe(request => {
       this.prikaziErrorNalog=false;
@@ -280,10 +294,12 @@ export class FizioterapeutComponent implements OnInit {
       this.fizioterapeutUpdateRequest.nalogId = request.korisnikId
       this.zaposlenikUpdNalog=true;
       this.Update();
+      this.GetAllKorisnickiNalog();
     },(error: any) => {
       console.error("err", error);
       this.prikaziErrorNalog=true;
     })
   }
+
 
 }

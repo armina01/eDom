@@ -202,12 +202,14 @@
                 </ng-container>
             </span>
                 </p>
+                <div *ngIf="item.terapijaLijek.terapija.doktorId==prijavljeniKorisnikId">
                 <button type="button" style="margin-right: 15px" class="btn btn-danger" (click)="Obrisi(item.terapijaLijek.terapija)">
                   <i class="bi bi-trash"></i> Izbriši
                 </button>
                 <button type="button" class="btn btn-primary" (click)="Odaberi(item.terapijaLijek)">
                   <i class="bi bi-pencil"></i> Update
                 </button>
+                </div>
               </div>
             </div>
           </div>

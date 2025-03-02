@@ -33,6 +33,12 @@ header {
 
 .nav-links li {
   margin-right: 20px;
+  cursor: pointer;
+}
+
+li :hover {
+  background-color: #778e77;
+  border-radius:  20%;
 }
 
 .nav-links a {
